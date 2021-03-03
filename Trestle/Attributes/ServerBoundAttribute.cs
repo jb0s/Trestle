@@ -31,7 +31,7 @@ namespace Trestle.Attributes
         public ServerBoundAttribute(PlayPacket packet)
         {
             Id = (byte) packet;
-            State = ClientState.Login;
+            State = ClientState.Play;
         }
     }
 }

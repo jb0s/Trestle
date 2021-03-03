@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using Ionic.Zlib;
+using Trestle.Entity;
+using Trestle.Enums;
 using Trestle.Networking;
+using Trestle.Utils;
 using Trestle.Worlds;
 
 namespace Trestle
@@ -56,5 +59,24 @@ namespace Trestle
                 }
             }
         }
+        
+        public static void BroadcastChat(string message)
+        {
+            BroadcastChat(new MessageComponent(message), ChatMessageType.ChatBox, null);
+        }
+
+        public static void BroadcastChat(string message, Player sender)
+        {
+            BroadcastChat(new MessageComponent(message), ChatMessageType.ChatBox, sender);
+        }
+
+        public static void BroadcastChat(MessageComponent message, ChatMessageType chattype, Player sender)
+        {
+            foreach (var lvl in WorldManager.GetWorlds())
+            {
+                lvl.BroadcastChat(message, chattype, sender);
+            }
+        }
+
     }
 }

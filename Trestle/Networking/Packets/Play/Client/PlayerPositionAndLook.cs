@@ -29,7 +29,7 @@ namespace Trestle.Networking.Packets.Play
         [VarInt]
         public int TeleportId { get; set; }
         
-        public PlayerPositionAndLook(Client client, Location location)
+        public PlayerPositionAndLook(Networking.Client client, Location location)
         {
             X = location.X;
             Y = location.Y;

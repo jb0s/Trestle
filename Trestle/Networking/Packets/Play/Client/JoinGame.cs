@@ -56,7 +56,7 @@ namespace Trestle.Networking.Packets.Play
         [Field] 
         public bool IsFlat { get; set; } = false;
         
-        public JoinGame(Client client)
+        public JoinGame(Networking.Client client)
         {
             Client = client;
 

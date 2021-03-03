@@ -7,9 +7,12 @@ namespace Trestle.Enums
     {
         // Serverbound
         Server_PlayerPositionAndLook = 0x13,
-
+        Server_ChatMessage = 0x03,
+        
         // Clientbound
         Client_PlayerPositionAndLook = 0x34,
+        Client_ChatMessage = 0x0E,
+        
         EntityStatus = 0x1A,
         SetSlot = 0x15,
         ChunkData = 0x20,

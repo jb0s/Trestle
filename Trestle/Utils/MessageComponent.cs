@@ -6,11 +6,21 @@ namespace Trestle.Utils
     {
         [JsonPropertyName("text")]
         public string Text { get; set; } = "";
-        public bool bold = false;
-        public bool italic = false;
-        public bool underlined = false;
-        public bool strikethrough = false;
-        public bool obfuscated = false;
+        
+        [JsonPropertyName("bold")]
+        public bool Bold = false;
+        
+        [JsonPropertyName("italic")]
+        public bool Italic = false;
+        
+        [JsonPropertyName("underlined")]
+        public bool Underlined = false;
+        
+        [JsonPropertyName("strikethrough")]
+        public bool Strikethrough = false;
+        
+        [JsonPropertyName("obfuscated")]
+        public bool Obfuscated = false;
 
         public MessageComponent(string message)
         {

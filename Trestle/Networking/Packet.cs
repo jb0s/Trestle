@@ -61,6 +61,8 @@ namespace Trestle.Networking
                     buffer.WriteDouble((double)property.GetValue(this));
                 else if (property.PropertyType == typeof(String))
                     buffer.WriteString((string)property.GetValue(this));
+                else if (property.PropertyType == typeof(Guid))
+                    buffer.WriteUuid((Guid)property.GetValue(this));
                 else if (property.PropertyType == typeof(string[]))
                 {
                     var array = (string[]) property.GetValue(this);

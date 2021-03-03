@@ -18,8 +18,4 @@
       <EmbeddedResource Include="Assets\dimensions.json" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Networking\Packets\Play\Server" />
-    </ItemGroup>
-
 </Project>

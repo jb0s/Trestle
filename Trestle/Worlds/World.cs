@@ -8,6 +8,7 @@ using Trestle.Enums;
 using Trestle.Items;
 using Trestle.Networking;
 using Trestle.Networking.Packets;
+using Trestle.Networking.Packets.Play.Client;
 using Trestle.Utils;
 using Trestle.Worlds.Structures;
 
@@ -107,7 +108,8 @@ namespace Trestle.Worlds
                 {
                     continue;
                 }
-               // new ChatMessage(i.Wrapper) { Message = @message }.Write();
+                
+                i.Client.SendPacket(new ChatMessage(message));
             }
         }
         
