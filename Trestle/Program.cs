@@ -7,9 +7,7 @@ namespace Trestle
     {
         static void Main(string[] args)
         {
-            Globals.Initialize();
-            var listener = new Listener();
-            listener.Start();
+            var server = new TrestleServer();
         }
     }
 }

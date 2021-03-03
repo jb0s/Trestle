@@ -1,7 +1,23 @@
-﻿namespace Trestle
+﻿using System;
+
+namespace Trestle
 {
     public class Constants
     {
+        public static class Config
+        {
+            public static readonly string[] ConfigDefault = new string[]
+            {
+                "# This server is powered by Trestle - " + DateTime.Now.ToString(),
+                "port=25565",
+                "max_players=10",
+                "world_name=world",
+                "online_mode=false",
+                "seed=" + new Random().Next(999999999),
+                "motd=\u00A7bA Minecraft Server - Powered by Trestle!"
+            };
+        }
+        
         public static class Vector3
         {
             public static readonly Trestle.Utils.Vector3 Zero = new (0);

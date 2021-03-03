@@ -9,7 +9,7 @@ namespace Trestle.Networking.Packets.Status
     {
         public override void HandlePacket()
         {
-            Console.WriteLine("very special!");
+            Console.WriteLine("TODO: send over MOTD & whatever");
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Trestle.Networking
 {
     public class Listener
     {
-        private TcpListener _listener = new(IPAddress.Any, 25565);
+        private TcpListener _listener = new(IPAddress.Any, Config.Port);
 
         private bool _isListening = false;
 
@@ -30,6 +30,8 @@ namespace Trestle.Networking
             
             _listener.Start();
             _isListening = true;
+            
+            Logger.Info($"Accepting connections on port {Config.Port}");
             
             while (_isListening)
             {
