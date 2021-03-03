@@ -118,7 +118,7 @@ namespace Trestle.Networking
             {
                 ClientState.Handshaking => typeof(HandshakingPacket),
                 ClientState.Status => typeof(StatusPacket),
-                ClientState.Login => typeof(HandshakingPacket),
+                ClientState.Login => typeof(LoginPacket),
                 ClientState.Play => typeof(HandshakingPacket)
             };
             Logger.Debug($"Received packet '0x{packetId:X2}' ({Enum.GetName(type, packetId)}) for state '{client.State}'");
@@ -141,6 +141,10 @@ namespace Trestle.Networking
                         _handshakingHandlers.Add(attribute.Id, () => (Packet)Activator.CreateInstance(type));
                     else if (attribute.State == ClientState.Status)
                         _statusHandlers.Add(attribute.Id, () => (Packet)Activator.CreateInstance(type));
+                    else if (attribute.State == ClientState.Login)
+                        _loginHandlers.Add(attribute.Id, () => (Packet)Activator.CreateInstance(type));
+                    else if (attribute.State == ClientState.Play)
+                        _playHandlers.Add(attribute.Id, () => (Packet)Activator.CreateInstance(type));
                 }
             }
         }

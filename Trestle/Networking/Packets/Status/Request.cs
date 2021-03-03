@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using Trestle.Attributes;
 using Trestle.Enums;
 
@@ -8,8 +9,6 @@ namespace Trestle.Networking.Packets.Status
     public class Request : Packet
     {
         public override void HandlePacket()
-        {
-            Console.WriteLine("TODO: send over MOTD & whatever");
-        }
+            => Client.SendPacket(new Response());
     }
 }

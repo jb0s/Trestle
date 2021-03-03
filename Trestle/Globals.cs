@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using Ionic.Zlib;
 using Trestle.Networking;
+using Trestle.Worlds;
 
 namespace Trestle
 {
@@ -15,9 +16,11 @@ namespace Trestle
         internal static string ProtocolName = "Trestle 1.16.5";
         internal static string OfficialProtocolName = "Minecraft 1.16.5";
         
+        internal static WorldManager WorldManager = null;
         internal static RSAParameters ServerKey;
 
         internal static Listener ServerListener = null;
+        internal static Registry.Registry Registry = null;
 
         public static void Initialize()
         {

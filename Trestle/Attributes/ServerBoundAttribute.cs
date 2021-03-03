@@ -21,5 +21,17 @@ namespace Trestle.Attributes
             Id = (byte) packet;
             State = ClientState.Status;
         }
+        
+        public ServerBoundAttribute(LoginPacket packet)
+        {
+            Id = (byte) packet;
+            State = ClientState.Login;
+        }
+        
+        public ServerBoundAttribute(PlayPacket packet)
+        {
+            Id = (byte) packet;
+            State = ClientState.Login;
+        }
     }
 }

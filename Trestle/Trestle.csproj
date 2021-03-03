@@ -6,12 +6,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Networking\Packets\Login" />
-      <Folder Include="Networking\Packets\Play" />
+      <PackageReference Include="DotNetZip" Version="1.15.0" />
+      <PackageReference Include="fNbt" Version="0.6.4" />
+      <PackageReference Include="LibNoise" Version="0.2.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="DotNetZip" Version="1.15.0" />
+      <None Remove="Assets\biomes.json" />
+      <EmbeddedResource Include="Assets\biomes.json" />
+      <None Remove="Assets\dimensions.json" />
+      <EmbeddedResource Include="Assets\dimensions.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Networking\Packets\Play\Server" />
     </ItemGroup>
 
 </Project>

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using Trestle.Attributes;
+using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Utils;
 
@@ -15,7 +18,7 @@ namespace Trestle.Networking
         private readonly AutoResetEvent _resume = new(false);
         internal bool EncryptionEnabled = false;
         public ClientState State = ClientState.Handshaking;
-       // public Player Player;
+        public Player Player;
         public TcpClient TcpClient;
         public TrestleThreadPool ThreadPool;
         internal int Protocol = 0;
@@ -59,6 +62,38 @@ namespace Trestle.Networking
             }
         }
         
+        public void AddToQueue(byte[] data, bool queue = false)
+        {
+            if (TcpClient != null)
+            {
+                if (queue)
+                {
+                    lock (_commands)
+                    {
+                        _commands.Enqueue(data);
+                    }
+                    _resume.Set();
+                }
+                else
+                {
+                    SendData(data);
+                }
+            }
+        }
+        
+        public void SendPacket(Packet packet)
+        {
+            if (TcpClient != null)
+            {
+                if (packet.GetType().GetCustomAttribute<ClientBoundAttribute>(true) == null)
+                    throw new Exception("Packet is not ClientBound");
+
+                packet.Client = this;
+                var data = packet.SerializePacket();
+                data.FlushData();
+            }
+        }
+        
         public void SendData(byte[] data)
         {
             if (TcpClient != null)
@@ -85,7 +120,7 @@ namespace Trestle.Networking
                 }
             }
         }
-        
+
         private long UnixTimeNow()
         {
             var timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));

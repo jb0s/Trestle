@@ -1,0 +1,17 @@
+﻿namespace Trestle.Enums
+{
+    public enum LoginPacket
+    {
+        // ServerBound
+        LoginStart = 0x00,
+        EncryptionResponse = 0x01,
+        LoginPluginResponse = 0x02,
+        
+        // ClientBound
+        Disconnect = 0x00,
+        EncryptionRequest = 0x01,
+        LoginSuccess = 0x02,
+        SetCompression = 0x03,
+        LoginPluginRequest = 0x04
+    }
+}

@@ -5,6 +5,7 @@ using System.Net;
 using System.Numerics;
 using System.Text;
 using Ionic.Zlib;
+using Trestle.Enums;
 using Trestle.Networking;
 
 namespace Trestle.Utils
@@ -257,6 +258,7 @@ public class DataBuffer
 				_bffr.Add((byte) (integer & 127 | 128));
 				integer = (int) (((uint) integer) >> 7);
 			}
+			
 			_bffr.Add((byte) integer);
 		}
 
@@ -351,16 +353,15 @@ public class DataBuffer
 		/// </summary>
 		public void FlushData(bool quee = false)
 		{
-			/*
 			try
 			{
 				var allData = _bffr.ToArray();
 				File.WriteAllBytes($"things-{Number++}", allData);
 				_bffr.Clear();
 				
-				if (ServerSettings.UseCompression && _client.PacketMode == PacketMode.Play && _client.SetCompressionSend)
+				if (Config.UseCompression && _client.State == ClientState.Play && _client.SetCompressionSend)
 				{
-					bool isOver = (allData.Length >= ServerSettings.CompressionThreshold);
+					bool isOver = (allData.Length >= Config.CompressionThreshold);
 					int dataLength = isOver ? allData.Length : 0;
 
 					//Calculate length of 'Data Length'
@@ -411,7 +412,7 @@ public class DataBuffer
 			catch (Exception ex)
 			{
 				//Globals.ClientManager.PacketError(_client, ex);
-			}*/
+			}
 		}
 
 		private byte[] HostToNetworkOrder(double d)

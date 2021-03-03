@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using Trestle.Worlds;
+using Trestle.Worlds.Standard;
 
 namespace Trestle.Networking
 {
@@ -41,12 +43,12 @@ namespace Trestle.Networking
         private void InitGlobals()
         {
             Globals.Random = new Random();
-            //Globals.Registry = new Registry.Registry();
+            Globals.Registry = new Registry.Registry();
             Globals.ServerListener = new Listener();
           //  Globals.ClientManager = new ClientManager();
           //  Globals.CommandManager = new CommandManager();
           //  Globals.ServerKey = PacketCryptography.GenerateKeyPair();
-         //   Globals.WorldManager = new WorldManager(new StandardWorld("world"));
+            Globals.WorldManager = new WorldManager(new StandardWorld("world"));
         }
         
         /// <summary>

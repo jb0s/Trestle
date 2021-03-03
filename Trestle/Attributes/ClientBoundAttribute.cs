@@ -12,5 +12,15 @@ namespace Trestle.Attributes
         {
             Id = (byte) packet;
         }
+        
+        public ClientBoundAttribute(LoginPacket packet)
+        {
+            Id = (byte) packet;
+        }
+        
+        public ClientBoundAttribute(PlayPacket packet)
+        {
+            Id = (byte) packet;
+        }
     }
 }
