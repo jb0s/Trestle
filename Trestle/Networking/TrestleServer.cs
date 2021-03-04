@@ -1,11 +1,10 @@
 using System;
+using System.Linq;
+using Trestle.Enums;
 using Trestle.Worlds;
 using System.Threading;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using Trestle.Enums;
-using Trestle.Worlds.Standard;
 
 namespace Trestle.Networking
 {
@@ -77,7 +76,8 @@ namespace Trestle.Networking
           //  Globals.ClientManager = new ClientManager();
           //  Globals.CommandManager = new CommandManager();
           //  Globals.ServerKey = PacketCryptography.GenerateKeyPair();
-            Globals.WorldManager = new WorldManager(new StandardWorld("world"));
+            Globals.WorldManager = new WorldManager();
+            Globals.WorldManager.CreateWorld("world");
         }
         
         /// <summary>

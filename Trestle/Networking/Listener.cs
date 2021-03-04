@@ -84,7 +84,7 @@ namespace Trestle.Networking
 
             if (receivedData > 0)
             {
-                var dbuffer = new DataBuffer(client);
+                var dbuffer = new MinecraftStream(client);
                 if (client.Decrypter != null)
                 {
                     var data = new byte[4096];
@@ -103,7 +103,7 @@ namespace Trestle.Networking
             }
         }
 
-        private void HandlePacket(Client client, DataBuffer buffer, byte packetId)
+        private void HandlePacket(Client client, MinecraftStream buffer, byte packetId)
         {
             var handler = client.State switch
             {

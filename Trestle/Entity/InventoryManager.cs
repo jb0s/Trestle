@@ -228,7 +228,7 @@ namespace Trestle.Utils
 
         public byte[] GetBytes()
         {
-            DataBuffer buffer = new DataBuffer(new byte[0]);
+            MinecraftStream buffer = new MinecraftStream(new byte[0]);
             for (int i = 0; i <= 45; i++)
             {
                 var slot = _slots[i];
@@ -242,7 +242,7 @@ namespace Trestle.Utils
 
         public void Import(byte[] data)
         {
-            DataBuffer buffer = new DataBuffer(data);
+            MinecraftStream buffer = new MinecraftStream(data);
 
             for (int i = 0; i <= 45; i++)
             {

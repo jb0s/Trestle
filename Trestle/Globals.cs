@@ -74,9 +74,9 @@ namespace Trestle
         {
             foreach (var lvl in WorldManager.GetWorlds())
             {
-                lvl.BroadcastChat(message, chattype, sender);
+                // TODO: Broadcast chat
+                //lvl.BroadcastChat(message, chattype, sender);
             }
         }
-
     }
 }

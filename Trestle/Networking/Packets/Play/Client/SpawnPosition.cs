@@ -11,7 +11,7 @@ namespace Trestle.Networking.Packets.Play
 
         public SpawnPosition()
         {
-            var spawnPoint = Globals.WorldManager.MainWorld.GetSpawnPoint();
+            var spawnPoint = Globals.WorldManager.MainWorld.SpawnPoint;
             Location = (((long) spawnPoint.X & 0x3FFFFFF) << 38) | (((long) spawnPoint.Y & 0xFFF) << 26) | ((long) spawnPoint.Z & 0x3FFFFFF);
         }
     }

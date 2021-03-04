@@ -10,19 +10,19 @@ using Trestle.Networking;
 
 namespace Trestle.Utils
 {
-public class DataBuffer
+public class MinecraftStream
     {
         private readonly Client _client;
         public byte[] BufferedData = new byte[4096];
         private int _lastByte;
         public int Size = 0;
         
-        public DataBuffer(Client client)
+        public MinecraftStream(Client client)
         {
             _client = client;
         }
         
-        public DataBuffer(byte[] data)
+        public MinecraftStream(byte[] data)
         {
             BufferedData = data;
         }
@@ -372,7 +372,7 @@ public class DataBuffer
 					int packetlength = compressedBytes.Length + dLength.Length;
 					var dataToSend = isOver ? compressedBytes : allData;
 
-					var compressed = new DataBuffer(_client);
+					var compressed = new MinecraftStream(_client);
 					compressed.WriteVarInt(packetlength);
 					compressed.WriteVarInt(dataLength);
 					compressed.Write(dataToSend);

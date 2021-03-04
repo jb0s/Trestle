@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using Microsoft.VisualBasic.CompilerServices;
 using Trestle.Entity.Tile;
@@ -23,7 +24,7 @@ namespace Trestle.Entity
         /// <summary>
         /// The chunks this entity has loaded.
         /// </summary>
-        private readonly List<Tuple<int, int>> _chunksUsed;
+        private readonly Dictionary<Tuple<int, int>, byte[]> _chunksUsed;
         
         /// <summary>
         /// The position of the current chunk the player is in.
@@ -173,16 +174,16 @@ namespace Trestle.Entity
         
         public Player(int entityTypeId, World world) : base(-1, world)
         {
-            _chunksUsed = new List<Tuple<int, int>>();
+	        _chunksUsed = new Dictionary<Tuple<int, int>, byte[]>();
             Inventory = new InventoryManager(this);
             World = world;
 
             // TODO: Fix this dumb workaround
             EntityId = Globals.Random.Next(0, 999999999);
             
-            Width = 0.6;
-            Height = 1.62;
-            Length = 0.6;
+            // TODO: Unhardcode viewdistance
+            ViewDistance = 16;
+            
             IsOperator = false;
             IsLoaded = false;
         }
@@ -222,7 +223,8 @@ namespace Trestle.Entity
 	        _currentChunkPosition.X = (int) location.X >> 4;
 	        _currentChunkPosition.Z = (int) location.Z >> 4;
 
-	        if (originalchunkcoords != _currentChunkPosition) SendChunksForLocation();
+	        //if (originalchunkcoords != _currentChunkPosition) 
+		        SendChunksForLocation();
 		        
 	        /*
 	        new EntityTeleport(Wrapper)
@@ -460,20 +462,20 @@ namespace Trestle.Entity
 			var centerX = (int) Location.X >> 4;
 			var centerZ = (int) Location.Z >> 4;
 
-			if (!force && HasSpawned && _currentChunkPosition == new Vector2(centerX, centerZ)) return;
+			if (!force && HasSpawned && _currentChunkPosition == new Vector2(centerX, centerZ)) 
+				return;
 
 			_currentChunkPosition.X = centerX;
 			_currentChunkPosition.Z = centerZ;
-
+			
 			Client.ThreadPool.LaunchThread(() =>
 			{
-				foreach (var chunk in World.Generator.GenerateChunks((ViewDistance * 21), force ? new List<Tuple<int, int>>() : _chunksUsed, this))
+				//null, new ChunkLocation(SpawnPoint), new Dictionary<Tuple<int, int>, byte[]>(), 8)
+				//ViewDistance, force ? new List<Tuple<int, int>>() : _chunksUsed, this)
+				foreach (var chunk in World.GenerateChunks(this, new ChunkLocation(Location), force ? _chunksUsed : new Dictionary<Tuple<int, int>, byte[]>(), ViewDistance))
 				{
-					if (Client != null && Client.TcpClient.Client != null && Client.TcpClient.Client.Connected)
-					{
+					if (Client != null && Client.TcpClient.Connected)
 						Client.SendPacket(new ChunkData(chunk));
-						GetEntitysInChunk(chunk.X, chunk.Z);
-					}
 				}
 			});
 		}
@@ -481,11 +483,11 @@ namespace Trestle.Entity
 		/// <summary>
 		/// Gets the closest chunk to the player.
 		/// </summary>
-		public Chunk GetChunk()
+		public ChunkColumn GetChunk()
 		{
 			int chunkX = (int)Location.X / 16;
 			int chunkZ = (int)Location.Z / 16;
-			Chunk chunk = World.Generator.GenerateChunk(new Vector2(chunkX, chunkZ));
+			ChunkColumn chunk = World.WorldGenerator.GenerateChunk(new ChunkLocation(chunkX, chunkZ));
 			return chunk;
 		}
 		
@@ -496,7 +498,7 @@ namespace Trestle.Entity
 		/// <param name="chunkZ"></param>
 		public void GetEntitysInChunk(int chunkX, int chunkZ)
 		{
-			foreach (var player in World.OnlinePlayerArray)
+			foreach (var player in World.Players.Values.ToArray())
 			{
 				if (player == this) continue;
 
@@ -508,7 +510,7 @@ namespace Trestle.Entity
 				}
 			}
 
-			foreach (var entity in World.Entities)
+			foreach (var entity in World.Entities.Values.ToArray())
 			{
 				var x = (int)entity.Location.X >> 4;
 				var z = (int)entity.Location.Z >> 4;
@@ -518,8 +520,9 @@ namespace Trestle.Entity
 				}
 			}
 
-			Chunk chunk = World.Generator.GenerateChunk(new Vector2(chunkX, chunkZ));
-			foreach (var raw in chunk.TileEntities)
+			ChunkColumn chunk = World.WorldGenerator.GenerateChunk(new ChunkLocation(chunkX, chunkZ));
+			// TODO: Re-add this
+			/*foreach (var raw in chunk.TileEntities)
 			{
 				var nbt = raw.Value;
 				if (nbt == null) continue;
@@ -540,7 +543,7 @@ namespace Trestle.Entity
 				if (tileEntity.Id == "Sign")
 				{
 					throw new NotImplementedException();
-					/*var sign = (SignTileEntity) tileEntity;
+					var sign = (SignTileEntity) tileEntity;
 					new UpdateSign(Wrapper)
 					{
 						SignCoordinates = sign.Coordinates,
@@ -548,9 +551,9 @@ namespace Trestle.Entity
 						Line2 = sign.Line2,
 						Line3 = sign.Line3,
 						Line4 = sign.Line4,
-					}.Write();*/
+					}.Write();
 				}
-			}
+			}*/
 		}
 		
 		/// <summary>
@@ -675,7 +678,7 @@ namespace Trestle.Entity
 			{
 				byte[] data = File.ReadAllBytes("Players/" + savename + ".pdata");
 				data = Globals.Decompress(data);
-				DataBuffer reader = new DataBuffer(data);
+				MinecraftStream reader = new MinecraftStream(data);
 				double x = reader.ReadDouble();
 				double y = reader.ReadDouble();
 				double z = reader.ReadDouble();
@@ -693,7 +696,7 @@ namespace Trestle.Entity
 			}
 			else
 			{
-				Location = World.GetSpawnPoint();
+				Location = World.SpawnPoint;
 			}
 			IsLoaded = true;
 		}

@@ -8,13 +8,13 @@ namespace Trestle.Networking.Packets.Play
     public class PlayerPositionAndLook : Packet
     {
         [Field] 
-        public double X { get; set; } = Globals.WorldManager.MainWorld.GetSpawnPoint().X;
+        public double X { get; set; } = 0;
         
         [Field]
-        public double Y { get; set; } = Globals.WorldManager.MainWorld.GetSpawnPoint().Y;
+        public double Y { get; set; } = 5;
         
         [Field]
-        public double Z { get; set; } = Globals.WorldManager.MainWorld.GetSpawnPoint().Z;
+        public double Z { get; set; } = 0;
 
         [Field] 
         public float Yaw { get; set; } = 0f;

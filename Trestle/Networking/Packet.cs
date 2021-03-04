@@ -27,9 +27,9 @@ namespace Trestle.Networking
             Console.WriteLine("not special..");
         }
 
-        public DataBuffer SerializePacket()
+        public MinecraftStream SerializePacket()
         {
-            var buffer = new DataBuffer(Client);
+            var buffer = new MinecraftStream(Client);
 
             var attribute = (ClientBoundAttribute)GetType().GetCustomAttribute<ClientBoundAttribute>(false);
             if (attribute == null)
@@ -89,7 +89,7 @@ namespace Trestle.Networking
             return buffer;
         }
 
-        public void DeserializePacket(DataBuffer buffer)
+        public void DeserializePacket(MinecraftStream buffer)
         {
             foreach (var property in GetType().GetProperties())
             {

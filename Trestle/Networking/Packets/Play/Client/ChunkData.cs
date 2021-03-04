@@ -1,4 +1,5 @@
-﻿using Trestle.Attributes;
+﻿using System;
+using Trestle.Attributes;
 using Trestle.Enums;
 using Trestle.Worlds;
 
@@ -12,9 +13,9 @@ namespace Trestle.Networking.Packets.Play
         
         public bool Unloader = false;
 
-        public ChunkData(Chunk chunk)
+        public ChunkData(byte[] chunk)
         {
-            Chunk = chunk.GetBytes(Unloader);
+            Chunk = chunk;
         }
     }
 }
