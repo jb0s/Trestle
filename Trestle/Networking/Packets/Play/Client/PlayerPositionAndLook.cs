@@ -36,7 +36,7 @@ namespace Trestle.Networking.Packets.Play
             Z = location.Z;
             Yaw = location.Yaw;
             Pitch = location.Pitch;
-            TeleportId = client.TeleportTicket;
+            TeleportId = 0; // TODO: Teleport confirming
         }
     }
 }

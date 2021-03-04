@@ -1,7 +1,10 @@
 using System;
-using System.Diagnostics;
-using System.Threading;
 using Trestle.Worlds;
+using System.Threading;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Trestle.Enums;
 using Trestle.Worlds.Standard;
 
 namespace Trestle.Networking
@@ -29,17 +32,43 @@ namespace Trestle.Networking
             try
             {
                 new Thread(() => Globals.ServerListener.Start()).Start();
-                //new Thread(() => new ConsoleCommandHandler().WaitForCommand()).Start();
             }
             catch (Exception ex)
             {
                 UnhandledException(this, new UnhandledExceptionEventArgs(ex, false));
             }
+
+            _ready = true;
+            _ = ServerLoop();
             
             loadStopwatch.Stop();
             Logger.Info($"Initialized in {loadStopwatch.ElapsedMilliseconds}ms!");
         }
 
+        private async Task ServerLoop()
+        {
+            var keepAliveTicks = 0;
+
+            short iterationsPerSecond = 0;
+            var stopwatch = Stopwatch.StartNew();
+
+            while (_ready)
+            {
+                await Task.Delay(50);
+                
+                keepAliveTicks++;
+                if (keepAliveTicks > 50)
+                {
+                    var keepAliveId = DateTime.Now.Millisecond;
+
+                    foreach (var client in Globals.ServerListener.Clients.Where(x => x.State == ClientState.Play))
+                        client.ProcessKeepAlive(keepAliveId);
+
+                    keepAliveTicks = 0;
+                }
+            }
+        }
+        
         private void InitGlobals()
         {
             Globals.Random = new Random();

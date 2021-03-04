@@ -14,6 +14,7 @@ namespace Trestle
         internal static bool EncryptionEnabled = true;
         internal static int MaxPlayers = 10;
         internal static int Port = 25565;
+        internal static int MaxMissedKeepAlives = 5;
         
         public static bool DisplayPacketErrors = false;
         public static bool Debug = true;
@@ -37,13 +38,15 @@ namespace Trestle
             if (data.ContainsKey("max_players")) MaxPlayers = int.Parse(data["max_players"]);
             if (data.ContainsKey("online_mode")) OnlineMode = bool.Parse(data["online_mode"]);
             if (data.ContainsKey("port")) Port = int.Parse(data["port"]);
+            if (data.ContainsKey("max_missed_keep_alives")) MaxMissedKeepAlives = int.Parse(data["max_missed_keep_alives"]);
 
             Logger.Debug($"Using Configuration:\n" +
                          $"    Port: {Port}\n"+
                          $"    Max Players: {MaxPlayers}\n"+
                          $"    Online Mode: {OnlineMode}\n"+
                          $"    Seed: {Seed}\n"+
-                         $"    MOTD: {Motd}");
+                         $"    MOTD: {Motd}\n"+
+                         $"    Max Missed KeepAlives: {MaxMissedKeepAlives}");
         }
     }
 }

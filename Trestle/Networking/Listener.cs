@@ -23,6 +23,8 @@ namespace Trestle.Networking
         private Dictionary<byte, Func<Packet>> _statusHandlers = new();
         private Dictionary<byte, Func<Packet>> _loginHandlers = new();
         private Dictionary<byte, Func<Packet>> _playHandlers = new();
+
+        public List<Client> Clients { get; private set; } = new();
         
         public void Start()
         {
@@ -44,10 +46,10 @@ namespace Trestle.Networking
         {
             var stream = tcpClient.GetStream();
             var client = new Client(tcpClient);
+            Clients.Add(client);
             
             while (tcpClient.Connected)
             {
-                
                 try
                 {
                     while (!stream.DataAvailable)
@@ -68,6 +70,10 @@ namespace Trestle.Networking
                 {
                 }
             }
+
+            // Client lost connection, remove.
+            Logger.Info(client.Player.Username + " lost connection");
+            Clients.Remove(client);
         }
 
         private void HandleUncompressedPacket(Client client, NetworkStream stream)

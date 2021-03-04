@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
-using Trestle.Attributes;
-using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Utils;
+using Trestle.Entity;
+using System.Threading;
+using System.Reflection;
+using System.Net.Sockets;
+using Trestle.Attributes;
+using System.Collections.Generic;
+using System.Security.Cryptography;
+using Trestle.Networking.Packets.Play;
+using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.Networking
 {
@@ -16,23 +18,28 @@ namespace Trestle.Networking
     {
         private readonly Queue<byte[]> _commands = new();
         private readonly AutoResetEvent _resume = new(false);
+        
+        internal int Protocol = 0;
+        internal int ClientIdentifier = -1;
         internal bool EncryptionEnabled = false;
-        public ClientState State = ClientState.Handshaking;
+        
+        internal string Username { get; set; }
+        internal byte[] SharedKey { get; set; }
+        internal string ConnectionId { get; set; }
+        internal ICryptoTransform Encrypter { get; set; }
+        internal ICryptoTransform Decrypter { get; set; }
+        
         public Player Player;
         public TcpClient TcpClient;
         public TrestleThreadPool ThreadPool;
-        internal int Protocol = 0;
-        internal int ClientIdentifier = -1;
+        public ClientState State = ClientState.Handshaking;
+        
         public bool Kicked = false;
         public bool SetCompressionSend = false;
-        private long lastPing = 0;
         
-        internal byte[] SharedKey { get; set; }
-        internal ICryptoTransform Encrypter { get; set; }
-        internal ICryptoTransform Decrypter { get; set; }
-        internal string ConnectionId { get; set; }
-        internal string Username { get; set; }
-        public int TeleportTicket { get; set; }
+        public int Ping = 0;
+        private long _lastPing = 0;
+        public int MissedKeepAlives = 0;
 
         public Client(TcpClient client)
         {
@@ -121,10 +128,22 @@ namespace Trestle.Networking
             }
         }
 
-        private long UnixTimeNow()
+        public long UnixTimeNow()
         {
             var timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
             return (long)timeSpan.TotalSeconds;
+        }
+
+        public void ProcessKeepAlive(long keepAliveId)
+        {
+            Ping = (int)(DateTime.Now.Millisecond - keepAliveId);
+            MissedKeepAlives++;
+
+            // Clientbound
+            SendPacket(new KeepAlive(keepAliveId));
+
+            if (MissedKeepAlives > Config.MaxMissedKeepAlives)
+                Player.Kick(new MessageComponent("Timed out"));
         }
     }
 }
