@@ -5,57 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a6dffe11-0af9-4daf-a6a8-8f13590b3770" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/projectSettingsUpdater.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Utils/MaterialExtension.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Utils/VarValueArray.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/ChunkColumn.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/ChunkLocation.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/ChunkSection.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Generation/FlatWorldGenerator.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Generation/IWorldGenerator.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/IWorldGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Entity/Entity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Entity/Entity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Entity/EntityManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Entity/EntityManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Entity/InventoryManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Entity/InventoryManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Trestle.sln.DotSettings.user" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fNbt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle.sln" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle.sln" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Trestle/Entity/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Entity/Player.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Globals.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Globals.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Items/ItemEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Items/ItemEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Networking/Listener.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/Listener.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Networking/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/Packet.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/ChunkData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/ChunkData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/PlayerPositionAndLook.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/PlayerPositionAndLook.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/SpawnPosition.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/SpawnPosition.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Networking/TrestleServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/TrestleServer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Utils/DataBuffer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Utils/MinecraftStream.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Biome.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/BiomeSystem/BiomeManager.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/BiomeSystem/ForestBiome.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/BiomeSystem/PlainsBiome.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Block.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/CaveGenerator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Chunk.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Decorators/BedrockGenerator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Decorators/Decorator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Decorators/FlowerDecorator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Decorators/ForestDectorator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Decorators/GrassDecorator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Decorators/LavaDecorator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Decorators/OreDecorator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Decorators/WaterDecorator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/ForcedBlock.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/GCRandom.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/IBiome.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Standard/SimplexOctaveGenerator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Standard/StandardWorld.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Standard/StandardWorldGenerator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Structures/OakTree.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/Structures/Structure.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Trestle.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Trestle.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/ChunkColumn.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Worlds/ChunkColumn.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Trestle/Worlds/World.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Worlds/World.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/WorldGenerator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/WorldManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Worlds/WorldManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,9 +48,6 @@
       <option value="$PROJECT_DIR$/Trestle/Worlds/IWorldGenerator.cs" />
       <option value="$PROJECT_DIR$/Trestle/Entity/EntityManager.cs" />
       <option value="$PROJECT_DIR$/Trestle/Entity/Entity.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Worlds/World.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Entity/Player.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/ChunkData.cs" />
       <option value="$PROJECT_DIR$/Trestle/Globals.cs" />
       <option value="$PROJECT_DIR$/Trestle/Worlds/Generation/IWorldGenerator.cs" />
       <option value="$PROJECT_DIR$/Trestle/Worlds/Generation/FlatWorldGenerator.cs" />
@@ -99,7 +57,10 @@
       <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Login/LoginStart.cs" />
       <option value="$PROJECT_DIR$/Trestle/Networking/TrestleServer.cs" />
       <option value="$PROJECT_DIR$/Trestle/Worlds/WorldManager.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Worlds/World.cs" />
       <option value="$PROJECT_DIR$/Trestle/Worlds/ChunkColumn.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/ChunkData.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Entity/Player.cs" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1pIQz5vnQ0IUCO7vijC30whx1uz" />
@@ -118,7 +79,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Confirmation" />
+    <property name="settings.editor.selected.configurable" value="SolutionBuilderGeneralOptionsPageId" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager">
@@ -150,13 +111,16 @@
       <option name="presentableId" value="Default" />
       <updated>1614868387826</updated>
       <workItem from="1614868398888" duration="14496000" />
+      <workItem from="1614979971211" duration="3982000" />
+      <workItem from="1614984021396" duration="587000" />
+      <workItem from="1614985071540" duration="2039000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -168,6 +132,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />

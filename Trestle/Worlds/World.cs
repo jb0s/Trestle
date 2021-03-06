@@ -51,7 +51,7 @@ namespace Trestle.Worlds
 
             int count = 0;
             
-            foreach (var chunk in GenerateChunks(null, new ChunkLocation(SpawnPoint), new Dictionary<Tuple<int, int>, byte[]>(), 8))
+            foreach (var chunk in GenerateChunks(null, new ChunkLocation(SpawnPoint), new Dictionary<Tuple<int, int>, ChunkColumn>(), 8))
                 count++;
             
             chunkLoading.Stop();
@@ -98,7 +98,7 @@ namespace Trestle.Worlds
                 player.SpawnForPlayers(new Player[] { player });
         }
         
-        public IEnumerable<byte[]> GenerateChunks(Player player, ChunkLocation chunkLocation, Dictionary<Tuple<int, int>, byte[]> chunksUsed, double radius)
+        public IEnumerable<ChunkColumn> GenerateChunks(Player player, ChunkLocation chunkLocation, Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, double radius)
         {
             lock (chunksUsed)
             {
@@ -143,13 +143,7 @@ namespace Trestle.Worlds
 
                     if (WorldGenerator == null) continue;
 
-                    ChunkColumn chunkColumn = WorldGenerator.GenerateChunk(new ChunkLocation(pair.Key.Item1, pair.Key.Item2));
-                    byte[] chunk = null;
-                    if (chunkColumn != null)
-                    {
-                        chunk = chunkColumn.ToArray();
-                    }
-
+                    ChunkColumn chunk = WorldGenerator.GenerateChunk(new ChunkLocation(pair.Key.Item1, pair.Key.Item2));
                     chunksUsed.Add(pair.Key, chunk);
 
                     yield return chunk;

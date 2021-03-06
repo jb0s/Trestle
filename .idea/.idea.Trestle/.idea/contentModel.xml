@@ -1,9 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\irma\AppData\Local\JetBrains\Rider2020.3\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\irma\AppData\Local\JetBrains\Rider2020.3\resharper-host\Local\Transient\Rider\v203\SolutionCaches\_Trestle.-2111154212.00" t="ExcludeRecursive" />
-    <e p="D:\workspaces\c#\Trestle" t="IncludeFlat">
+    <e p="C:\Users\Brianna\AppData\Local\JetBrains\Rider2020.3\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Brianna\AppData\Local\JetBrains\Rider2020.3\resharper-host\Local\Transient\Rider\v203\SolutionCaches\_Trestle.-9673618.00" t="ExcludeRecursive" />
+    <e p="D:\Programming\CSharp\Trestle" t="IncludeFlat">
+      <e p="fNbt\bin" t="ExcludeRecursive" />
+      <e p="fNbt\fNbt" t="IncludeRecursive">
+        <e p="ByteCountingStream.cs" t="Include" />
+        <e p="fNbt.csproj" t="IncludeRecursive" />
+        <e p="InvalidReaderStateException.cs" t="Include" />
+        <e p="JetBrains.Annotations.cs" t="Include" />
+        <e p="NbtBinaryReader.cs" t="Include" />
+        <e p="NbtBinaryWriter.cs" t="Include" />
+        <e p="NbtCompression.cs" t="Include" />
+        <e p="NbtFile.cs" t="Include" />
+        <e p="NbtFormatException.cs" t="Include" />
+        <e p="NbtParseState.cs" t="Include" />
+        <e p="NbtReader.cs" t="Include" />
+        <e p="NbtReaderNode.cs" t="Include" />
+        <e p="NbtTagType.cs" t="Include" />
+        <e p="NbtWriter.cs" t="Include" />
+        <e p="NbtWriterNode.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive" />
+        <e p="Properties" t="Include">
+          <e p="AssemblyInfo.cs" t="Include" />
+        </e>
+        <e p="Tags" t="Include">
+          <e p="NbtByte.cs" t="Include" />
+          <e p="NbtByteArray.cs" t="Include" />
+          <e p="NbtCompound.cs" t="Include" />
+          <e p="NbtDouble.cs" t="Include" />
+          <e p="NbtFloat.cs" t="Include" />
+          <e p="NbtInt.cs" t="Include" />
+          <e p="NbtIntArray.cs" t="Include" />
+          <e p="NbtList.cs" t="Include" />
+          <e p="NbtLong.cs" t="Include" />
+          <e p="NbtLongArray.cs" t="Include" />
+          <e p="NbtShort.cs" t="Include" />
+          <e p="NbtString.cs" t="Include" />
+          <e p="NbtTag.cs" t="Include" />
+        </e>
+        <e p="TagSelector.cs" t="Include" />
+        <e p="ZLibStream.cs" t="Include" />
+      </e>
       <e p="packages" t="ExcludeRecursive" />
       <e p="Trestle" t="IncludeRecursive">
         <e p="Assets" t="Include">

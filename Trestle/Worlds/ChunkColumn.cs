@@ -13,27 +13,27 @@ namespace Trestle.Worlds
         public const int WIDTH_DEPTH = 16;
 
         public readonly ChunkLocation Location;
-        private readonly ChunkSection[] _sections;
-        
+        public readonly ChunkSection[] Sections;
+        public byte[] Biomes = new byte[WIDTH_DEPTH * WIDTH_DEPTH];
+
         public bool IsDirty { get; private set; } = false;
 
         public long[] Heightmap = new long[WIDTH_DEPTH * WIDTH_DEPTH];
-        private byte[] _biomes = new byte[WIDTH_DEPTH * WIDTH_DEPTH];
         private byte[] _cache = null;
 
         public ChunkColumn(ChunkLocation location)
         {
             location = location;
-            _sections = new ChunkSection[16];
+            Sections = new ChunkSection[16];
 
-            for (int i = 0; i < _sections.Length; i++)
+            for (int i = 0; i < Sections.Length; i++)
             {
-                _sections[i] = new ChunkSection();
+                Sections[i] = new ChunkSection();
             }
 
-            for (int i = 0; i < _biomes.Length; i++)
+            for (int i = 0; i < Biomes.Length; i++)
             {
-                _biomes[i] = 1; //Plains
+                Biomes[i] = 1; //Plains
             }
 
             for (int i = 0; i < Heightmap.Length; i++)
@@ -43,7 +43,7 @@ namespace Trestle.Worlds
         }
         
         private ChunkSection GetChunkSection(int y)
-			=> _sections[y >> 4];
+			=> Sections[y >> 4];
 
         public Material GetBlockMaterial(int x, int y, int z)
 			=> GetChunkSection(y).GetBlockMaterial(x, y - 16 * (y >> 4), z);
@@ -71,14 +71,14 @@ namespace Trestle.Worlds
 
 		public void SetBiome(int x, int z, byte biome)
 		{
-			_biomes[(z << 4) + (x)] = biome;
+			Biomes[(z << 4) + (x)] = biome;
 
 			_cache = null;
 			IsDirty = true;
 		}
 
 		public byte GetBiome(int x, int z)
-			=> _biomes[(z << 4) + (x)];
+			=> Biomes[(z << 4) + (x)];
 
 		public void RecalcHeight()
 		{
@@ -120,9 +120,9 @@ namespace Trestle.Worlds
 			{
 				var mc = new MinecraftStream(ms.GetBuffer());
 				
-				for (int i = 0; i < _sections.Length; i++)
+				for (int i = 0; i < Sections.Length; i++)
 				{
-					ChunkSection section = _sections[i];
+					ChunkSection section = Sections[i];
 					
 					if (section.IsEmpty) 
 						continue;
@@ -155,7 +155,7 @@ namespace Trestle.Worlds
 				mc.Write(streamm.ToArray());
 				
 				mc.WriteInt(1); // Biomes length
-				mc.Write(_biomes); // Biomes
+				mc.Write(Biomes); // Biomes
 				
 				mc.WriteVarInt(sectionData.Length + 256); // Size
 				mc.Write(sectionData, 0, sectionData.Length); // Data

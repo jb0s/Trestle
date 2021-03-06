@@ -7,7 +7,6 @@
 
     <ItemGroup>
       <PackageReference Include="DotNetZip" Version="1.15.0" />
-      <PackageReference Include="fNbt" Version="0.6.4" />
       <PackageReference Include="LibNoise" Version="0.2.0" />
     </ItemGroup>
 
@@ -16,6 +15,11 @@
       <EmbeddedResource Include="Assets\biomes.json" />
       <None Remove="Assets\dimensions.json" />
       <EmbeddedResource Include="Assets\dimensions.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\fNbt\fNbt.csproj" />
+      <ProjectReference Include="..\fNbt\fNbt\fNbt.csproj" />
     </ItemGroup>
 
 </Project>

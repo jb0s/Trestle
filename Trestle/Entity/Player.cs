@@ -24,7 +24,7 @@ namespace Trestle.Entity
         /// <summary>
         /// The chunks this entity has loaded.
         /// </summary>
-        private readonly Dictionary<Tuple<int, int>, byte[]> _chunksUsed;
+        private readonly Dictionary<Tuple<int, int>, ChunkColumn> _chunksUsed;
         
         /// <summary>
         /// The position of the current chunk the player is in.
@@ -174,7 +174,7 @@ namespace Trestle.Entity
         
         public Player(int entityTypeId, World world) : base(-1, world)
         {
-	        _chunksUsed = new Dictionary<Tuple<int, int>, byte[]>();
+	        _chunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
             Inventory = new InventoryManager(this);
             World = world;
 
@@ -470,9 +470,10 @@ namespace Trestle.Entity
 			
 			Client.ThreadPool.LaunchThread(() =>
 			{
+				
 				//null, new ChunkLocation(SpawnPoint), new Dictionary<Tuple<int, int>, byte[]>(), 8)
 				//ViewDistance, force ? new List<Tuple<int, int>>() : _chunksUsed, this)
-				foreach (var chunk in World.GenerateChunks(this, new ChunkLocation(Location), force ? _chunksUsed : new Dictionary<Tuple<int, int>, byte[]>(), ViewDistance))
+				foreach (var chunk in World.GenerateChunks(this, new ChunkLocation(Location), force ? _chunksUsed : new Dictionary<Tuple<int, int>, ChunkColumn>(), ViewDistance))
 				{
 					if (Client != null && Client.TcpClient.Connected)
 						Client.SendPacket(new ChunkData(chunk));
