@@ -81,18 +81,20 @@ namespace Trestle.Worlds
             Blocks[index] = (type << 4 | (meta & 15));
         }
         
-        public void WriteTo(MinecraftStream stream, bool writeSkylight = true)
+        public void WriteTo(MinecraftStream stream)
         {
-            long[] types = Blocks.Backing;
+            var types = Blocks.Backing;
 
-            stream.WriteShort((short)(TOTAL_BLOCKS - _airBlocks));
-            stream.WriteByte(13);
-
-            stream.WriteVarInt(types.Length);
-            for (int i = 0; i < types.Length; i++)
-            {
+            stream.WriteShort((short)(TOTAL_BLOCKS - _airBlocks)); // Block count
+            stream.WriteByte(13); // Bits per block
+            
+            stream.WriteVarInt(Blocks.Capacity); // Palette length
+            for(int i = 0; i < Blocks.Capacity; i++)
+                stream.WriteVarInt(Blocks[i]);
+            
+            stream.WriteVarInt(types.Length); // Data Array Length
+            for (int i = 0; i < types.Length; i++) // Data Array
                 stream.WriteLong(types[i]);
-            }
         }
     }
 }

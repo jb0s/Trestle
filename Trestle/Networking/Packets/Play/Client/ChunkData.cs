@@ -53,10 +53,8 @@ namespace Trestle.Networking.Packets.Play
 			
             byte[] sectionData;
             int sectionBitmask = 0;
-            using (MemoryStream ms = new())
+            using (MinecraftStream mc = new())
             {
-                var mc = new MinecraftStream(ms.GetBuffer());
-				
                 for (int i = 0; i < chunk.Sections.Length; i++)
                 {
                     ChunkSection section = chunk.Sections[i];
@@ -64,12 +62,10 @@ namespace Trestle.Networking.Packets.Play
                     if (section.IsEmpty)
                         continue;
 
-                    sectionBitmask |= 1 << i;
-
-                    section.WriteTo(mc, true);
+                    section.WriteTo(mc);
                 }
 
-                sectionData = mc.ExportWriter;
+                sectionData = mc.Data;
             }
             
             ChunkX = chunk.Location.X;
@@ -85,13 +81,14 @@ namespace Trestle.Networking.Packets.Play
 
             BiomesLength = chunk.Biomes.Length;
             
-            var stream = new MinecraftStream(new byte[] {});
+            var stream = new MinecraftStream();
             for(int i = 0; i < chunk.Biomes.Length; i++)
             {
                 stream.WriteVarInt(chunk.Biomes[i]);
             }
 
-            Biomes = stream.ExportWriter;
+            Biomes = stream.Data;
+            Size = sectionData.Length;
             Data = sectionData;
             BlockEntitiesLength = 0;
         }

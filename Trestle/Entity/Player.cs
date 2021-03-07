@@ -470,9 +470,6 @@ namespace Trestle.Entity
 			
 			Client.ThreadPool.LaunchThread(() =>
 			{
-				
-				//null, new ChunkLocation(SpawnPoint), new Dictionary<Tuple<int, int>, byte[]>(), 8)
-				//ViewDistance, force ? new List<Tuple<int, int>>() : _chunksUsed, this)
 				foreach (var chunk in World.GenerateChunks(this, new ChunkLocation(Location), force ? _chunksUsed : new Dictionary<Tuple<int, int>, ChunkColumn>(), ViewDistance))
 				{
 					if (Client != null && Client.TcpClient.Connected)

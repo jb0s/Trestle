@@ -55,6 +55,9 @@ namespace Trestle.Worlds
 			_cache = null;
 			IsDirty = true;
 		}
+		
+		public void SetBlockId(int x, int y, int z, Material id)
+			=> SetBlockId(x, y, z, (short)id);
 
 		public byte GetBlockData(int x, int y, int z)
 		{
@@ -90,82 +93,6 @@ namespace Trestle.Worlds
 							Heightmap[(x << 4) + z] = (long)(y + 1);
 							break;
 						}
-		}
-
-		public byte[] ToArray()
-		{
-			using (MemoryStream ms = new())
-			{
-				var m = new MinecraftStream(ms.GetBuffer());
-				
-				WriteTo(m);
-				
-				return ms.ToArray();
-			}
-		}
-
-		public void WriteTo(MinecraftStream stream)
-		{
-			if (_cache != null)
-			{
-				stream.Write(_cache);
-				return;
-			}
-
-			RecalcHeight();
-			
-			byte[] sectionData;
-			int sectionBitmask = 0;
-			using (MemoryStream ms = new())
-			{
-				var mc = new MinecraftStream(ms.GetBuffer());
-				
-				for (int i = 0; i < Sections.Length; i++)
-				{
-					ChunkSection section = Sections[i];
-					
-					if (section.IsEmpty) 
-						continue;
-
-					sectionBitmask |= 1 << i;
-
-					section.WriteTo(mc, true);
-				}
-				
-				sectionData = ms.ToArray();
-			}
-
-			using (MemoryStream ms = new())
-			{
-				var mc = new MinecraftStream(ms.GetBuffer());
-				mc.WriteInt(Location.X); // Chunk X
-				mc.WriteInt(Location.Z); // Chunk Z
-
-				mc.WriteBool(true); // Full chunk
-
-				mc.WriteVarInt(sectionBitmask); // Primary Bit Mask
-
-				var streamm = new MemoryStream();
-				var thing = new NbtCompound("")
-				{
-					new NbtList("MOTION_BLOCKING", Heightmap.Select(x => new NbtLong(x)))
-				};
-				new NbtFile(thing).SaveToStream(streamm, NbtCompression.None);
-				
-				mc.Write(streamm.ToArray());
-				
-				mc.WriteInt(1); // Biomes length
-				mc.Write(Biomes); // Biomes
-				
-				mc.WriteVarInt(sectionData.Length + 256); // Size
-				mc.Write(sectionData, 0, sectionData.Length); // Data
-
-				mc.WriteVarInt(0); // Number of block entities
-
-				_cache = ms.ToArray();
-			}
-
-			stream.Write(_cache);
 		}
     }
 }

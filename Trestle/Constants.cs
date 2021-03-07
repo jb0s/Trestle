@@ -11,10 +11,13 @@ namespace Trestle
                 "# This server is powered by Trestle - " + DateTime.Now.ToString(),
                 "port=25565",
                 "max_players=10",
-                "world_name=world",
                 "online_mode=false",
+                "max_missed_keep_alives=5",
+                "motd=A Minecraft server - \u00A7bPowered by Trestle!",
+                "",
+                "# World Settings",
+                "world_name=world",
                 "seed=" + new Random().Next(999999999),
-                "motd=\u00A7bA Minecraft Server - Powered by Trestle!"
             };
         }
         

@@ -10,7 +10,7 @@ using Trestle.Networking;
 
 namespace Trestle.Utils
 {
-public class MinecraftStream
+public class MinecraftStream : IDisposable
     {
         private readonly Client _client;
         public byte[] BufferedData = new byte[4096];
@@ -25,6 +25,10 @@ public class MinecraftStream
         public MinecraftStream(byte[] data)
         {
             BufferedData = data;
+        }
+
+        public MinecraftStream()
+        {
         }
         
         public void SetDataSize(int size)
@@ -219,7 +223,7 @@ public class MinecraftStream
 			return BitConverter.ToUInt16(net, 0);
 		}
 		
-		public byte[] ExportWriter
+		public byte[] Data
 		{
 			get { return _bffr.ToArray(); }
 		}
@@ -389,7 +393,7 @@ public class MinecraftStream
 
 					Console.WriteLine();
 
-					_client.AddToQueue(compressed.ExportWriter, quee);
+					_client.AddToQueue(compressed.Data, quee);
 				}
 				else
 				{

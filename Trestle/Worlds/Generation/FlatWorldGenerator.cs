@@ -1,5 +1,6 @@
 ﻿using Trestle.Utils;
 using System.Collections.Concurrent;
+using Trestle.Enums;
 
 namespace Trestle.Worlds.Generation
 {
@@ -31,16 +32,12 @@ namespace Trestle.Worlds.Generation
                 {
                     for (int z = 0; z < ChunkColumn.WIDTH_DEPTH; z++)
                     {
-                        if (y == 0) column.SetBlockId(x, y, z, 7); //bedrock
-                        else if (y == 1 || y == 2) column.SetBlockId(x, y, z, 3); //Dirt
-                        else if (y == 3) column.SetBlockId(x, y, z, 2); //Grass
+                        if (y == 0) column.SetBlockId(x, y, z, Material.Bedrock); // Bedrock
+                        else if (y == 1 || y == 2) column.SetBlockId(x, y, z, Material.Dirt); // Dirt
+                        else if (y == 3) column.SetBlockId(x, y, z, Material.Grass); // Grass
                     }
                 }
             }
-
-            column.SetBlockId(0, 5, 0, 41);
-            column.SetBlockId(0, 5, 1, 41);
-            column.SetBlockId(0, 5, 2, 7);
 
             return column;
         }

@@ -228,7 +228,7 @@ namespace Trestle.Utils
 
         public byte[] GetBytes()
         {
-            MinecraftStream buffer = new MinecraftStream(new byte[0]);
+            var buffer = new MinecraftStream();
             for (int i = 0; i <= 45; i++)
             {
                 var slot = _slots[i];
@@ -237,12 +237,12 @@ namespace Trestle.Utils
                 buffer.WriteByte(slot.Metadata);
                 buffer.WriteByte(slot.ItemCount);
             }
-            return buffer.ExportWriter;
+            return buffer.Data;
         }
 
         public void Import(byte[] data)
         {
-            MinecraftStream buffer = new MinecraftStream(data);
+            var buffer = new MinecraftStream(data);
 
             for (int i = 0; i <= 45; i++)
             {

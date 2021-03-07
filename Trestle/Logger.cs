@@ -21,7 +21,7 @@ namespace Trestle
             => Log(LogVerbosity.Error, message);
         
         public static void Special(string message)
-            => Log(LogVerbosity.Special, message);
+            => Log(LogVerbosity.Motd, message);
         
         private enum LogVerbosity
         {
@@ -29,7 +29,7 @@ namespace Trestle
             Info,
             Warn,
             Error,
-            Special
+            Motd
         }
         
         private static void Log(LogVerbosity verbosity, string message)
@@ -37,12 +37,15 @@ namespace Trestle
             if (_writer == null)
                 Initialize();
 
+            if (verbosity == LogVerbosity.Debug && !Config.Debug)
+                return;
+            
             Console.ForegroundColor = verbosity switch
             {
                 LogVerbosity.Debug => ConsoleColor.DarkGray,
                 LogVerbosity.Warn => ConsoleColor.Yellow,
                 LogVerbosity.Error => ConsoleColor.Red,
-                LogVerbosity.Special => ConsoleColor.Cyan,
+                LogVerbosity.Motd => ConsoleColor.Cyan,
                 _ => Console.ForegroundColor
             };
             

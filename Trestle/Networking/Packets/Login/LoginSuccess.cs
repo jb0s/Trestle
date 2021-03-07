@@ -17,6 +17,8 @@ namespace Trestle.Networking.Packets.Login
         {
             Username = username;
             Uuid = uuid.ToByteArray();
+            
+            Logger.Info($"Player {username} with UUID {uuid} logged in successfully");
         }
     }
 }

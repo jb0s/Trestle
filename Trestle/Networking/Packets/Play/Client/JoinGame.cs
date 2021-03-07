@@ -62,7 +62,6 @@ namespace Trestle.Networking.Packets.Play
 
             EntityId = Client.Player.EntityId;
             GameMode = (sbyte)Client.Player.GameMode;
-            Console.WriteLine(Globals.WorldManager.GetWorlds().Length);
             WorldNames = Globals.WorldManager.GetWorlds().Select(x => x.Name).ToArray();
 
             DimensionCodec = new NbtCompound("")

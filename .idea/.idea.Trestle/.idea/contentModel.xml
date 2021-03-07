@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\Brianna\AppData\Local\JetBrains\Rider2020.3\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\Brianna\AppData\Local\JetBrains\Rider2020.3\resharper-host\Local\Transient\Rider\v203\SolutionCaches\_Trestle.-9673618.00" t="ExcludeRecursive" />
-    <e p="D:\Programming\CSharp\Trestle" t="IncludeFlat">
+    <e p="C:\Users\irma\AppData\Local\JetBrains\Rider2020.3\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\irma\AppData\Local\JetBrains\Rider2020.3\resharper-host\Local\Transient\Rider\v203\SolutionCaches\_Trestle.-2111154212.00" t="ExcludeRecursive" />
+    <e p="D:\workspaces\c#\Trestle" t="IncludeFlat">
       <e p="fNbt\bin" t="ExcludeRecursive" />
       <e p="fNbt\fNbt" t="IncludeRecursive">
         <e p="ByteCountingStream.cs" t="Include" />
@@ -139,7 +139,7 @@
           <e p="TrestleServer.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
+          <e p="Release" t="Include">
             <e p="net5.0" t="Include">
               <e p="Trestle.AssemblyInfo.cs" t="Include" />
             </e>
@@ -159,6 +159,7 @@
         <e p="Trestle.csproj" t="IncludeRecursive" />
         <e p="Utils" t="Include">
           <e p="ArrayOf.cs" t="Include" />
+          <e p="CompactedDataArray.cs" t="Include" />
           <e p="Location.cs" t="Include" />
           <e p="MaterialExtension.cs" t="Include" />
           <e p="MessageComponent.cs" t="Include" />
@@ -167,7 +168,6 @@
           <e p="NibbleArray.cs" t="Include" />
           <e p="PacketCryptography.cs" t="Include" />
           <e p="TrestleThreadPool.cs" t="Include" />
-          <e p="VarValueArray.cs" t="Include" />
           <e p="Vector2.cs" t="Include" />
           <e p="Vector3.cs" t="Include" />
         </e>
