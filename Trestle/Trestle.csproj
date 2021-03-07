@@ -18,7 +18,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\fNbt\fNbt.csproj" />
       <ProjectReference Include="..\fNbt\fNbt\fNbt.csproj" />
     </ItemGroup>
 

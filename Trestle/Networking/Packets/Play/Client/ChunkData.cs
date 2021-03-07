@@ -60,37 +60,40 @@ namespace Trestle.Networking.Packets.Play
                 for (int i = 0; i < chunk.Sections.Length; i++)
                 {
                     ChunkSection section = chunk.Sections[i];
-					
-                    if (section.IsEmpty) 
+
+                    if (section.IsEmpty)
                         continue;
 
                     sectionBitmask |= 1 << i;
 
                     section.WriteTo(mc, true);
                 }
-				
-                sectionData = ms.ToArray();
+
+                sectionData = mc.ExportWriter;
             }
             
             ChunkX = chunk.Location.X;
             ChunkZ = chunk.Location.Z;
 
             PrimaryBitMask = sectionBitmask;
-
+            
             Heightmaps = new NbtCompound("")
             {
-                new NbtLongArray("MOTION_BLOCKING", chunk.Heightmap)
+                new NbtLongArray("MOTION_BLOCKING", chunk.Heightmap),
+                new NbtLongArray("WORLD_SURFACE", chunk.Heightmap)
             };
 
             BiomesLength = chunk.Biomes.Length;
+            
             var stream = new MinecraftStream(new byte[] {});
-            foreach(var shit in chunk.Biomes)
-                stream.WriteVarInt(shit);
+            for(int i = 0; i < chunk.Biomes.Length; i++)
+            {
+                stream.WriteVarInt(chunk.Biomes[i]);
+            }
 
-            Biomes = stream.BufferedData;
+            Biomes = stream.ExportWriter;
             Data = sectionData;
             BlockEntitiesLength = 0;
-
         }
     }
 }

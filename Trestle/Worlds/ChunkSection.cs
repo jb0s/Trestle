@@ -10,7 +10,7 @@ namespace Trestle.Worlds
         public const int WIDTH_DEPTH = 16;
         public const int TOTAL_BLOCKS = HEIGHT * WIDTH_DEPTH * WIDTH_DEPTH;
 
-        public VarValueArray Blocks;
+        public CompactedDataArray Blocks;
         public NibbleArray Skylight;
         public NibbleArray Blocklight;
 
@@ -23,7 +23,7 @@ namespace Trestle.Worlds
             Skylight = new NibbleArray(TOTAL_BLOCKS);
             Blocklight = new NibbleArray(TOTAL_BLOCKS);
 
-            Blocks = new VarValueArray(13, TOTAL_BLOCKS);
+            Blocks = new CompactedDataArray(13, TOTAL_BLOCKS);
             
             for(int i = 0; i < TOTAL_BLOCKS; i++)
             {
@@ -85,19 +85,14 @@ namespace Trestle.Worlds
         {
             long[] types = Blocks.Backing;
 
+            stream.WriteShort((short)(TOTAL_BLOCKS - _airBlocks));
             stream.WriteByte(13);
-            stream.WriteVarInt(0);
-			
+
             stream.WriteVarInt(types.Length);
             for (int i = 0; i < types.Length; i++)
             {
                 stream.WriteLong(types[i]);
             }
-
-            stream.Write(Blocklight.Data);
-
-            if (writeSkylight)
-                stream.Write(Skylight.Data);
         }
     }
 }

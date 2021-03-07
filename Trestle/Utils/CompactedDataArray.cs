@@ -3,7 +3,7 @@
 namespace Trestle.Utils
 {
 	// Credits to https://github.com/SharpMC/SharpMC-Rewritten
-    public class VarValueArray
+    public class CompactedDataArray
     {
         public long[] Backing { get; }
 		public int Capacity { get; }
@@ -11,7 +11,7 @@ namespace Trestle.Utils
 		
 		private readonly long _valueMask;
 
-		public VarValueArray(int bitsPerValue, int capacity)
+		public CompactedDataArray(int bitsPerValue, int capacity)
 		{
 			if (capacity < 0)
 				throw new ArgumentException($"Capacity {capacity} must not be negative");
