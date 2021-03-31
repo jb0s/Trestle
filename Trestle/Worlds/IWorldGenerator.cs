@@ -4,10 +4,10 @@ namespace Trestle.Worlds
 {
     public interface IWorldGenerator
     {
-        public void Initialize();
-
-        public Location GetSpawnPoint();
+        void Initialize();
         
-        public ChunkColumn GenerateChunk(ChunkLocation location);
+        ChunkColumn GenerateChunk(ChunkLocation location);
+        
+        Location GetSpawnPoint();
     }
 }

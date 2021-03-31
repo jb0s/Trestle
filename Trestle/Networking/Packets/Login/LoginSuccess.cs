@@ -8,7 +8,7 @@ namespace Trestle.Networking.Packets.Login
     public class LoginSuccess : Packet
     {
         [Field]
-        public byte[] Uuid { get; set; }
+        public string Uuid { get; set; }
         
         [Field]
         public string Username { get; set; }
@@ -16,7 +16,7 @@ namespace Trestle.Networking.Packets.Login
         public LoginSuccess(string username, Guid uuid)
         {
             Username = username;
-            Uuid = uuid.ToByteArray();
+            Uuid = uuid.ToString();
             
             Logger.Info($"Player {username} with UUID {uuid} logged in successfully");
         }

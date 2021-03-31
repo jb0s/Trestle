@@ -56,6 +56,13 @@
           <e p="VarIntAttribute.cs" t="Include" />
         </e>
         <e p="bin" t="ExcludeRecursive" />
+        <e p="Biomes" t="Include">
+          <e p="BaseBiome.cs" t="Include" />
+          <e p="IBiome.cs" t="Include" />
+        </e>
+        <e p="Block" t="Include">
+          <e p="Block.cs" t="Include" />
+        </e>
         <e p="Config.cs" t="Include" />
         <e p="Constants.cs" t="Include" />
         <e p="Entity" t="Include">
@@ -72,6 +79,7 @@
         </e>
         <e p="Enums" t="Include">
           <e p="Animation.cs" t="Include" />
+          <e p="Biome.cs" t="Include" />
           <e p="BlockFace.cs" t="Include" />
           <e p="ChatColor.cs" t="Include" />
           <e p="ChatMessageType.cs" t="Include" />
@@ -127,6 +135,8 @@
               <e p="Server" t="Include">
                 <e p="ChatMessage.cs" t="Include" />
                 <e p="KeepAlive.cs" t="Include" />
+                <e p="Player.cs" t="Include" />
+                <e p="PlayerPosition.cs" t="Include" />
               </e>
             </e>
             <e p="Status" t="Include">
@@ -139,19 +149,13 @@
           <e p="TrestleServer.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
-          <e p="Release" t="Include">
+          <e p="Debug" t="Include">
             <e p="net5.0" t="Include">
               <e p="Trestle.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
         </e>
         <e p="Program.cs" t="Include" />
-        <e p="Registry" t="Include">
-          <e p="Biome.cs" t="Include" />
-          <e p="Dimension.cs" t="Include" />
-          <e p="Entry.cs" t="Include" />
-          <e p="Registry.cs" t="Include" />
-        </e>
         <e p="Serialization" t="Include">
           <e p="INbtSerializable.cs" t="Include" />
           <e p="NbtIgnoreAttribute.cs" t="Include" />
@@ -174,10 +178,9 @@
         <e p="Worlds" t="Include">
           <e p="ChunkColumn.cs" t="Include" />
           <e p="ChunkLocation.cs" t="Include" />
-          <e p="ChunkSection.cs" t="Include" />
-          <e p="Generation" t="Include">
+          <e p="Flatworld" t="Include">
+            <e p="FlatLandWorld.cs" t="Include" />
             <e p="FlatWorldGenerator.cs" t="Include" />
-            <e p="IWorldGenerator.cs" t="Include" />
           </e>
           <e p="IWorldGenerator.cs" t="Include" />
           <e p="World.cs" t="Include" />

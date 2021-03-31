@@ -419,7 +419,7 @@ namespace Trestle.Entity
 			//if (Wrapper != null && Wrapper.TcpClient.Connected)
 			//{
 				//new Respawn(Wrapper) {GameMode = (byte) GameMode}.Write();
-				//Teleport(Level.GetSpawnPoint());
+				//Teleport(World.GetSpawnPoint());
 			//}
 		}
 		

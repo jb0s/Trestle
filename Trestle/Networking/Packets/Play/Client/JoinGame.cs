@@ -13,73 +13,30 @@ namespace Trestle.Networking.Packets.Play
         public int EntityId { get; set; }
 
         [Field] 
-        public bool IsHardcode { get; set; } = false;
-
-        [Field] 
         public sbyte GameMode { get; set; } = 0x00;
 
-        [Field] 
-        public byte PreviousGameMode { get; set; } = 0x00;
-        
         [Field]
-        public string[] WorldNames { get; set; }
-        
-        [Field]
-        public NbtCompound DimensionCodec { get; set; }
-        
-        [Field]
-        public NbtCompound Dimension { get; set; }
+        public sbyte Dimension { get; set; } = 0;
 
         [Field]
-        public string WorldName { get; set; }
+        public byte Difficulty { get; set; } = 3;
         
         [Field]
-        public long HashedSeed { get; set; }
-        
+        public byte MaxPlayers { get; set; }
+
         [Field]
-        [VarInt]
-        public int MaxPlayers { get; set; }
-
-        [Field] 
-        [VarInt] 
-        public int ViewDistance { get; set; } = 16;
-
+        public string LevelType { get; set; } = "flat";
+        
         [Field] 
         public bool ShowReducedDebugInfo { get; set; } = false;
-        
-        [Field] 
-        public bool IsRespawnScreenEnabled { get; set; } = true;
-        
-        [Field] 
-        public bool IsDebug { get; set; } = false;
-        
-        [Field] 
-        public bool IsFlat { get; set; } = false;
-        
+
         public JoinGame(Networking.Client client)
         {
             Client = client;
 
             EntityId = Client.Player.EntityId;
             GameMode = (sbyte)Client.Player.GameMode;
-            WorldNames = Globals.WorldManager.GetWorlds().Select(x => x.Name).ToArray();
-
-            DimensionCodec = new NbtCompound("")
-            {
-                new NbtCompound("minecraft:dimension_type")
-                {
-                    new NbtList("value", Globals.Registry.DimensionRegistry.Select(x => x.Serialize())),
-                    new NbtString("type", "minecraft:dimension_type")
-                },
-                new NbtCompound("minecraft:worldgen/biome")
-                {
-                    new NbtList("value", Globals.Registry.BiomeRegistry.Select(x => x.Serialize())),
-                    new NbtString("type", "minecraft:worldgen/biome")
-                },
-            };
             
-            WorldName = WorldNames[0];
-            Dimension = (NbtCompound)Globals.Registry.DimensionRegistry[0].Element.Serialize("");
             MaxPlayers = Config.MaxPlayers;
         }
     }

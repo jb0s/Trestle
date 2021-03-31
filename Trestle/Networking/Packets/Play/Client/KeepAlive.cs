@@ -7,9 +7,10 @@ namespace Trestle.Networking.Packets.Play.Client
     public class KeepAlive : Packet
     {
         [Field]
-        public long KeepAliveId { get; set; }
+        [VarInt]
+        public int KeepAliveId { get; set; }
 
-        public KeepAlive(long keepAliveId)
+        public KeepAlive(int keepAliveId)
         {
             KeepAliveId = keepAliveId;
         }

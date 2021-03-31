@@ -15,15 +15,14 @@ namespace Trestle
     {
         public static Random Random;
 
-        internal static int ProtocolVersion = 754;
-        internal static string ProtocolName = "Trestle 1.16.5";
-        internal static string OfficialProtocolName = "Minecraft 1.16.5";
+        internal static int ProtocolVersion = 47;
+        internal static string ProtocolName = "Trestle 1.8.9";
+        internal static string OfficialProtocolName = "Minecraft 1.8.9";
         
         internal static WorldManager WorldManager = null;
         internal static RSAParameters ServerKey;
 
         internal static Listener ServerListener = null;
-        internal static Registry.Registry Registry = null;
 
         public static void Initialize()
         {
@@ -72,7 +71,7 @@ namespace Trestle
 
         public static void BroadcastChat(MessageComponent message, ChatMessageType chattype, Player sender)
         {
-            foreach (var lvl in WorldManager.GetWorlds())
+            foreach (var lvl in WorldManager.Worlds)
             {
                 // TODO: Broadcast chat
                 //lvl.BroadcastChat(message, chattype, sender);

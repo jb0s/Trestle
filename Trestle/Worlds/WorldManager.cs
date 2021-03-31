@@ -1,39 +1,29 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Trestle.Entity;
-using Trestle.Worlds.Generation;
 
 namespace Trestle.Worlds
 {
     public class WorldManager
     {
-        private ConcurrentDictionary<string, World> Worlds { get; } = new();
-
-        public World MainWorld 
-            => Worlds.FirstOrDefault().Value;
+        public World MainWorld { get; private set; }
+        public Dictionary<string, World> Worlds { get; private set; }
         
-        public virtual World GetLevel(Player player, string name)
-            => Worlds.GetOrAdd(name, CreateWorld);
-
-        public World CreateWorld(string s)
+        public WorldManager(World mainWorld)
         {
-            World world = new(s, new FlatWorldGenerator());
-            world.Initialize();
-
-            Worlds.TryAdd(s, world);
-            
-            return world;
+            MainWorld = mainWorld;
+            Worlds = new Dictionary<string, World>();
+        }
+        
+        public void AddLevel(string name, World world)
+        {
+            Worlds.Add(name, world);
         }
 
-        public virtual void RemoveWorld(World world)
+        private World GetLevel(string name)
         {
-            World oldWorld;
-            
-            if (Worlds.TryRemove(world.Name, out oldWorld))
-                world.Dispose();
+            var worldCursor = (from world in Worlds where world.Key == name select world.Value).FirstOrDefault();
+            if (worldCursor != null) return worldCursor;
+            return MainWorld;
         }
-
-        public World[] GetWorlds()
-            => Worlds.Values.ToArray();
     }
 }

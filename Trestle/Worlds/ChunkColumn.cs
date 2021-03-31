@@ -1,98 +1,235 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using fNbt;
 using LibNoise.Modifier;
+using Trestle.Blocks;
 using Trestle.Enums;
 using Trestle.Utils;
 
 namespace Trestle.Worlds
 {
-    public class ChunkColumn
+    public class ChunkColumn : IDisposable
     {
-        public const int HEIGHT = 256;
-        public const int WIDTH_DEPTH = 16;
+        public Biome Biome;
+		public int[] BiomeColor = ArrayOf<int>.Create(256, 1);
+		public byte[] BiomeId = ArrayOf<byte>.Create(256, 1);
+		public NibbleArray Blocklight = new(16*16*256);
+		public ushort[] Blocks = new ushort[16*16*256];
+		public bool IsDirty = false;
+		public ushort[] Metadata = new ushort[16*16*256];
+		public NibbleArray Skylight = new(16*16*256);
+		public IDictionary<Vector3, NbtCompound> TileEntities = new Dictionary<Vector3, NbtCompound>();
 
-        public readonly ChunkLocation Location;
-        public readonly ChunkSection[] Sections;
-        public byte[] Biomes = new byte[WIDTH_DEPTH * WIDTH_DEPTH];
-
-        public bool IsDirty { get; private set; } = false;
-
-        public long[] Heightmap = new long[WIDTH_DEPTH * WIDTH_DEPTH];
-        private byte[] _cache = null;
-
-        public ChunkColumn(ChunkLocation location)
-        {
-            location = location;
-            Sections = new ChunkSection[16];
-
-            for (int i = 0; i < Sections.Length; i++)
-            {
-                Sections[i] = new ChunkSection();
-            }
-
-            for (int i = 0; i < Biomes.Length; i++)
-            {
-                Biomes[i] = 1; //Plains
-            }
-
-            for (int i = 0; i < Heightmap.Length; i++)
-            {
-                Heightmap[i] = 0;
-            }
-        }
-        
-        private ChunkSection GetChunkSection(int y)
-			=> Sections[y >> 4];
-
-        public Material GetBlockMaterial(int x, int y, int z)
-			=> GetChunkSection(y).GetBlockMaterial(x, y - 16 * (y >> 4), z);
-
-		public void SetBlockId(int x, int y, int z, short id)
+		public ChunkColumn()
 		{
-			GetChunkSection(y).SetBlockId(x, y - 16*(y >> 4), z, id);
+			for (var i = 0; i < Skylight.Length; i ++)
+				Skylight[i] = 0xff;
+			for (var i = 0; i < BiomeColor.Length; i++)
+				BiomeColor[i] = 8761930;
+			for (var i = 0; i < Metadata.Length; i++)
+				Metadata[i] = 0;
+		}
 
-			_cache = null;
+		public World World { get; set; }
+		public int X { get; set; }
+		public int Z { get; set; }
+
+		public ushort GetBlock(int x, int y, int z)
+		{
+			var index = x + 16*z + 16*16*y;
+			if (index >= 0 && index < Blocks.Length)
+			{
+				return (Blocks[index]);
+			}
+			return 0x0;
+		}
+
+		public byte GetMetadata(int x, int y, int z)
+		{
+			var index = x + 16*z + 16*16*y;
+			if (index >= 0 && index < Metadata.Length)
+			{
+				return (byte) (Metadata[index]);
+			}
+			return 0x0;
+		}
+
+		public void SetMetadata(int x, int y, int z, byte metadata)
+		{
+			var index = x + 16*z + 16*16*y;
+			if (index >= 0 && index < Metadata.Length)
+			{
+				Metadata[index] = metadata;
+			}
+		}
+
+		public void SetBlock(int x, int y, int z, Block block)
+		{
+			var index = x + 16*z + 16*16*y;
+			if (index >= 0 && index < Blocks.Length)
+			{
+				Blocks[index] = block.Id;
+				Metadata[index] = block.Metadata;
+			}
+		}
+
+		public void SetBlocklight(int x, int y, int z, byte data)
+		{
+			Blocklight[(x*2048) + (z*256) + y] = data;
+		}
+
+		public byte GetBlocklight(int x, int y, int z)
+		{
+			return Blocklight[(x*2048) + (z*256) + y];
+		}
+
+		public byte GetSkylight(int x, int y, int z)
+		{
+			return Skylight[(x*2048) + (z*256) + y];
+		}
+
+		public void SetSkylight(int x, int y, int z, byte data)
+		{
+			Skylight[(x*2048) + (z*256) + y] = data;
+		}
+
+		public NbtCompound GetBlockEntity(Vector3 coordinates)
+		{
+			NbtCompound nbt;
+			TileEntities.TryGetValue(coordinates, out nbt);
+			return nbt;
+		}
+
+		public void SetBlockEntity(Vector3 coordinates, NbtCompound nbt)
+		{
 			IsDirty = true;
-		}
-		
-		public void SetBlockId(int x, int y, int z, Material id)
-			=> SetBlockId(x, y, z, (short)id);
-
-		public byte GetBlockData(int x, int y, int z)
-		{
-			return GetChunkSection(y).GetBlockData(x, y - 16 * (y >> 4), z);
+			TileEntities[coordinates] = nbt;
 		}
 
-		public void SetBlockData(int x, int y, int z, byte meta)
+		public void RemoveBlockEntity(Vector3 coordinates)
 		{
-			GetChunkSection(y).SetBlockData(x, y - 16 * (y >> 4), z, meta);
-
-			_cache = null;
 			IsDirty = true;
+			TileEntities.Remove(coordinates);
 		}
 
-		public void SetBiome(int x, int z, byte biome)
+		public byte[] GetMeta()
 		{
-			Biomes[(z << 4) + (x)] = biome;
+			using (var stream = new MemoryStream())
+			{
+				using (var writer = new NbtBinaryWriter(stream, true))
+				{
+					writer.Write(IPAddress.HostToNetworkOrder(X));
+					writer.Write(IPAddress.HostToNetworkOrder(Z));
+					writer.Write((ushort) 0xffff); // bitmap
 
-			_cache = null;
-			IsDirty = true;
+					writer.Flush();
+					writer.Close();
+				}
+				return stream.ToArray();
+			}
 		}
 
-		public byte GetBiome(int x, int z)
-			=> Biomes[(z << 4) + (x)];
-
-		public void RecalcHeight()
+		public byte[] GetChunkData()
 		{
-			for (int x = 0; x < 16; x++)
-				for (int z = 0; z < 16; z++)
-					for (byte y = 127; y > 0; y--)
-						if (GetBlockMaterial(x, y, z) != Material.Air)
-						{
-							Heightmap[(x << 4) + z] = (long)(y + 1);
-							break;
-						}
+			using (var stream = new MemoryStream())
+			{
+				using (var writer = new NbtBinaryWriter(stream, true))
+				{
+					writer.WriteVarInt((Blocks.Length*2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
+
+					for (var i = 0; i < Blocks.Length; i++)
+						writer.Write((ushort) ((Blocks[i] << 4) | Metadata[i]));
+
+					writer.Write(Blocklight.Data);
+					writer.Write(Skylight.Data);
+
+					writer.Write(BiomeId);
+
+					writer.Flush();
+					writer.Close();
+				}
+				return stream.ToArray();
+			}
 		}
-    }
+
+		public byte[] GetBytes(bool unloader = false)
+		{
+			var writer = new MinecraftStream(new byte[0]);
+			if (!unloader)
+			{
+				writer.WriteVarInt((Blocks.Length*2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
+
+				for (var i = 0; i < Blocks.Length; i++)
+				{
+					writer.WriteUShort((ushort) ((Blocks[i] << 4) | Metadata[i]));
+				}
+
+				writer.Write(Blocklight.Data);
+				writer.Write(Skylight.Data);
+
+				writer.Write(BiomeId);
+			}
+			else
+			{
+				writer.WriteUShort(0);
+				writer.WriteVarInt(0);
+			}
+			return writer.Data;
+		}
+
+		public byte[] Export()
+		{
+			var buffer = new MinecraftStream(new byte[0]);
+
+			buffer.WriteInt(Blocks.Length);
+
+			for (var i = 0; i < Blocks.Length; i++)
+				buffer.WriteUShort(Blocks[i]);
+
+			buffer.WriteInt(Blocks.Length);
+			for (var i = 0; i < Blocks.Length; i++)
+				buffer.WriteUShort((ushort) Metadata[i]);
+
+			buffer.WriteInt(Blocklight.Data.Length);
+			buffer.Write(Blocklight.Data);
+
+			buffer.WriteInt(Skylight.Data.Length);
+			buffer.Write(Skylight.Data);
+
+			buffer.WriteInt(BiomeId.Length);
+			buffer.Write(BiomeId);
+
+			return buffer.Data;
+		}
+
+		private bool disposed = false;
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!disposed)
+			{
+				if (disposing)
+				{
+					Blocks = null;
+					Metadata = null;
+					Blocklight.Data = null;
+					Blocklight = null;
+					BiomeId = null;
+					BiomeColor = null;
+					Skylight.Data = null;
+					Skylight = null;
+				}
+
+				disposed = true;
+			}
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+	}
 }

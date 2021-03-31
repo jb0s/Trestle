@@ -34,6 +34,8 @@ namespace Trestle.Networking
             var attribute = (ClientBoundAttribute)GetType().GetCustomAttribute<ClientBoundAttribute>(false);
             if (attribute == null)
                 throw new Exception("Packet is not ClientBound.");
+            else
+                Logger.Debug("Sent packet " + GetType().Name);
              
             buffer.WriteVarInt(attribute.Id);
             foreach (var property in GetType().GetProperties())

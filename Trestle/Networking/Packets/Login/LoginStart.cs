@@ -61,14 +61,13 @@ namespace Trestle.Networking.Packets.Login
             };
 
             Client.State = ClientState.Play;
-            
+
             Client.SendPacket(new JoinGame(Client));
-            Client.SendPacket(new EntityStatus(Client.Player.EntityId, 5));
-            Client.Player.SendChunksForLocation();
             Client.SendPacket(new SpawnPosition());
-            //Client.SendPacket(new ClientStatus());
+            Client.SendPacket(new PlayerPositionAndLook(Client, new Location(0, 0, 0)));
             
             Client.Player.InitializePlayer();
+            Client.Player.SendChunksForLocation();
         }
         
         private string GetUuid(string username)

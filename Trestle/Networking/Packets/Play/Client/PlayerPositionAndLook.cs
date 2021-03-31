@@ -25,10 +25,6 @@ namespace Trestle.Networking.Packets.Play
         [Field]
         public byte Flags { get; set; } = 111;
         
-        [Field]
-        [VarInt]
-        public int TeleportId { get; set; }
-        
         public PlayerPositionAndLook(Networking.Client client, Location location)
         {
             X = location.X;
@@ -36,7 +32,6 @@ namespace Trestle.Networking.Packets.Play
             Z = location.Z;
             Yaw = location.Yaw;
             Pitch = location.Pitch;
-            TeleportId = 0; // TODO: Teleport confirming
         }
     }
 }

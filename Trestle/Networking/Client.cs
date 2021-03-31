@@ -134,7 +134,7 @@ namespace Trestle.Networking
             return (long)timeSpan.TotalSeconds;
         }
 
-        public void ProcessKeepAlive(long keepAliveId)
+        public void ProcessKeepAlive(int keepAliveId)
         {
             Ping = (int)(DateTime.Now.Millisecond - keepAliveId);
             MissedKeepAlives++;

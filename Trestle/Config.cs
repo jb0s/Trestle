@@ -12,7 +12,7 @@ namespace Trestle
         internal static int CompressionThreshold = 999999999;
         internal static bool OnlineMode = false;
         internal static bool EncryptionEnabled = true;
-        internal static int MaxPlayers = 10;
+        internal static byte MaxPlayers = 10;
         internal static int Port = 25565;
         internal static int MaxMissedKeepAlives = 5;
         
@@ -35,7 +35,7 @@ namespace Trestle
 
             if (data.ContainsKey("motd")) Motd = data["motd"];
             if (data.ContainsKey("seed")) Seed = data["seed"];
-            if (data.ContainsKey("max_players")) MaxPlayers = int.Parse(data["max_players"]);
+            if (data.ContainsKey("max_players")) MaxPlayers = byte.Parse(data["max_players"]);
             if (data.ContainsKey("online_mode")) OnlineMode = bool.Parse(data["online_mode"]);
             if (data.ContainsKey("port")) Port = int.Parse(data["port"]);
             if (data.ContainsKey("max_missed_keep_alives")) MaxMissedKeepAlives = int.Parse(data["max_missed_keep_alives"]);

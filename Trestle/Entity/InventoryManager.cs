@@ -179,7 +179,7 @@ namespace Trestle.Utils
             {
                 for (int i = 0; i <= slot.ItemCount; i++)
                 {
-                    new ItemEntity(_player.Level, new ItemStack(slot.ItemId, 1, slot.MetaData)) {KnownPosition = _player.KnownPosition}
+                    new ItemEntity(_player.World, new ItemStack(slot.ItemId, 1, slot.MetaData)) {KnownPosition = _player.KnownPosition}
                         .SpawnEntity();
                 }
                 SetSlot(slottarget, -1, 0, 0);

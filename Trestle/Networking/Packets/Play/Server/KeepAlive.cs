@@ -7,7 +7,8 @@ namespace Trestle.Networking.Packets.Play.Server
     public class KeepAlive : Packet
     {
         [Field]
-        public long KeepAliveId { get; set; }
+        [VarInt]
+        public int KeepAliveId { get; set; }
 
         public override void HandlePacket()
         {

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using Trestle.Worlds;
 
 namespace Trestle.Worlds
 {
