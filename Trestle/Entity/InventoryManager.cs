@@ -221,7 +221,7 @@ namespace Trestle.Utils
                 var value = _slots[i];
                 if (value.ItemId != -1)
                 {
-                    _player.Client.SendPacket(new SetSlot(value, i));
+                    //_player.Client.SendPacket(new SetSlot(value, i));
                 }
             }
         }

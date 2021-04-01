@@ -1,5 +1,6 @@
 ﻿using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Server
 {
@@ -11,7 +12,8 @@ namespace Trestle.Networking.Packets.Play.Server
 
         public override void HandlePacket()
         {
-            Client.Player.Location.OnGround = OnGround;
+            Entity.Player player = Client.Player;
+            player.PositionChanged(player.Location.ToVector3(), player.Location.Yaw, player.Location.Pitch, OnGround);
         }
     }
 }

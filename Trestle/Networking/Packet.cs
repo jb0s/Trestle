@@ -14,7 +14,6 @@ namespace Trestle.Networking
         
         public Packet()
         {
-            
         }
 
         public Packet(Client client)
@@ -34,9 +33,7 @@ namespace Trestle.Networking
             var attribute = (ClientBoundAttribute)GetType().GetCustomAttribute<ClientBoundAttribute>(false);
             if (attribute == null)
                 throw new Exception("Packet is not ClientBound.");
-            else
-                Logger.Debug("Sent packet " + GetType().Name);
-             
+
             buffer.WriteVarInt(attribute.Id);
             foreach (var property in GetType().GetProperties())
             {
@@ -110,9 +107,13 @@ namespace Trestle.Networking
                     property.SetValue(this, buffer.ReadLong());
                 else if (property.PropertyType == typeof(String))
                     property.SetValue(this, buffer.ReadString());
+                else if(property.PropertyType == typeof(Double))
+                    property.SetValue(this, buffer.ReadDouble());
+                else if(property.PropertyType == typeof(Boolean))
+                    property.SetValue(this, buffer.ReadBool());
                 else
                 {
-                    throw new Exception("Unable to parse field.");
+                    throw new Exception("Unable to parse field of type " + property.PropertyType);
                 }
             }
         }

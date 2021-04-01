@@ -37,14 +37,14 @@ namespace Trestle.Worlds
 		public int X { get; set; }
 		public int Z { get; set; }
 
-		public ushort GetBlock(int x, int y, int z)
+		public Material GetBlock(int x, int y, int z)
 		{
-			var index = x + 16*z + 16*16*y;
+			var index = x + 16 * z + 16 * 16 * y;
+			
 			if (index >= 0 && index < Blocks.Length)
-			{
-				return (Blocks[index]);
-			}
-			return 0x0;
+				return (Material)Blocks[index];
+			
+			return Material.Air;
 		}
 
 		public byte GetMetadata(int x, int y, int z)
@@ -66,6 +66,16 @@ namespace Trestle.Worlds
 			}
 		}
 
+		public void SetBlock(int x, int y, int z, Material block)
+		{
+			var index = x + 16*z + 16*16*y;
+			if (index >= 0 && index < Blocks.Length)
+			{
+				Blocks[index] = (ushort)block;
+				Metadata[index] = 0;
+			}
+		}
+		
 		public void SetBlock(int x, int y, int z, Block block)
 		{
 			var index = x + 16*z + 16*16*y;
@@ -205,10 +215,10 @@ namespace Trestle.Worlds
 			return buffer.Data;
 		}
 
-		private bool disposed = false;
+		private bool _disposed = false;
 		protected virtual void Dispose(bool disposing)
 		{
-			if (!disposed)
+			if (!_disposed)
 			{
 				if (disposing)
 				{
@@ -222,7 +232,7 @@ namespace Trestle.Worlds
 					Skylight = null;
 				}
 
-				disposed = true;
+				_disposed = true;
 			}
 		}
 

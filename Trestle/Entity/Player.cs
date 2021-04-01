@@ -29,7 +29,7 @@ namespace Trestle.Entity
         /// <summary>
         /// The position of the current chunk the player is in.
         /// </summary>
-        private Vector2 _currentChunkPosition = new Vector2(0, 0);
+        private Vector2 _currentChunkPosition = new(0, 0);
         
         /// <summary>
         /// The player's inventory.
@@ -182,7 +182,7 @@ namespace Trestle.Entity
             EntityId = Globals.Random.Next(0, 999999999);
             
             // TODO: Unhardcode viewdistance
-            ViewDistance = 16;
+            ViewDistance = 8;
             
             IsOperator = false;
             IsLoaded = false;
@@ -219,22 +219,15 @@ namespace Trestle.Entity
 	        Location.X = location.X;
 	        Location.Z = location.Z;
 	        Location.OnGround = onGround;
-
-	        _currentChunkPosition.X = (int) location.X >> 4;
-	        _currentChunkPosition.Z = (int) location.Z >> 4;
-
-	        //if (originalchunkcoords != _currentChunkPosition) 
-		        SendChunksForLocation();
-		        
-	        /*
-	        new EntityTeleport(Wrapper)
+	        
+	        _currentChunkPosition.X = (int) location.X / 16;
+	        _currentChunkPosition.Z = (int) location.Z / 16;
+	        
+	        if (originalchunkcoords != _currentChunkPosition)
 	        {
-		        EntityId = EntityId,
-		        Coordinates = location,
-		        OnGround = onGround,
-		        Pitch = (byte) pitch,
-		        Yaw = (byte) yaw,
-	        }.Broadcast(World, false, this);*/
+		        Console.WriteLine("Original: " + originalchunkcoords.ToString() + " Current: " + _currentChunkPosition.ToString());
+		        SendChunksForLocation(_currentChunkPosition);
+	        }
 
 	        LookChanged();
         }
@@ -452,28 +445,26 @@ namespace Trestle.Entity
 			BroadcastInventory();
 			SetGamemode(GameMode, true);
 		}
+
+		public void SendChunksForLocation(bool force = false)
+			=> SendChunksForLocation(new Vector2((int)Location.X, (int)Location.Z), force);
 		
 		/// <summary>
 		/// Send cached chunk for position.
 		/// </summary>
 		/// <param name="force"></param>
-		public void SendChunksForLocation(bool force = false)
+		public void SendChunksForLocation(Vector2 location, bool force = false)
 		{
-			var centerX = (int) Location.X >> 4;
-			var centerZ = (int) Location.Z >> 4;
-
-			if (!force && HasSpawned && _currentChunkPosition == new Vector2(centerX, centerZ)) 
+			if (!force && !HasSpawned)
 				return;
-
-			_currentChunkPosition.X = centerX;
-			_currentChunkPosition.Z = centerZ;
 			
 			Client.ThreadPool.LaunchThread(() =>
 			{
-				foreach (var chunk in World.GenerateChunks(this, new ChunkLocation(Location), force ? _chunksUsed : new Dictionary<Tuple<int, int>, ChunkColumn>(), ViewDistance))
+				foreach (var chunk in World.GenerateChunks(this, new ChunkLocation(location.X, location.Z), force ? _chunksUsed : new Dictionary<Tuple<int, int>, ChunkColumn>(), ViewDistance))
 				{
 					if (Client != null && Client.TcpClient.Connected)
-						Client.SendPacket(new ChunkData(chunk));
+						if(_chunksUsed.ContainsKey(new Tuple<int, int>(chunk.X, chunk.Z)))
+							Client.SendPacket(new ChunkData(chunk));
 				}
 			});
 		}
@@ -561,13 +552,10 @@ namespace Trestle.Entity
 		/// <param name="y"></param>
 		internal void UnloadChunk(int x, int y)
 		{
-			/*
-			new ChunkData(Wrapper)
+			Client.SendPacket(new ChunkData(new ChunkColumn())
 			{
-				Queue = false,
-				Unloader = true,
-				Chunk = new Chunk(World, x, y, new List<ForcedBlock>())
-			}.Write();*/
+				Unloader = true
+			});
 		}
 		
 		/// <summary>

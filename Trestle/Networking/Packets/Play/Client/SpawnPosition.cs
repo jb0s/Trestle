@@ -3,7 +3,7 @@ using Trestle.Enums;
 
 namespace Trestle.Networking.Packets.Play
 {
-    [ClientBound(PlayPacket.SpawnPosition)]
+    [ClientBound(PlayPacket.Client_SpawnPosition)]
     public class SpawnPosition : Packet
     {
         [Field]

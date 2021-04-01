@@ -6,7 +6,7 @@ using Trestle.Enums;
 
 namespace Trestle.Networking.Packets.Play
 {
-    [ClientBound(PlayPacket.JoinGame)]
+    [ClientBound(PlayPacket.Client_JoinGame)]
     public class JoinGame : Packet
     {
         [Field] 

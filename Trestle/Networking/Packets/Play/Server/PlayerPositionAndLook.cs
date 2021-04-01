@@ -4,8 +4,8 @@ using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Server
 {
-    [ServerBound(PlayPacket.Server_PlayerPosition)]
-    public class PlayerPosition : Packet
+    [ServerBound(PlayPacket.Server_PlayerPositionAndLook)]
+    public class PlayerPositionAndLook : Packet
     {
         [Field]
         public double X { get; set; }
@@ -17,6 +17,12 @@ namespace Trestle.Networking.Packets.Play.Server
         public double Z { get; set; }
         
         [Field]
+        public float Yaw { get; set; }
+        
+        [Field]
+        public float Pitch { get; set; }
+        
+        [Field]
         public bool OnGround { get; set; }
 
         public override void HandlePacket()
@@ -24,7 +30,7 @@ namespace Trestle.Networking.Packets.Play.Server
             Entity.Player player = Client.Player;
 
             Vector3 newLocation = new Vector3(X, Y, Z);
-            player.PositionChanged(newLocation, player.Location.Yaw, player.Location.Pitch, OnGround);
+            player.PositionChanged(newLocation, Yaw, Pitch, OnGround);
         }
     }
 }

@@ -67,7 +67,7 @@ namespace Trestle.Networking.Packets.Login
             Client.SendPacket(new PlayerPositionAndLook(Client, new Location(0, 0, 0)));
             
             Client.Player.InitializePlayer();
-            Client.Player.SendChunksForLocation();
+            Client.Player.SendChunksForLocation(true);
         }
         
         private string GetUuid(string username)

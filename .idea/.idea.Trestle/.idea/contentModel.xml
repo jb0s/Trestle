@@ -125,18 +125,18 @@
               <e p="Client" t="Include">
                 <e p="ChatMessage.cs" t="Include" />
                 <e p="ChunkData.cs" t="Include" />
-                <e p="EntityStatus.cs" t="Include" />
                 <e p="JoinGame.cs" t="Include" />
                 <e p="KeepAlive.cs" t="Include" />
                 <e p="PlayerPositionAndLook.cs" t="Include" />
-                <e p="SetSlot.cs" t="Include" />
                 <e p="SpawnPosition.cs" t="Include" />
               </e>
               <e p="Server" t="Include">
                 <e p="ChatMessage.cs" t="Include" />
                 <e p="KeepAlive.cs" t="Include" />
                 <e p="Player.cs" t="Include" />
+                <e p="PlayerLook.cs" t="Include" />
                 <e p="PlayerPosition.cs" t="Include" />
+                <e p="PlayerPositionAndLook.cs" t="Include" />
               </e>
             </e>
             <e p="Status" t="Include">
@@ -183,6 +183,11 @@
             <e p="FlatWorldGenerator.cs" t="Include" />
           </e>
           <e p="IWorldGenerator.cs" t="Include" />
+          <e p="TestWorld" t="Include">
+            <e p="OctaveGenerator.cs" t="Include" />
+            <e p="TestWorld.cs" t="Include" />
+            <e p="TestWorldGenerator.cs" t="Include" />
+          </e>
           <e p="World.cs" t="Include" />
           <e p="WorldManager.cs" t="Include" />
         </e>

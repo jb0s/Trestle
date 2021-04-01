@@ -11,17 +11,13 @@ namespace Trestle.Networking.Packets.Play.Client
     {
         [Field]
         public string Message { get; set; }
-        
+
         [Field]
-        public byte MessageType { get; set; } = (byte)ChatMessageType.ChatBox;
-        
-        [Field]
-        public Guid Player { get; set; } 
+        public byte Position { get; set; } = 0;
         
         public ChatMessage(MessageComponent messageComponent)
         {
             Message = JsonSerializer.Serialize(messageComponent);
-            Player = Guid.NewGuid();
         }
     }
 }

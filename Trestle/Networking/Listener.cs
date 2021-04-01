@@ -126,8 +126,7 @@ namespace Trestle.Networking
                 ClientState.Login => typeof(LoginPacket),
                 ClientState.Play => typeof(PlayPacket)
             };
-            Logger.Debug($"Received packet '0x{packetId:X2}' ({Enum.GetName(type, packetId)}) for state '{client.State}'");
-
+            
             var packet = handler();
             packet.Client = client;
             

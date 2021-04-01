@@ -71,10 +71,11 @@ namespace Trestle
 
         public static void BroadcastChat(MessageComponent message, ChatMessageType chattype, Player sender)
         {
-            foreach (var lvl in WorldManager.Worlds)
+            WorldManager.MainWorld.BroadcastChat(message, chattype, sender);
+            foreach (var world in WorldManager.Worlds)
             {
                 // TODO: Broadcast chat
-                //lvl.BroadcastChat(message, chattype, sender);
+                world.Value.BroadcastChat(message, chattype, sender);
             }
         }
     }

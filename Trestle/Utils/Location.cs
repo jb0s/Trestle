@@ -11,6 +11,17 @@ namespace Trestle.Utils
             Z = z;
         }
 
+        public Location(Location location)
+        {
+            X = location.X;
+            Y = location.Y;
+            Z = location.Z;
+            HeadYaw = location.HeadYaw;
+            Yaw = location.Yaw;
+            Pitch = location.Pitch;
+            OnGround = location.OnGround;
+        }
+        
         public byte HeadYaw { get; set; }
         public float Yaw { get; set; }
         public float Pitch { get; set; }

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Trestle.Worlds.Flatworld;
+using Trestle.Worlds.TestWorld;
 
 namespace Trestle.Networking
 {
@@ -73,10 +74,7 @@ namespace Trestle.Networking
         {
             Globals.Random = new Random();
             Globals.ServerListener = new Listener();
-          //  Globals.ClientManager = new ClientManager();
-          //  Globals.CommandManager = new CommandManager();
-          //  Globals.ServerKey = PacketCryptography.GenerateKeyPair();
-            Globals.WorldManager = new WorldManager(new FlatLandWorld());
+            Globals.WorldManager = new WorldManager(new TestWorld());
         }
         
         /// <summary>

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using Trestle.Networking.Packets.Play.Client;
 using Trestle.Worlds;
 
 namespace Trestle.Worlds
@@ -43,12 +44,12 @@ namespace Trestle.Worlds
         private void OnTick(object state)
         {
             foreach (var player in Players.Values.ToArray())
-                player.OnTick();                
+                player.OnTick();
         }
 
         public void Initialize()
         {
-            Stopwatch chunkLoading = Stopwatch.StartNew();
+            var chunkLoading = Stopwatch.StartNew();
 
             int count = 0;
             
@@ -114,14 +115,11 @@ namespace Trestle.Worlds
                 {
                     for (double z = -radius; z <= radius; ++z)
                     {
-                        var distance = (x*x) + (z*z);
-                        if (distance > radiusSquared)
-                        {
-                            //continue;
-                        }
+                        double distance = (x*x) + (z*z);
                         int chunkX = (int) (x + centerX);
                         int chunkZ = (int) (z + centerZ);
-                        Tuple<int, int> index = new Tuple<int, int>(chunkX, chunkZ);
+                        
+                        var index = new Tuple<int, int>(chunkX, chunkZ);
                         newOrders[index] = distance;
                     }
                 }
@@ -130,10 +128,7 @@ namespace Trestle.Worlds
                 {
                     if (!newOrders.ContainsKey(chunkKey))
                     {
-                        if (player != null)
-                        {
-                            player.UnloadChunk(chunkKey.Item1, chunkKey.Item2);
-                        }
+                        player?.UnloadChunk(chunkKey.Item1, chunkKey.Item2);
                         chunksUsed.Remove(chunkKey);
                     }
                 }
@@ -149,6 +144,14 @@ namespace Trestle.Worlds
 
                     yield return chunk;
                 }
+            }
+        }
+
+        public void BroadcastChat(MessageComponent message, ChatMessageType chattype, Player sender)
+        {
+            foreach (var player in Players)
+            {
+                player.Value.Client.SendPacket(new ChatMessage(message));
             }
         }
         

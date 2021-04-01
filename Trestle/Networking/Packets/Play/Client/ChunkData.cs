@@ -8,7 +8,7 @@ using Trestle.Worlds;
 
 namespace Trestle.Networking.Packets.Play
 {
-    [ClientBound(PlayPacket.ChunkData)]
+    [ClientBound(PlayPacket.Client_ChunkData)]
     public class ChunkData : Packet
     {
         [Field]
@@ -33,7 +33,7 @@ namespace Trestle.Networking.Packets.Play
             byte[] sectionData;
             using (MinecraftStream mc = new())
             {
-                mc.Write(chunk.GetBytes(false));
+                mc.Write(chunk.GetBytes(Unloader));
                 sectionData = mc.Data;
             }
             

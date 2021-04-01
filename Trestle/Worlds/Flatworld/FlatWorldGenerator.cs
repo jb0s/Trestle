@@ -13,7 +13,7 @@ namespace Trestle.Worlds.Flatworld
         public ChunkColumn GenerateChunk(ChunkLocation location)
         {
             var chunk = new ChunkColumn {X = location.X, Z = location.Z};
-            PopulateChunk(chunk);
+            int y = PopulateChunk(chunk);
 
             return chunk;
         }
@@ -31,15 +31,15 @@ namespace Trestle.Worlds.Flatworld
                     {
                         if (y == 0)
                         {
-                            chunk.SetBlock(x, y, z, new Block(Material.Bedrock));
+                            chunk.SetBlock(x, y, z, Material.Bedrock);
                         }
                         if (y == 1 || y == 2)
                         {
-                            chunk.SetBlock(x, y, z, new Block(Material.Dirt));
+                            chunk.SetBlock(x, y, z, Material.Dirt);
                         }
                         if (y == 3)
                         {
-                            chunk.SetBlock(x, y, z, new Block(Material.Grass));
+                            chunk.SetBlock(x, y, z, Material.Grass);
                         }
                     }
                 }

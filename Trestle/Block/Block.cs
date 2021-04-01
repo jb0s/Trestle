@@ -18,7 +18,6 @@ namespace Trestle.Blocks
             Metadata = 0;
             Drops = new[] {new ItemStack(this, 1)};
 			
-
             IsSolid = true;
             IsBuildable = true;
             IsReplacible = false;
