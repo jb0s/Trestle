@@ -5,6 +5,7 @@ using Trestle.Worlds;
 using System.Threading;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Trestle.Utils;
 using Trestle.Worlds.Flatworld;
 using Trestle.Worlds.TestWorld;
 
@@ -74,7 +75,7 @@ namespace Trestle.Networking
         {
             Globals.Random = new Random();
             Globals.ServerListener = new Listener();
-            Globals.WorldManager = new WorldManager(new TestWorld());
+            Globals.WorldManager = new WorldManager(new StandardWorld());
         }
         
         /// <summary>
@@ -84,6 +85,10 @@ namespace Trestle.Networking
         private void UnhandledException(object sender, UnhandledExceptionEventArgs args)
         {
             var e = (Exception)args.ExceptionObject;
+            
+            foreach (var client in Globals.ServerListener.Clients)
+                client.Player?.Kick(new MessageComponent($"§cAn unhandled exception occurred.\n\n§f{e.Message}"));
+            
             Logger.Error($"An unhandled exception occurred: {e.Message}");
         }
     }

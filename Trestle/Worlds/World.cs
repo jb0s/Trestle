@@ -28,7 +28,7 @@ namespace Trestle.Worlds
 
         private Timer _tickTimer;
         private bool _disposed = false;
-
+        
         public World(string name, IWorldGenerator worldGenerator)
         {
             Name = name;
@@ -37,8 +37,11 @@ namespace Trestle.Worlds
             Players = new ConcurrentDictionary<int, Player>();
             Entities = new ConcurrentDictionary<int, Entity.Entity>();
             EntityManager = new EntityManager();
-
+            
             SpawnPoint = worldGenerator.GetSpawnPoint();
+            
+            // TODO: Fix this
+            //LoadSpawnChunks();
         }
 
         private void OnTick(object state)
@@ -47,15 +50,12 @@ namespace Trestle.Worlds
                 player.OnTick();
         }
 
-        public void Initialize()
+        public void LoadSpawnChunks()
         {
             var chunkLoading = Stopwatch.StartNew();
 
-            int count = 0;
-            
-            foreach (var chunk in GenerateChunks(null, new ChunkLocation(SpawnPoint), new Dictionary<Tuple<int, int>, ChunkColumn>(), 8))
-                count++;
-            
+            GenerateChunks(null, new ChunkLocation(SpawnPoint), 8);
+                
             chunkLoading.Stop();
             Logger.Info($"Loaded spawn chunks in {chunkLoading.ElapsedMilliseconds}ms");
             
@@ -78,6 +78,7 @@ namespace Trestle.Worlds
             }
 
             player.IsSpawned = spawn;
+            player.GameMode = DefaultGameMode;
         }
         
         public virtual void RemovePlayer(Player player, bool despawn = true)
@@ -100,13 +101,11 @@ namespace Trestle.Worlds
                 player.SpawnForPlayers(new Player[] { player });
         }
         
-        public IEnumerable<ChunkColumn> GenerateChunks(Player player, ChunkLocation chunkLocation, Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, double radius)
+        public IEnumerable<ChunkColumn> GenerateChunks(Player player, ChunkLocation chunkLocation, double radius)
         {
-            lock (chunksUsed)
+            lock (player.ChunksUsed)
             {
                 Dictionary<Tuple<int, int>, double> newOrders = new Dictionary<Tuple<int, int>, double>();
-
-                double radiusSquared = Math.Pow(radius, 2);
 
                 int centerX = chunkLocation.X;
                 int centerZ = chunkLocation.Z;
@@ -124,24 +123,23 @@ namespace Trestle.Worlds
                     }
                 }
 
-                foreach (var chunkKey in chunksUsed.Keys.ToArray())
+                foreach (var chunkKey in player.ChunksUsed.Keys.ToArray())
                 {
                     if (!newOrders.ContainsKey(chunkKey))
                     {
                         player?.UnloadChunk(chunkKey.Item1, chunkKey.Item2);
-                        chunksUsed.Remove(chunkKey);
+                        player.ChunksUsed.Remove(chunkKey);
                     }
                 }
 
                 foreach (var pair in newOrders.OrderBy(pair => pair.Value))
                 {
-                    if (chunksUsed.ContainsKey(pair.Key)) continue;
-
-                    if (WorldGenerator == null) continue;
+                    if (player.ChunksUsed.ContainsKey(pair.Key) || WorldGenerator == null) 
+                        continue;
 
                     ChunkColumn chunk = WorldGenerator.GenerateChunk(new ChunkLocation(pair.Key.Item1, pair.Key.Item2));
-                    chunksUsed.Add(pair.Key, chunk);
 
+                    player.ChunksUsed.Add(pair.Key, chunk);
                     yield return chunk;
                 }
             }

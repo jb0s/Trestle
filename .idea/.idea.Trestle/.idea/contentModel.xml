@@ -56,10 +56,6 @@
           <e p="VarIntAttribute.cs" t="Include" />
         </e>
         <e p="bin" t="ExcludeRecursive" />
-        <e p="Biomes" t="Include">
-          <e p="BaseBiome.cs" t="Include" />
-          <e p="IBiome.cs" t="Include" />
-        </e>
         <e p="Block" t="Include">
           <e p="Block.cs" t="Include" />
         </e>
@@ -79,13 +75,14 @@
         </e>
         <e p="Enums" t="Include">
           <e p="Animation.cs" t="Include" />
-          <e p="Biome.cs" t="Include" />
+          <e p="BiomeType.cs" t="Include" />
           <e p="BlockFace.cs" t="Include" />
           <e p="ChatColor.cs" t="Include" />
           <e p="ChatMessageType.cs" t="Include" />
           <e p="ClientState.cs" t="Include" />
           <e p="EntityAction.cs" t="Include" />
           <e p="GameMode.cs" t="Include" />
+          <e p="GameStateReason.cs" t="Include" />
           <e p="HandshakingPacket.cs" t="Include" />
           <e p="LoginPacket.cs" t="Include" />
           <e p="Material.cs" t="Include" />
@@ -123,8 +120,10 @@
             </e>
             <e p="Play" t="Include">
               <e p="Client" t="Include">
+                <e p="ChangeGameState.cs" t="Include" />
                 <e p="ChatMessage.cs" t="Include" />
                 <e p="ChunkData.cs" t="Include" />
+                <e p="Disconnect.cs" t="Include" />
                 <e p="JoinGame.cs" t="Include" />
                 <e p="KeepAlive.cs" t="Include" />
                 <e p="PlayerPositionAndLook.cs" t="Include" />
@@ -176,17 +175,44 @@
           <e p="Vector3.cs" t="Include" />
         </e>
         <e p="Worlds" t="Include">
+          <e p="Biomes" t="Include">
+            <e p="Biome.cs" t="Include" />
+            <e p="BiomeManager.cs" t="Include" />
+            <e p="Desert" t="Include">
+              <e p="DesertBiome.cs" t="Include" />
+            </e>
+            <e p="Forest" t="Include">
+              <e p="ForestBiome.cs" t="Include" />
+            </e>
+            <e p="IBiome.cs" t="Include" />
+            <e p="Plains" t="Include">
+              <e p="PlainsBiome.cs" t="Include" />
+            </e>
+          </e>
           <e p="ChunkColumn.cs" t="Include" />
           <e p="ChunkLocation.cs" t="Include" />
+          <e p="Decorators" t="Include">
+            <e p="CactusDecorator.cs" t="Include" />
+            <e p="DeadBushDecorator.cs" t="Include" />
+            <e p="Decorator.cs" t="Include" />
+            <e p="FlowerDecorator.cs" t="Include" />
+            <e p="ForestDecorator.cs" t="Include" />
+            <e p="GrassDecorator.cs" t="Include" />
+            <e p="WaterDecorator.cs" t="Include" />
+          </e>
           <e p="Flatworld" t="Include">
             <e p="FlatLandWorld.cs" t="Include" />
             <e p="FlatWorldGenerator.cs" t="Include" />
           </e>
           <e p="IWorldGenerator.cs" t="Include" />
-          <e p="TestWorld" t="Include">
+          <e p="StandardWorld" t="Include">
             <e p="OctaveGenerator.cs" t="Include" />
-            <e p="TestWorld.cs" t="Include" />
-            <e p="TestWorldGenerator.cs" t="Include" />
+            <e p="StandardWorld.cs" t="Include" />
+            <e p="StandardWorldGenerator.cs" t="Include" />
+          </e>
+          <e p="Structures" t="Include">
+            <e p="OakTree.cs" t="Include" />
+            <e p="Structure.cs" t="Include" />
           </e>
           <e p="World.cs" t="Include" />
           <e p="WorldManager.cs" t="Include" />

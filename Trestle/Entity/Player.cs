@@ -11,6 +11,7 @@ using Trestle.Enums;
 using Trestle.Networking;
 using Trestle.Networking.Packets;
 using Trestle.Networking.Packets.Play;
+using Trestle.Networking.Packets.Play.Client;
 using Trestle.Utils;
 using Trestle.Worlds;
 using Animation = Trestle.Enums.Animation;
@@ -24,7 +25,7 @@ namespace Trestle.Entity
         /// <summary>
         /// The chunks this entity has loaded.
         /// </summary>
-        private readonly Dictionary<Tuple<int, int>, ChunkColumn> _chunksUsed;
+        public Dictionary<Tuple<int, int>, ChunkColumn> ChunksUsed;
         
         /// <summary>
         /// The position of the current chunk the player is in.
@@ -174,9 +175,11 @@ namespace Trestle.Entity
         
         public Player(int entityTypeId, World world) : base(-1, world)
         {
-	        _chunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
+	        ChunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
             Inventory = new InventoryManager(this);
             World = world;
+            
+            Location = world.SpawnPoint;
 
             // TODO: Fix this dumb workaround
             EntityId = Globals.Random.Next(0, 999999999);
@@ -190,13 +193,6 @@ namespace Trestle.Entity
         
         public override void OnTick()
         {
-	        if (HasSpawned)
-	        {
-		        if (GameMode == GameMode.Survival)
-		        {
-			        //HealthManager.OnTick();
-		        }
-	        }
         }
         
         /// <summary>
@@ -210,13 +206,15 @@ namespace Trestle.Entity
         {
 	        var originalchunkcoords = new Vector2(_currentChunkPosition.X, _currentChunkPosition.Z);
 	        var originalcoordinates = Location;
+	        
 	        if (yaw != 0.0f && pitch != 0.0f)
 	        {
 		        Location.Yaw = yaw;
 		        Location.Pitch = pitch;
 	        }
-	        Location.Y = location.Y;
+	        
 	        Location.X = location.X;
+	        Location.Y = location.Y;
 	        Location.Z = location.Z;
 	        Location.OnGround = onGround;
 	        
@@ -224,10 +222,7 @@ namespace Trestle.Entity
 	        _currentChunkPosition.Z = (int) location.Z / 16;
 	        
 	        if (originalchunkcoords != _currentChunkPosition)
-	        {
-		        Console.WriteLine("Original: " + originalchunkcoords.ToString() + " Current: " + _currentChunkPosition.ToString());
 		        SendChunksForLocation(_currentChunkPosition);
-	        }
 
 	        LookChanged();
         }
@@ -353,21 +348,8 @@ namespace Trestle.Entity
 		public void SetGamemode(GameMode target, bool silent)
 		{
 			GameMode = target;
-			
-			// TODO: I'm not sure what this packet is now, it's changed.
-			/*new PlayerListItem(Wrapper)
-			{
-				Action = 1,
-				GameMode = GameMode,
-				Uuid = UUID
-			}.Broadcast(World);*/
 
-			/*
-			new ChangeGameState(Wrapper)
-			{
-				Reason = GameStateReason.ChangeGameMode,
-				Value = (float) target
-			}.Write();*/
+			new ChangeGameState(GameStateReason.ChangeGameMode, (float)target);
 
 			if (!silent)
 			{
@@ -437,12 +419,15 @@ namespace Trestle.Entity
 				//IsOperator = OperatorLoader.IsOperator(savename);
 			}
 
-			Client.SendPacket(new PlayerPositionAndLook(Client, Location));
+			Client.SendPacket(new SpawnPosition());
+			Client.SendPacket(new PlayerPositionAndLook(Location));
 
 			HasSpawned = true;
 			World.AddPlayer(this);
+			
 			Client.Player.Inventory.SendToPlayer();
 			BroadcastInventory();
+			
 			SetGamemode(GameMode, true);
 		}
 
@@ -460,11 +445,10 @@ namespace Trestle.Entity
 			
 			Client.ThreadPool.LaunchThread(() =>
 			{
-				foreach (var chunk in World.GenerateChunks(this, new ChunkLocation(location.X, location.Z), force ? _chunksUsed : new Dictionary<Tuple<int, int>, ChunkColumn>(), ViewDistance))
+				foreach (var chunk in World.GenerateChunks(this, new ChunkLocation(location.X, location.Z), ViewDistance))
 				{
 					if (Client != null && Client.TcpClient.Connected)
-						if(_chunksUsed.ContainsKey(new Tuple<int, int>(chunk.X, chunk.Z)))
-							Client.SendPacket(new ChunkData(chunk));
+						Client.SendPacket(new ChunkData(chunk));
 				}
 			});
 		}
@@ -552,7 +536,7 @@ namespace Trestle.Entity
 		/// <param name="y"></param>
 		internal void UnloadChunk(int x, int y)
 		{
-			Client.SendPacket(new ChunkData(new ChunkColumn())
+			Client.SendPacket(new ChunkData(new ChunkColumn() { X = x, Z = y })
 			{
 				Unloader = true
 			});
@@ -564,14 +548,7 @@ namespace Trestle.Entity
 		/// <param name="message"></param>
 		public void SendChat(MessageComponent message)
 		{
-			/*
-			if (Wrapper.TcpClient == null)
-			{
-				Console.WriteLine(message.Text);
-				return;
-			}
-
-			new ChatMessage(Wrapper) {Message = message}.Write();*/
+			Client.SendPacket(new ChatMessage(message));
 		}
 
 		/// <summary>
@@ -599,8 +576,7 @@ namespace Trestle.Entity
 		/// <param name="reason"></param>
 		public void Kick(MessageComponent reason)
 		{
-		//	new Disconnect(Wrapper) {Reason = reason}.Write();
-			SavePlayer();
+			Client.SendPacket(new Disconnect(reason));
 		}
 
 		/// <summary>

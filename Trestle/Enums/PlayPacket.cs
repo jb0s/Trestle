@@ -12,6 +12,8 @@ namespace Trestle.Enums
         Client_SpawnPosition = 0x05,
         Client_JoinGame = 0x01,
         Client_ChunkData = 0x21,
+        Client_ChangeGameState = 0x2B,
+        Client_Disconnect = 0x40,
         
         // Serverbound
         Server_PlayerPositionAndLook = 0x06,
@@ -19,6 +21,6 @@ namespace Trestle.Enums
         Server_KeepAlive = 0x00,
         Server_Player = 0x03,
         Server_PlayerPosition = 0x04,
-        Server_PlayerLook = 0x05
+        Server_PlayerLook = 0x05,
     }
 }

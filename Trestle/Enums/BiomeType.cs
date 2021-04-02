@@ -1,6 +1,6 @@
 ﻿namespace Trestle.Enums
 {
-    public enum Biome
+    public enum BiomeType
     {
         Plains = 0,
         Forest = 1,

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using fNbt;
 using LibNoise.Modifier;
+using Trestle.Worlds.Biomes;
 using Trestle.Blocks;
 using Trestle.Enums;
 using Trestle.Utils;
@@ -13,7 +14,7 @@ namespace Trestle.Worlds
 {
     public class ChunkColumn : IDisposable
     {
-        public Biome Biome;
+        public IBiome Biome;
 		public int[] BiomeColor = ArrayOf<int>.Create(256, 1);
 		public byte[] BiomeId = ArrayOf<byte>.Create(256, 1);
 		public NibbleArray Blocklight = new(16*16*256);

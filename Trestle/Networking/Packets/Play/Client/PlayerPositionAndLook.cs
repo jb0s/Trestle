@@ -25,7 +25,7 @@ namespace Trestle.Networking.Packets.Play
         [Field]
         public byte Flags { get; set; } = 111;
         
-        public PlayerPositionAndLook(Networking.Client client, Location location)
+        public PlayerPositionAndLook(Location location)
         {
             X = location.X;
             Y = location.Y;
