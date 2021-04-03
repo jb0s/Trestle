@@ -109,17 +109,14 @@ namespace Trestle.Networking
                 {
                     if (Encrypter != null)
                     {
-                        var toEncrypt = data;
-                        data = new byte[toEncrypt.Length];
-                        Encrypter.TransformBlock(toEncrypt, 0, toEncrypt.Length, data, 0);
+                        var encrypted = Encrypter.TransformFinalBlock(data, 0, data.Length);
 
                         var a = TcpClient.GetStream();
-                        a.Write(data, 0, data.Length);
+                        a.Write(encrypted, 0, encrypted.Length);
                         a.Flush();
                     }
                     else
                         TcpClient.Client.Send(data);
-                    //Globals.ClientManager.CleanErrors(this);
                 }
                 catch(Exception ex)
                 {

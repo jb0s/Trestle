@@ -76,6 +76,7 @@ namespace Trestle.Networking
             Globals.Random = new Random();
             Globals.ServerListener = new Listener();
             Globals.WorldManager = new WorldManager(new StandardWorld());
+            Globals.ServerKey = PacketCryptography.GenerateKeyPair();
         }
         
         /// <summary>

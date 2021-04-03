@@ -78,16 +78,16 @@ namespace Trestle.Networking
 
         private void HandleUncompressedPacket(Client client, NetworkStream stream)
         {
-            var length = ReadVarInt(stream);
-            var buffer = new byte[length];
-            var receivedData = stream.Read(buffer, 0, buffer.Length);
+            int length = ReadVarInt(stream);
+            byte[] buffer = new byte[length];
+            int receivedData = stream.Read(buffer, 0, buffer.Length);
 
             if (receivedData > 0)
             {
                 var dbuffer = new MinecraftStream(client);
                 if (client.Decrypter != null)
                 {
-                    var data = new byte[4096];
+                    byte[] data = new byte[4096];
                     client.Decrypter.TransformBlock(buffer, 0, buffer.Length, data, 0);
                     dbuffer.BufferedData = data;
                 }
@@ -95,7 +95,7 @@ namespace Trestle.Networking
                 dbuffer.BufferedData = buffer;
                 dbuffer.Size = length;
                 
-                var packetId = (byte)dbuffer.ReadVarInt();
+                byte packetId = (byte)dbuffer.ReadVarInt();
                 
                 HandlePacket(client, dbuffer, packetId);
                 
@@ -126,12 +126,20 @@ namespace Trestle.Networking
                 ClientState.Login => typeof(LoginPacket),
                 ClientState.Play => typeof(PlayPacket)
             };
-            
-            var packet = handler();
-            packet.Client = client;
-            
-            packet.DeserializePacket(buffer);
-            packet.HandlePacket();
+
+            try
+            {
+                var packet = handler();
+                packet.Client = client;
+
+                packet.DeserializePacket(buffer);
+                packet.HandlePacket();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
         }
         
         private void LoadHandlers()

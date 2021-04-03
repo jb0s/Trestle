@@ -7,6 +7,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using Trestle.Blocks;
 using Trestle.Networking.Packets.Play.Client;
 using Trestle.Worlds;
 
@@ -74,9 +75,10 @@ namespace Trestle.Worlds
 
             if (Players.TryAdd(player.EntityId, player))
             {
-                // TODO: Be arsed
+                SpawnForAll(player);
             }
 
+            player.World = this;
             player.IsSpawned = spawn;
             player.GameMode = DefaultGameMode;
         }
@@ -175,5 +177,37 @@ namespace Trestle.Worlds
         {
             Dispose(false);
         }
+
+        public Block GetBlock(Vector3 location)
+        {
+            ChunkLocation chunkcoords = new ChunkLocation((int) location.X >> 4, (int) location.Z >> 4);
+            var chunk = WorldGenerator.GenerateChunk(chunkcoords);
+
+            var bid = chunk.GetBlock(Mod(location.X), (int) location.Y,
+                Mod(location.Z));
+
+            var metadata = chunk.GetMetadata(Mod(location.X), (int)location.Y,
+                Mod(location.Z));
+
+            var block = new Block(bid);
+            block.Coordinates = location;
+            block.Metadata = metadata;
+
+            return block;
+        }
+
+        public void SetBlock(Material block, Vector3 location)
+        {
+            ChunkLocation chunkcoords = new ChunkLocation((int) location.X >> 4, (int) location.Z >> 4);
+            var chunk = WorldGenerator.GenerateChunk(chunkcoords);
+
+            chunk.SetBlock(Mod(location.X), (int)location.Y, Mod(location.Z), block);
+            chunk.IsDirty = true;
+            
+            // TODO: Broadcast BlockChange
+        }
+        
+        private int Mod(double val)
+            => (int)(((val%16) + 16)%16);
     }
 }

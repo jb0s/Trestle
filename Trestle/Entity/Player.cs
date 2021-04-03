@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Security.Claims;
 using System.Text;
-using Microsoft.VisualBasic.CompilerServices;
-using Trestle.Entity.Tile;
+using System.Linq;
+using Trestle.Utils;
 using Trestle.Enums;
+using Trestle.Worlds;
 using Trestle.Networking;
-using Trestle.Networking.Packets;
+using System.Security.Claims;
+using System.Collections.Generic;
 using Trestle.Networking.Packets.Play;
 using Trestle.Networking.Packets.Play.Client;
-using Trestle.Utils;
-using Trestle.Worlds;
-using Animation = Trestle.Enums.Animation;
-using ObjectType = Trestle.Enums.ObjectType;
-using Vector3 = Trestle.Utils.Vector3;
 
 namespace Trestle.Entity
 {
@@ -48,9 +41,9 @@ namespace Trestle.Entity
 		public string Username { get; set; }
 		
 		/// <summary>
-		/// The player's UUID
+		/// The player's Uuid
 		/// </summary>
-		public string UUID { get; set; }
+		public string Uuid { get; set; }
 		
 		/// <summary>
 		/// The player's associated ClientWrapper
@@ -116,17 +109,7 @@ namespace Trestle.Entity
 		/// Last action the entity performed.
 		/// </summary>
 		public EntityAction LastEntityAction { get; set; }
-		
-		/// <summary>
-		/// Is the player an operator?
-		/// </summary>
-		public bool IsOperator { get; internal set; }
-		
-		/// <summary>
-		/// Is the player loaded?
-		/// </summary>
-		private bool IsLoaded { get; set; }
-		
+
 		/// <summary>
 		/// Is the player crouching?
 		/// </summary>
@@ -153,7 +136,7 @@ namespace Trestle.Entity
 									.Concat(PacketCryptography.PublicKeyToAsn1(Globals.ServerKey))
 									.ToArray())
 							));
-
+						
 						var authenticated = new WebClient().DownloadString(uri);
 						if (authenticated.Contains("NO"))
 						{
@@ -163,9 +146,11 @@ namespace Trestle.Entity
 					}
 					catch
 					{
+						Console.WriteLine("Player authenticated: NO");
 						return false;
 					}
 
+					Console.WriteLine("Player authenticated: YES");
 					return true;
 				}
 
@@ -177,24 +162,25 @@ namespace Trestle.Entity
         {
 	        ChunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
             Inventory = new InventoryManager(this);
-            World = world;
-            
-            Location = world.SpawnPoint;
 
+            SendToWorld(world);
+            
             // TODO: Fix this dumb workaround
             EntityId = Globals.Random.Next(0, 999999999);
-            
-            // TODO: Unhardcode viewdistance
-            ViewDistance = 8;
-            
-            IsOperator = false;
-            IsLoaded = false;
         }
         
         public override void OnTick()
         {
         }
-        
+
+        public void SendToWorld(World world)
+        {
+	        World = world;
+	        World.AddPlayer(this);
+	        
+	        Location = world.SpawnPoint;
+        }
+
         /// <summary>
         /// Handler for when the client moves around the world.
         /// </summary>
@@ -263,19 +249,17 @@ namespace Trestle.Entity
 		/// </summary>
 		/// <param name="hand"></param>
 		public void PlayerHandSwing(byte hand)
-		{
-			//PlayerAnimation(Animation.SwingArm, hand);
-		}
+			=> PlayerAnimation(AnimationType.SwingArm, hand);
 
 		/// <summary>
-		/// Performs an animation on the client.
+		/// Performs an animationType on the client.
 		/// </summary>
-		/// <param name="animation"></param>
+		/// <param name="animationType"></param>
 		/// <param name="hand"></param>
-		public void PlayerAnimation(Animation animation, byte hand = 0)
+		public void PlayerAnimation(AnimationType animationType, byte hand = 0)
 		{
 			/*
-			var packet = new Networking.Packets.Animation(Wrapper) { EntityId = EntityId, AnimationId = (byte)animation, Hand = hand};
+			var packet = new Networking.Packets.AnimationType(Wrapper) { EntityId = EntityId, AnimationId = (byte)animationType, Hand = hand};
 			World.BroadcastPacket(packet, false);*/
 		}
 
@@ -341,6 +325,13 @@ namespace Trestle.Entity
 		}
 		
 		/// <summary>
+		/// Sets the player's game mode.
+		/// </summary>
+		/// <param name="target"></param>
+		public void SetGamemode(GameMode target)
+			=> SetGamemode(target, false);
+		
+		/// <summary>
 		/// Silently sets the player's game mode.
 		/// </summary>
 		/// <param name="target"></param>
@@ -359,32 +350,6 @@ namespace Trestle.Entity
 		}
 
 		/// <summary>
-		/// Sets the player's game mode.
-		/// </summary>
-		/// <param name="target"></param>
-		public void SetGamemode(GameMode target)
-		{
-			SetGamemode(target, false);
-		}
-		
-		/// <summary>
-		/// Teleports the player entity.
-		/// </summary>
-		/// <param name="newPosition"></param>
-		public void Teleport(Location newPosition)
-		{
-			/*
-			new EntityTeleport(Wrapper)
-			{
-				EntityId = EntityId,
-				Coordinates = newPosition.ToVector3(),
-				OnGround = newPosition.OnGround,
-				Pitch = newPosition.Pitch,
-				Yaw = newPosition.Yaw
-			}.Broadcast(World, true, this);*/
-		}
-
-		/// <summary>
 		/// Respawns the player entity.
 		/// </summary>
 		public void Respawn()
@@ -397,33 +362,16 @@ namespace Trestle.Entity
 				//Teleport(World.GetSpawnPoint());
 			//}
 		}
-		
-		/// <summary>
-		/// Send the player's health to the client.
-		/// </summary>
-		public void SendHealth()
-		{
-			// TODO: Health
-			//new UpdateHealth(Wrapper).Write();
-		}
 
 		/// <summary>
 		/// Initializes the Player entity.
 		/// </summary>
 		internal void InitializePlayer()
 		{
-			if (!IsLoaded)
-			{
-				LoadPlayer();
-				string savename = Config.OnlineMode ? UUID : Username;
-				//IsOperator = OperatorLoader.IsOperator(savename);
-			}
-
 			Client.SendPacket(new SpawnPosition());
 			Client.SendPacket(new PlayerPositionAndLook(Location));
 
 			HasSpawned = true;
-			World.AddPlayer(this);
 			
 			Client.Player.Inventory.SendToPlayer();
 			BroadcastInventory();
@@ -530,13 +478,13 @@ namespace Trestle.Entity
 		}
 		
 		/// <summary>
-		/// Unload the chunk at X, Y
+		/// Unload the chunk at X, Z
 		/// </summary>
 		/// <param name="x"></param>
-		/// <param name="y"></param>
-		internal void UnloadChunk(int x, int y)
+		/// <param name="z"></param>
+		internal void UnloadChunk(int x, int z)
 		{
-			Client.SendPacket(new ChunkData(new ChunkColumn() { X = x, Z = y })
+			Client.SendPacket(new ChunkData(new ChunkColumn() { X = x, Z = z })
 			{
 				Unloader = true
 			});
@@ -547,18 +495,14 @@ namespace Trestle.Entity
 		/// </summary>
 		/// <param name="message"></param>
 		public void SendChat(MessageComponent message)
-		{
-			Client.SendPacket(new ChatMessage(message));
-		}
+			=> Client.SendPacket(new ChatMessage(message));
 
 		/// <summary>
 		/// Send a chat message.
 		/// </summary>
 		/// <param name="message"></param>
 		public void SendChat(string message)
-		{
-			SendChat(new MessageComponent(message));
-		}
+			=> SendChat(new MessageComponent(message));
 		
 		/// <summary>
 		/// Send a chat message with a color.
@@ -566,101 +510,19 @@ namespace Trestle.Entity
 		/// <param name="message"></param>
 		/// <param name="color"></param>
 		public void SendChat(string message, ChatColor color)
-		{
-			SendChat("§" + color.Value + message);
-		}
+			=> SendChat("§" + color.Value + message);
 
 		/// <summary>
 		/// Kick the player from Trestle with a reason.
 		/// </summary>
 		/// <param name="reason"></param>
 		public void Kick(MessageComponent reason)
-		{
-			Client.SendPacket(new Disconnect(reason));
-		}
+			=> Client.SendPacket(new Disconnect(reason));
 
 		/// <summary>
 		/// Kick the player from Trestle.
 		/// </summary>
 		public void Kick()
-		{
-			Kick(new MessageComponent("Unknown reason."));
-		}
-
-		/// <summary>
-		/// Tries to toggle the Operator status on the player and returns if it succeeded or not.
-		/// </summary>
-		/// <returns></returns>
-		public bool ToggleOperatorStatus()
-		{
-			//string savename = ServerSettings.OnlineMode ? UUID : Username;
-			//IsOperator = OperatorLoader.Toggle(savename.ToLower());
-			return IsOperator;
-		}
-
-		/// <summary>
-		/// Save the player's info.
-		/// </summary>
-		public void SavePlayer()
-		{
-			/*// TODO: Health
-			//byte[] health = HealthManager.Export();
-			byte[] inv = Inventory.GetBytes();
-			DataBuffer buffer = new (new byte[0]);
-			buffer.WriteDouble(Location.X);
-			buffer.WriteDouble(Location.Y);
-			buffer.WriteDouble(Location.Z);
-			buffer.WriteFloat(Location.Yaw);
-			buffer.WriteFloat(Location.Pitch);
-			buffer.WriteBool(Location.OnGround);
-			buffer.WriteVarInt((int)GameMode);
-			//buffer.WriteVarInt(health.Length);
-			//foreach (byte b in health)
-			//{
-				//buffer.WriteByte(b);
-			//}
-			buffer.WriteVarInt(inv.Length);
-			foreach (byte b in inv)
-			{
-				buffer.WriteByte(b);
-			}
-			byte[] data = buffer.ExportWriter;
-			data = Globals.Compress(data);
-			string savename = ServerSettings.OnlineMode ? UUID : Username;
-			File.WriteAllBytes("Players/" + savename + ".pdata", data);*/
-		}
-
-		/// <summary>
-		/// Load the player's saved info.
-		/// </summary>
-		public void LoadPlayer()
-		{
-			string savename = Config.OnlineMode ? UUID : Username;
-			if (File.Exists("Players/" + savename + ".pdata"))
-			{
-				byte[] data = File.ReadAllBytes("Players/" + savename + ".pdata");
-				data = Globals.Decompress(data);
-				MinecraftStream reader = new MinecraftStream(data);
-				double x = reader.ReadDouble();
-				double y = reader.ReadDouble();
-				double z = reader.ReadDouble();
-				float yaw = reader.ReadFloat();
-				float pitch = reader.ReadFloat();
-				bool onGround = reader.ReadBool();
-				Location = new Location(x, y, z) {Yaw = yaw, Pitch = pitch, OnGround = onGround};
-				//GameMode = (GameMode) reader.ReadVarInt();
-				int healthLength = reader.ReadVarInt();
-				byte[] healthData = reader.Read(healthLength);
-				int inventoryLength = reader.ReadVarInt();
-				byte[] inventoryData = reader.Read(inventoryLength);
-				//HealthManager.Import(healthData);
-				Inventory.Import(inventoryData);
-			}
-			else
-			{
-				Location = World.SpawnPoint;
-			}
-			IsLoaded = true;
-		}
+			=> Kick(new MessageComponent("Unknown reason."));
     }
 }

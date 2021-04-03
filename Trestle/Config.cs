@@ -10,7 +10,7 @@ namespace Trestle
         internal static string Seed = "default";
         internal static bool UseCompression = false;
         internal static int CompressionThreshold = 999999999;
-        internal static bool OnlineMode = false;
+        internal static bool OnlineMode = true;
         internal static bool EncryptionEnabled = true;
         internal static byte MaxPlayers = 10;
         internal static int Port = 25565;

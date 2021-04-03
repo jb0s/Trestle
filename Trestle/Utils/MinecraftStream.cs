@@ -350,8 +350,6 @@ public class MinecraftStream : IDisposable
 			return bytes.ToArray();
 		}
 
-		public static int Number = 0;
-		
 		/// <summary>
 		/// Flush all data to the TCPClient NetworkStream.
 		/// </summary>
@@ -360,7 +358,6 @@ public class MinecraftStream : IDisposable
 			try
 			{
 				var allData = _bffr.ToArray();
-				File.WriteAllBytes($"things-{Number++}", allData);
 				_bffr.Clear();
 				
 				if (Config.UseCompression && _client.State == ClientState.Play && _client.SetCompressionSend)

@@ -49,7 +49,7 @@ namespace Trestle.Blocks
         
         public float GetHardness()
         {
-            return Durability/5.0F;
+            return Durability / 5f;
         }
 
         public virtual void OnTick(World world)
@@ -58,6 +58,11 @@ namespace Trestle.Blocks
 
         public virtual void DoPhysics(World world)
         {
+        }
+
+        public void BreakBlock(World playerWorld)
+        {
+            playerWorld.SetBlock(Material.Air, Coordinates);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Trestle.Utils;
+﻿using Trestle.Networking.Packets.Play.Client;
+using Trestle.Utils;
 using Trestle.Worlds;
 
 namespace Trestle.Entity
@@ -17,14 +18,15 @@ namespace Trestle.Entity
             TimeToLive = 6000;
         }
 
-        private void DespawnEntity(Player source)
-        {
-            World.RemoveEntity(this);
-        }
-
         public override void SpawnEntity()
         {
-            World.AddEntity(this);
+            base.SpawnEntity();
+
+            foreach (var player in World.Players.Values)
+            {
+                var spawnedBy = player.Client;
+                spawnedBy.SendPacket(new SpawnObject(2, (int)Location.X, (int)Location.Y, (int)Location.Z, 0, 0, 1));
+            }
         }
 
         public override void OnTick()

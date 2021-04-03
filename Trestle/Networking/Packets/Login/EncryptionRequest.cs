@@ -1,9 +1,11 @@
-﻿using Trestle.Attributes;
+﻿using System;
+using Trestle.Attributes;
 using Trestle.Enums;
 
 namespace Trestle.Networking.Packets.Login
 {
-    [ClientBound(LoginPacket.EncryptionRequest)]
+    // Shares ID with EncryptionResponse
+    [ClientBound(LoginPacket.EncryptionResponse)]
     public class EncryptionRequest : Packet
     {
         [Field]
@@ -11,21 +13,20 @@ namespace Trestle.Networking.Packets.Login
 
         [Field] 
         [VarInt] 
-        public int PublicKeyLength { get; set; } = 0;
+        public int PublicKeyLength { get; set; }
         
         [Field]
         public byte[] PublicKey { get; set; }
 
         [Field] 
         [VarInt] 
-        public int VerifyTokenLength { get; set; } = 0;
+        public int VerifyTokenLength { get; set; }
         
         [Field]
         public byte[] VerifyToken { get; set; }
 
-        public EncryptionRequest(string serverId, byte[] publicKey, byte[] verifyToken)
+        public EncryptionRequest(byte[] publicKey, byte[] verifyToken)
         {
-            ServerId = serverId;
             PublicKeyLength = publicKey.Length;
             PublicKey = publicKey;
             VerifyTokenLength = verifyToken.Length;

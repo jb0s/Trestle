@@ -1,6 +1,6 @@
 ﻿namespace Trestle.Enums
 {
-    public enum Animation
+    public enum AnimationType
     {
         SwingArm,
         TakeDamage,

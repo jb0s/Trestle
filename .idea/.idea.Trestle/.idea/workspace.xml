@@ -5,36 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a6dffe11-0af9-4daf-a6a8-8f13590b3770" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Trestle/Enums/GameStateReason.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/ChangeGameState.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/Disconnect.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Biomes/BiomeManager.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Biomes/Desert/DesertBiome.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Biomes/Forest/ForestBiome.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Biomes/Plains/PlainsBiome.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Decorators/CactusDecorator.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Decorators/DeadBushDecorator.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Decorators/Decorator.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Decorators/FlowerDecorator.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Decorators/ForestDecorator.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Decorators/GrassDecorator.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Decorators/WaterDecorator.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Structures/OakTree.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Trestle/Worlds/Structures/Structure.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Login/EncryptionResponse.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Login/LoginDisconnect.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/Animation.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/SpawnObject.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Server/ClientSettings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Server/PlayerDigging.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Trestle/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Biomes/BaseBiome.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Worlds/Biomes/Biome.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Biomes/IBiome.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Worlds/Biomes/IBiome.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Block/Block.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Block/Block.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Config.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Config.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Trestle/Entity/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Entity/Player.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Enums/Biome.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Enums/BiomeType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Enums/Animation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Enums/AnimationType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Enums/LoginPacket.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Enums/LoginPacket.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Trestle/Enums/PlayPacket.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Enums/PlayPacket.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Items/ItemEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Items/ItemEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Networking/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/Client.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Networking/Listener.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/Listener.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Networking/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/Packet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Networking/Packets/Login/EncryptionRequest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Login/EncryptionRequest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Trestle/Networking/Packets/Login/LoginStart.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Login/LoginStart.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/PlayerPositionAndLook.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/PlayerPositionAndLook.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Networking/Packets/Login/LoginSuccess.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/Packets/Login/LoginSuccess.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Trestle/Networking/TrestleServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Networking/TrestleServer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/ChunkColumn.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Worlds/ChunkColumn.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/TestWorld/OctaveGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Worlds/StandardWorld/OctaveGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/TestWorld/TestWorld.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Worlds/StandardWorld/StandardWorld.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Trestle/Worlds/TestWorld/TestWorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Worlds/StandardWorld/StandardWorldGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Trestle.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Trestle.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Utils/MinecraftStream.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Utils/MinecraftStream.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trestle/Utils/PacketCryptography.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Utils/PacketCryptography.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Trestle/Worlds/World.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Trestle/Worlds/World.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fNbt" beforeDir="false" afterPath="$PROJECT_DIR$/fNbt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fNbt/fNbt/fNbt.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/fNbt/fNbt/fNbt.csproj" afterDir="false" />
@@ -56,35 +51,14 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9F376944-DF72-4B66-A1B1-7A3BE4AEC7C1/70/RijndaelManaged.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7FABF2B2-43DF-40D3-855F-41A118FD6EB9/1C/NetworkStream.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/0A7ABA01-6CDF-46F6-8DB4-91140CA06651/2F/FileSystem.Windows.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <changedPaths>
-      <option value="$PROJECT_DIR$/Trestle/Globals.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Server/ChatMessage.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Status/Response.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Worlds/TestWorld/OctaveGenerator.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Client.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Utils/Location.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Server/PlayerPosition.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Server/PlayerLook.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Server/PlayerPositionAndLook.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Listener.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Worlds/Flatworld/FlatWorldGenerator.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Server/Player.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Packet.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Utils/Vector2.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/ChunkData.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/PlayerPositionAndLook.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Login/LoginStart.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Enums/GameStateReason.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/ChangeGameState.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Worlds/TestWorld/TestWorld.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Enums/PlayPacket.cs" />
       <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/Disconnect.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Networking/TrestleServer.cs" />
       <option value="$PROJECT_DIR$/Trestle/Worlds/TestWorld/TestWorldGenerator.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Worlds/World.cs" />
       <option value="$PROJECT_DIR$/Trestle/Enums/BiomeType.cs" />
       <option value="$PROJECT_DIR$/Trestle/Biomes/IBiome.cs" />
       <option value="$PROJECT_DIR$/Trestle/Biomes/BaseBiome.cs" />
@@ -109,8 +83,31 @@
       <option value="$PROJECT_DIR$/Trestle/Worlds/Biomes/Desert/DesertBiome.cs" />
       <option value="$PROJECT_DIR$/Trestle/Worlds/Decorators/DeadBushDecorator.cs" />
       <option value="$PROJECT_DIR$/Trestle/Worlds/Decorators/CactusDecorator.cs" />
-      <option value="$PROJECT_DIR$/Trestle/Entity/Player.cs" />
       <option value="$PROJECT_DIR$/Trestle/Worlds/StandardWorld/StandardWorld.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Enums/AnimationType.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/Animation.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Config.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Login/LoginDisconnect.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Enums/LoginPacket.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Login/EncryptionRequest.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Utils/MinecraftStream.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/TrestleServer.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Globals.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Utils/PacketCryptography.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/Client.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Login/EncryptionResponse.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Entity/Player.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Login/LoginStart.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/Packet.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Server/ClientSettings.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Block/Block.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Worlds/World.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Entity/ItemEntity.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Enums/PlayPacket.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Server/PlayerDigging.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/Listener.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Items/ItemEntity.cs" />
+      <option value="$PROJECT_DIR$/Trestle/Networking/Packets/Play/Client/SpawnObject.cs" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1pIQz5vnQ0IUCO7vijC30whx1uz" />
@@ -171,7 +168,13 @@
       <workItem from="1617310868566" duration="3165000" />
       <workItem from="1617314596895" duration="520000" />
       <workItem from="1617353688434" duration="13247000" />
-      <workItem from="1617369506521" duration="4908000" />
+      <workItem from="1617369506521" duration="6749000" />
+      <workItem from="1617378301169" duration="10592000" />
+      <workItem from="1617392643364" duration="4121000" />
+      <workItem from="1617440289769" duration="4236000" />
+      <workItem from="1617456231698" duration="1123000" />
+      <workItem from="1617457592115" duration="2963000" />
+      <workItem from="1617473309551" duration="6713000" />
     </task>
     <servers />
   </component>

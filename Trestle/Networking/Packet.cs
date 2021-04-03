@@ -82,6 +82,7 @@ namespace Trestle.Networking
                 }
                 else
                 {
+                    Client.Player?.Kick(new MessageComponent($"Unable to parse field '{property.Name}'."));
                     throw new Exception($"Unable to parse field '{property.Name}'.");
                 }
             }
@@ -111,8 +112,30 @@ namespace Trestle.Networking
                     property.SetValue(this, buffer.ReadDouble());
                 else if(property.PropertyType == typeof(Boolean))
                     property.SetValue(this, buffer.ReadBool());
+                else if(property.PropertyType == typeof(Single))
+                    property.SetValue(this, buffer.ReadFloat());
+                else if(property.PropertyType == typeof(Byte))
+                    property.SetValue(this, (byte)buffer.ReadByte());
+                else if(property.PropertyType == typeof(Vector3))
+                {
+                    long val = buffer.ReadLong();
+                    property.SetValue(this, new Vector3(Convert.ToDouble(val >> 38), Convert.ToDouble((val >> 26) & 0xFFF), Convert.ToDouble(val << 38 >> 38)));
+                }
+                else if (property.PropertyType == typeof(Byte[]))
+                {
+                    var length = buffer.ReadVarInt();
+                    byte[] bytes = new byte[length];
+
+                    for(int i = 0; i < length; i++)
+                    {
+                        bytes[i] = (byte)buffer.ReadByte();
+                    }
+                    
+                    property.SetValue(this, bytes);
+                }
                 else
                 {
+                    Client.Player?.Kick(new MessageComponent("Unable to parse field of type " + property.PropertyType));
                     throw new Exception("Unable to parse field of type " + property.PropertyType);
                 }
             }

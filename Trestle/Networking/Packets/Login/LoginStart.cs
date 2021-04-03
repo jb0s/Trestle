@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Text;
 using Trestle.Attributes;
 using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Networking.Packets.Play;
+using Trestle.Networking.Packets.Play.Client;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Login
@@ -17,36 +19,26 @@ namespace Trestle.Networking.Packets.Login
         
         public override void HandlePacket()
         {
-            var uuid = GetUuid(Name);
+            var username = new string(Name.Where(c => char.IsLetter(c) || char.IsPunctuation(c) || char.IsDigit(c)).ToArray());
+            var uuid = GetUuid(username);
             
-            if (Config.OnlineMode)
-            {
-                if (Config.EncryptionEnabled)
-                {
-                    Client.State = ClientState.Login;
-                    Client.Username = Name;
-                    Client.SendPacket(new EncryptionRequest("", PacketCryptography.PublicKeyToAsn1(Globals.ServerKey), PacketCryptography.GetRandomToken()));
-                }
-
-                if (!Client.Player.IsAuthenticated)
-                {
-                    
-                }
-            }
+            Client.State = ClientState.Login;
+            Client.Username = username;
 
             if (Encoding.UTF8.GetBytes(Name).Length == 0)
-            {
-                
-            }
+                Client.SendPacket(new LoginDisconnect(new MessageComponent("Authentication failed!")));
 
             if (Client.Protocol < Globals.ProtocolVersion)
-            {
-                
-            }
+                Client.SendPacket(new LoginDisconnect(new MessageComponent($"Client too old! I'm on {Globals.OfficialProtocolName}")));
 
             if (Client.Protocol > Globals.ProtocolVersion)
+                Client.SendPacket(new LoginDisconnect(new MessageComponent($"Client too new! I'm still on {Globals.OfficialProtocolName}")));
+            
+            // Encryption
+            if (Config.OnlineMode && Config.EncryptionEnabled)
             {
-                
+                Client.SendPacket(new EncryptionRequest(PacketCryptography.PublicKeyToAsn1(Globals.ServerKey), PacketCryptography.GetRandomToken()));
+                return;
             }
             
             Client.SendPacket(new SetCompression(Config.UseCompression ? Config.CompressionThreshold : -1));
@@ -54,7 +46,7 @@ namespace Trestle.Networking.Packets.Login
             
             Client.Player = new Player(-1, Globals.WorldManager.MainWorld)
             {
-                UUID = uuid,
+                Uuid = uuid,
                 Username = Name,
                 Client = Client,
                 GameMode = Globals.WorldManager.MainWorld.DefaultGameMode
@@ -62,6 +54,13 @@ namespace Trestle.Networking.Packets.Login
 
             Client.State = ClientState.Play;
 
+            // Check if authentication went well
+            if (Config.OnlineMode && !Client.Player.IsAuthenticated)
+            {
+                Client.SendPacket(new Disconnect(new MessageComponent("Authentication failed!")));
+                return;
+            }
+            
             Client.SendPacket(new JoinGame(Client));
             Client.Player.InitializePlayer();
             Client.Player.SendChunksForLocation(true);
@@ -73,17 +72,20 @@ namespace Trestle.Networking.Packets.Login
             {
                 var wc = new WebClient();
                 var result = wc.DownloadString("https://api.mojang.com/users/profiles/minecraft/" + username);
-                var _result = result.Split('"');
-                if (_result.Length > 1)
+                var resultSplit = result.Split('"');
+                
+                if (resultSplit.Length > 1)
                 {
-                    var uuid = _result[3];
+                    var uuid = resultSplit[7];
                     return new Guid(uuid).ToString();
                 }
+                
                 return Guid.NewGuid().ToString();
             }
-            catch
+            catch(Exception e)
             {
-                return Guid.NewGuid().ToString();
+                Client.SendPacket(new LoginDisconnect(new MessageComponent(e.Message)));
+                return "";
             }
         }
     }

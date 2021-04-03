@@ -77,7 +77,7 @@ namespace Trestle.Utils
 		public static RijndaelManaged GenerateAes(byte[] key)
 		{
 			var cipher = new RijndaelManaged();
-			cipher.Mode = CipherMode.CFB;
+			cipher.Mode = CipherMode.CBC;
 			cipher.Padding = PaddingMode.None;
 			cipher.KeySize = 128;
 			cipher.FeedbackSize = 8;
