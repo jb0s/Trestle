@@ -42,15 +42,29 @@ namespace Trestle.Entity
             }
         }
 
+        private void DespawnEntity(Player collector)
+        {
+            foreach (var player in World.Players.Values)
+                player.Client.SendPacket(new CollectItem(this, collector));
+
+            // Actually kill the entity now
+            DespawnEntity();
+        }
+        
         public override void OnTick()
         {
             foreach (var player in World.Players.Values)
             {
                 if (player.Location.DistanceTo(Location) <= 1.8)
                 {
-                    Logger.Debug("Pick up!");
+                    // Add the item to the player's inventory
                     player.Inventory.AddItem(Item.ItemId, Item.Metadata);
-                    DespawnEntity();
+                    
+                    // Send the pickup animation packets.
+                    // The DespawnEntity is actually overridden to send the "item floating to player" animation before despawning.
+                    player.Client.SendPacket(new SoundEffect("random.pop", player.Location.ToVector3(), 1f, (byte)Globals.Random.Next(40, 100)));
+                    DespawnEntity(player);
+                    
                     break;
                 }
             }

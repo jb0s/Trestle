@@ -18,6 +18,8 @@ namespace Trestle.Enums
         Client_SpawnObject = 0x0E,
         Client_EntityMetadata = 0x1C,
         Client_DestroyEntities = 0x13,
+        Client_CollectItem = 0x0D,
+        Client_SoundEffect = 0x29,
         
         // Serverbound
         Server_PlayerPositionAndLook = 0x06,
