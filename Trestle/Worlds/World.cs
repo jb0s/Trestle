@@ -42,32 +42,42 @@ namespace Trestle.Worlds
             SpawnPoint = worldGenerator.GetSpawnPoint();
             
             // TODO: Fix this
-            //LoadSpawnChunks();
+            LoadSpawnChunks();
         }
 
         private void OnTick(object state)
         {
             foreach (var player in Players.Values.ToArray())
                 player.OnTick();
+
+            foreach (var entity in Entities.Values.ToArray())
+                entity.OnTick();
         }
 
+        // TODO: Fix spawn chunks
         public void LoadSpawnChunks()
         {
-            var chunkLoading = Stopwatch.StartNew();
+            //var chunkLoading = Stopwatch.StartNew();
 
-            GenerateChunks(null, new ChunkLocation(SpawnPoint), 8);
+            //GenerateChunks(null, new ChunkLocation(SpawnPoint), 16);
                 
-            chunkLoading.Stop();
-            Logger.Info($"Loaded spawn chunks in {chunkLoading.ElapsedMilliseconds}ms");
+            //chunkLoading.Stop();
+            //Logger.Info($"Loaded spawn chunks in {chunkLoading.ElapsedMilliseconds}ms");
             
             _tickTimer = new Timer(OnTick, null, 50, 50);
         }
 
         public void AddEntity(Entity.Entity entity)
-            => new NotImplementedException();
+        {
+            EntityManager.AddEntity(entity);
+            Entities.TryAdd(entity.EntityId, entity);
+        }
 
         public void RemoveEntity(Entity.Entity entity)
-            => new NotImplementedException();
+        {
+            if (Entities.TryRemove(entity.EntityId, out _))
+                EntityManager.RemoveEntity(null, entity);
+        }
 
         public virtual void AddPlayer(Player player, bool spawn = true)
         {

@@ -164,9 +164,6 @@ namespace Trestle.Entity
             Inventory = new InventoryManager(this);
 
             SendToWorld(world);
-            
-            // TODO: Fix this dumb workaround
-            EntityId = Globals.Random.Next(0, 999999999);
         }
         
         public override void OnTick()

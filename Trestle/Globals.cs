@@ -23,6 +23,7 @@ namespace Trestle
         internal static RSAParameters ServerKey;
 
         internal static Listener ServerListener = null;
+        private static int _entityId;
 
         public static void Initialize()
         {
@@ -78,5 +79,8 @@ namespace Trestle
                 world.Value.BroadcastChat(message, chattype, sender);
             }
         }
+
+        internal static int GetEntityId()
+            => ++_entityId;
     }
 }

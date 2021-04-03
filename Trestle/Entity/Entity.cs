@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Timers;
+using Trestle.Networking;
+using Trestle.Networking.Packets.Play.Client;
 using Trestle.Utils;
 using Trestle.Worlds;
 
@@ -19,7 +21,7 @@ namespace Trestle.Entity
         {
             World = world;
             Location = new Location(0, 0, 0);
-            EntityId = -1;
+            EntityId = Globals.GetEntityId();
         }
         
         public virtual void OnTick()
@@ -28,6 +30,11 @@ namespace Trestle.Entity
         
         public virtual void DespawnEntity()
         {
+            foreach (var player in World.Players.Values)
+            {
+                player.Client.SendPacket(new DespawnEntities(new []{ EntityId }));
+            }
+            
             World.RemoveEntity(this);
         }
         

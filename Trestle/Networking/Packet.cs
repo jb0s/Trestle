@@ -40,8 +40,15 @@ namespace Trestle.Networking
                 if (property.GetCustomAttribute<FieldAttribute>(false) == null)
                     continue;
                 
-                if (property.GetCustomAttribute<VarIntAttribute>(false) != null)
+                if (property.GetCustomAttribute<VarIntAttribute>(false) != null && property.PropertyType != typeof(Int32[]))
                     buffer.WriteVarInt((int)property.GetValue(this));
+                else if (property.GetCustomAttribute<VarIntAttribute>(false) != null && property.PropertyType == typeof(Int32[]))
+                {
+                    int[] array = (int[])property.GetValue(this);
+
+                    foreach (var varInt in array)
+                        buffer.WriteVarInt(varInt);
+                }
                 else if (property.PropertyType == typeof(Int16))
                     buffer.WriteShort((short)property.GetValue(this));
                 else if (property.PropertyType == typeof(UInt16))

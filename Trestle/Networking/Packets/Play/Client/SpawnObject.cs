@@ -41,10 +41,9 @@ namespace Trestle.Networking.Packets.Play.Client
         [Field]
         public short SpeedZ { get; set; }
 
-        public SpawnObject(byte type, int x, int y, int z, byte pitch, byte yaw, int info)
+        public SpawnObject(int entityId, byte type, int x, int y, int z, byte pitch, byte yaw, int info)
         {
-            Console.WriteLine("Spawning object at " + x + " " + y + " " + z);
-            EntityId = Globals.Random.Next(0, 999999999);
+            EntityId = entityId;
             Type = type;
             X = x * 32;
             Y = y * 32;

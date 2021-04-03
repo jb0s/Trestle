@@ -16,6 +16,8 @@ namespace Trestle.Enums
         Client_Disconnect = 0x40,
         Client_Animation = 0x0B,
         Client_SpawnObject = 0x0E,
+        Client_EntityMetadata = 0x1C,
+        Client_DestroyEntities = 0x13,
         
         // Serverbound
         Server_PlayerPositionAndLook = 0x06,

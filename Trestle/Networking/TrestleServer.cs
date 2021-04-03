@@ -57,7 +57,7 @@ namespace Trestle.Networking
             while (_ready)
             {
                 await Task.Delay(50);
-                
+
                 keepAliveTicks++;
                 if (keepAliveTicks > 50)
                 {
