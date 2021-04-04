@@ -2,8 +2,10 @@
 using System.Linq;
 using Trestle.Entity;
 using Trestle.Enums;
+using Trestle.Items;
 using Trestle.Networking.Packets;
 using Trestle.Networking.Packets.Play;
+using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.Utils
 {
@@ -46,10 +48,10 @@ namespace Trestle.Utils
         private void UpdateHandItems()
         {
             var s = GetSlot(CurrentSlot + 36);
-            //PrimaryHand = ItemFactory.GetItemById(s.ItemId, s.Metadata);
+            PrimaryHand = ItemFactory.GetItemById(s.ItemId, s.Metadata);
 
             s = GetSlot(45);
-            //PrimaryHand = ItemFactory.GetItemById(s.ItemId, s.Metadata);
+            OffHand = ItemFactory.GetItemById(s.ItemId, s.Metadata);
         }
         
         public Item GetItemInHand(PlayerHand hand)
@@ -57,9 +59,9 @@ namespace Trestle.Utils
             UpdateHandItems();
             switch (hand)
             {
-                
                 case PlayerHand.Primary:
                     return PrimaryHand;
+                
                 case PlayerHand.Secondary:
                     return OffHand;
             }
@@ -92,16 +94,7 @@ namespace Trestle.Utils
                 _slots[slot] = new ItemStack(itemId, itemcount, metadata);
                 if (_player != null && _player.HasSpawned)
                 {
-                    /*
-                    new SetSlot(_player.Wrapper)
-                    {
-                        WindowId = 0,
-                        ItemId = itemId,
-                        ItemCount = itemcount,
-                        Metadata = metadata,
-                        ItemDamage = 0,
-                        Slot = (short) slot
-                    }.Write();*/
+                    _player.Client.SendPacket(new SetSlot(0, (short)slot, _slots[slot]));
                 }
             }
             UpdateHandItems();
@@ -114,6 +107,23 @@ namespace Trestle.Utils
 
         public bool AddItem(short itemId, byte metadata, byte itemcount = 1)
         {
+            // Try quickbars first
+            for(int i = 36; i < 44; i++)
+            {
+                if (_slots[i].ItemId == itemId && _slots[i].Metadata == metadata && _slots[i].ItemCount < 64)
+                {
+                    var oldslot = _slots[i];
+                    if (oldslot.ItemCount + itemcount <= 64)
+                    {
+                        SetSlot(i, itemId, metadata, (byte) (oldslot.ItemCount + itemcount));
+                        return true;
+                    }
+                    SetSlot(i, itemId, metadata, 64);
+                    var remaining = (oldslot.ItemCount + itemcount) - 64;
+                    return AddItem(itemId, metadata, (byte) remaining);
+                }
+            }
+            
             for (var i = 9; i <= 45; i++)
             {
                 if (_slots[i].ItemId == itemId && _slots[i].Metadata == metadata && _slots[i].ItemCount < 64)
@@ -130,6 +140,16 @@ namespace Trestle.Utils
                 }
             }
 
+            // Try quickbars first
+            for (var i = 36; i < 44; i++)
+            {
+                if (_slots[i].ItemId == -1)
+                {
+                    SetSlot(i, itemId, metadata, itemcount);
+                    return true;
+                }
+            }
+            
             for (var i = 9; i <= 45; i++)
             {
                 if (_slots[i].ItemId == -1)
@@ -144,9 +164,8 @@ namespace Trestle.Utils
         public ItemStack GetSlot(int slot)
         {
             if (slot <= 45 && slot >= 0)
-            {
                 return _slots[slot];
-            }
+            
             throw new IndexOutOfRangeException("Invalid slot: " + slot);
         }
 
@@ -221,7 +240,7 @@ namespace Trestle.Utils
                 var value = _slots[i];
                 if (value.ItemId != -1)
                 {
-                    //_player.Client.SendPacket(new SetSlot(value, i));
+                    _player.Client.SendPacket(new SetSlot(0, i, value));
                 }
             }
         }

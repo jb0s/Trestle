@@ -21,6 +21,8 @@ namespace Trestle.Enums
         Client_DestroyEntities = 0x13,
         Client_CollectItem = 0x0D,
         Client_SoundEffect = 0x29,
+        Client_SetSlot = 0x2F,
+        Client_EntityEquipment = 0x04,
         
         // Serverbound
         Server_PlayerPositionAndLook = 0x06,
@@ -31,5 +33,6 @@ namespace Trestle.Enums
         Server_PlayerLook = 0x05,
         Server_PlayerDigging = 0x07,
         Server_ClientSettings = 0x15,
+        Server_PlayerBlockPlacement = 0x08,
     }
 }
