@@ -1,3 +1,4 @@
+using System;
 using Trestle.Attributes;
 using Trestle.Blocks;
 using Trestle.Enums;
@@ -5,6 +6,7 @@ using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
+    [IgnoreExceptions]
     [ServerBound(PlayPacket.Server_PlayerBlockPlacement)]
     public class PlayerBlockPlacement : Packet
     {
@@ -29,49 +31,56 @@ namespace Trestle.Networking.Packets.Play.Client
 
         public override void HandlePacket()
         {
-            var newLocation = Location;
-            var existingBlock = Client.Player.World.GetBlock(Location);
+            try
+            {
+                var newLocation = Location;
+                var existingBlock = Client.Player.World.GetBlock(Location);
 
-            switch (Face)
-            {
-                case 0:
-                    newLocation.Y--;
-                    break;
-                case 1:
-                    newLocation.Y++;
-                    break;
-                case 2:
-                    newLocation.Z--;
-                    break;
-                case 3:
-                    newLocation.Z++;
-                    break;
-                case 4:
-                    newLocation.X--;
-                    break;
-                case 5:
-                    newLocation.X++;
-                    break;
-            }
-            
-            if (existingBlock.IsUsable && !Client.Player.IsCrouching)
-            {
-                existingBlock.UseItem(Client.Player.World, Client.Player, Location, (BlockFace)Face);
-                return;
-            }
+                switch (Face)
+                {
+                    case 0:
+                        newLocation.Y--;
+                        break;
 
-            var itemInHand = Client.Player.Inventory.GetItemInHand((PlayerHand)Hand);
-            if (itemInHand.GetType() == typeof(Block))
-            {
-                var block = (Block)itemInHand;
-                block.Coordinates = newLocation;
-                
-                Client.Player.World.SetBlock(block.Material, block.Coordinates);
+                    case 1:
+                        newLocation.Y++;
+                        break;
+
+                    case 2:
+                        newLocation.Z--;
+                        break;
+
+                    case 3:
+                        newLocation.Z++;
+                        break;
+
+                    case 4:
+                        newLocation.X--;
+                        break;
+
+                    case 5:
+                        newLocation.X++;
+                        break;
+                }
+
+                if (existingBlock.IsUsable && !Client.Player.IsCrouching)
+                {
+                    existingBlock.UseItem(Client.Player.World, Client.Player, Location, (BlockFace)Face);
+                    return;
+                }
+
+                var itemInHand = Client.Player.Inventory.GetItemInHand((PlayerHand)Hand);
+
+                Client.Player.World.SetBlock(itemInHand.Material, newLocation);
 
                 if (Client.Player.GameMode != GameMode.Creative)
                 {
-                    Client.Player.Inventory.RemoveItem((short)block.Id, block.Metadata, 1);
+                    Console.WriteLine($"Player placed block {itemInHand.Material} at {newLocation}");
+                    Client.Player.Inventory.RemoveItem((short)itemInHand.Id, itemInHand.Metadata, 1);
                 }
+            }
+            catch
+            {
             }
         }
     }

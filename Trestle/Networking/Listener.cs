@@ -127,9 +127,10 @@ namespace Trestle.Networking
                 ClientState.Play => typeof(PlayPacket)
             };
 
+            var packet = handler();
+            
             try
             {
-                var packet = handler();
                 packet.Client = client;
 
                 packet.DeserializePacket(buffer);
@@ -137,8 +138,8 @@ namespace Trestle.Networking
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                if(packet.GetType().GetCustomAttribute<IgnoreExceptionsAttribute>() == null)
+                    client.Player?.Kick(new MessageComponent($"{ChatColor.Red}An exception occurred while handling packet.\n\n{ChatColor.Reset}{e.Message}\n{ChatColor.DarkGray}{e.StackTrace}"));
             }
         }
         

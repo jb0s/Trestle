@@ -4,6 +4,7 @@ using Trestle.Enums;
 using Trestle.Worlds;
 using System.Threading;
 using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Trestle.Utils;
 using Trestle.Worlds.Flatworld;
@@ -78,10 +79,9 @@ namespace Trestle.Networking
             Globals.WorldManager = new WorldManager(new StandardWorld());
             Globals.ServerKey = PacketCryptography.GenerateKeyPair();
         }
-        
+
         /// <summary>
         /// Fired when an unhandled exception occurs.
-        /// We don't want the server to fully shut down when something goes wrong.
         /// </summary>
         private void UnhandledException(object sender, UnhandledExceptionEventArgs args)
         {
