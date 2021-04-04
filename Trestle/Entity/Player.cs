@@ -275,12 +275,14 @@ namespace Trestle.Entity
 			// TODO: [Survival] Add this
 		}
 
-        #endregion
+		#endregion
 
-        #region Chunk loading
+		#region Chunk loading
 
-        public void SendChunksForLocation(bool force = false)
-			=> SendChunksForLocation(new Vector2((int)Location.X, (int)Location.Z), force);
+		public void SendChunksForLocation(bool force = false)
+        {
+			SendChunksForLocation(new Vector2((int)Location.X / 16, (int)Location.Z / 16), force);
+		}
 		
 		/// <summary>
 		/// Send cached chunk for position.
