@@ -5,7 +5,6 @@ using Trestle.Enums;
 using Trestle.Worlds;
 using Trestle.Networking;
 using System.Collections.Generic;
-using Trestle.Networking.Packets.Play;
 using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.Entity
