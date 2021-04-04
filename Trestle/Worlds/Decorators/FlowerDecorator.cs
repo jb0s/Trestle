@@ -11,7 +11,7 @@ namespace Trestle.Worlds.Decorators
         {
             for (int y = StandardWorldGenerator.WaterLevel; y < 256; y++)
                 if (Globals.Random.Next(0, 5000) < 50)
-                    if (chunk.GetBlock(x, y, z) == biome.TopBlock)
+                    if (chunk.GetBlock(x, y, z) == biome.TopBlock && chunk.GetBlock(x, y + 1, z) == Material.Air)
                         chunk.SetBlock(x, y + 1, z, new Block(Material.RedFlower) {Metadata = (byte)(Globals.Random.Next(0, 7) + 1)});
         }
     }

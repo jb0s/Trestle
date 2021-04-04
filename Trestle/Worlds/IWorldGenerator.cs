@@ -9,6 +9,6 @@ namespace Trestle.Worlds
         ChunkColumn GenerateChunk(ChunkLocation location);
 
         Location GetSpawnPoint()
-            => null;
+            => new(0, 0, 0);
     }
 }
