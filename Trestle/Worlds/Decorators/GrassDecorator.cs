@@ -1,7 +1,7 @@
 ﻿using System;
 using Trestle.Blocks;
 using Trestle.Worlds.Biomes;
-using Trestle.Worlds.TestWorld;
+using Trestle.Worlds.StandardWorld;
 
 namespace Trestle.Worlds.Decorators
 {

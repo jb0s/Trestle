@@ -12,13 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Assets\biomes.json" />
-      <EmbeddedResource Include="Assets\biomes.json" />
-      <None Remove="Assets\dimensions.json" />
-      <EmbeddedResource Include="Assets\dimensions.json" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\fNbt\fNbt\fNbt.csproj" />
     </ItemGroup>
 

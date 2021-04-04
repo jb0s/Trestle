@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Trestle.Entity;
-using Trestle.Enums;
-using Trestle.Items;
-using Trestle.Networking.Packets;
-using Trestle.Networking.Packets.Play;
 using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.Utils
@@ -17,8 +13,7 @@ namespace Trestle.Utils
         public ItemStack ClickedItem { get; set; }
         public int CurrentSlot { get; set; }
 
-        private Item PrimaryHand { get; set; }
-        private Item OffHand { get; set; }
+        private Item Hand { get; set; }
 
         public InventoryManager(Player player)
         {
@@ -48,27 +43,15 @@ namespace Trestle.Utils
         private void UpdateHandItems()
         {
             var s = GetSlot(CurrentSlot + 36);
-            PrimaryHand = ItemFactory.GetItemById(s.ItemId, s.Metadata);
-
-            s = GetSlot(45);
-            OffHand = ItemFactory.GetItemById(s.ItemId, s.Metadata);
+            Hand = new Item((ushort)s.ItemId, s.Metadata);
         }
         
-        public Item GetItemInHand(PlayerHand hand)
+        public Item GetItemInHand()
         {
             UpdateHandItems();
-            switch (hand)
-            {
-                case PlayerHand.Primary:
-                    return PrimaryHand;
-                
-                case PlayerHand.Secondary:
-                    return OffHand;
-            }
-
-            return null;
+            return Hand;
         }
-        
+
         public void SwapHands()
         {
             UpdateHandItems();

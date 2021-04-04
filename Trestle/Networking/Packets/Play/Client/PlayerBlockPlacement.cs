@@ -69,7 +69,7 @@ namespace Trestle.Networking.Packets.Play.Client
                     return;
                 }
 
-                var itemInHand = Client.Player.Inventory.GetItemInHand((PlayerHand)Hand);
+                var itemInHand = Client.Player.Inventory.GetItemInHand();
 
                 Client.Player.World.SetBlock(itemInHand.Material, newLocation);
                 Client.SendPacket(new SoundEffect($"dig.{itemInHand.Material.ToString().ToLower()}", Client.Player.Location.ToVector3()));

@@ -1,14 +1,12 @@
 using System;
 using System.Linq;
 using Trestle.Enums;
+using Trestle.Utils;
 using Trestle.Worlds;
 using System.Threading;
 using System.Diagnostics;
-using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
-using Trestle.Utils;
-using Trestle.Worlds.Flatworld;
-using Trestle.Worlds.TestWorld;
+using Trestle.Worlds.StandardWorld;
 
 namespace Trestle.Networking
 {

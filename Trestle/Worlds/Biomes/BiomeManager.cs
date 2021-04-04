@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Trestle.Worlds.TestWorld;
+using Trestle.Worlds.StandardWorld;
 
 namespace Trestle.Worlds.Biomes
 {

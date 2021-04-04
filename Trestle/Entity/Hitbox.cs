@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using Trestle.Utils;
+using System.Collections.Generic;
 
 namespace Trestle.Entity
 {
- public enum ContainmentType
+    public enum ContainmentType
     {
         Disjoint,
         Contains,
@@ -28,24 +28,16 @@ namespace Trestle.Entity
         }
         
         public double Height
-        {
-            get { return Max.Y - Min.Y; }
-        }
+            => Max.Y - Min.Y;
 
         public double Width
-        {
-            get { return Max.X - Min.X; }
-        }
+            => Max.X - Min.X;
 
         public double Depth
-        {
-            get { return Max.Z - Min.Z; }
-        }
+            => Max.Z - Min.Z;
 
         public bool Equals(Hitbox other)
-        {
-            return (Min == other.Min) && (Max == other.Max);
-        }
+            => (Min == other.Min) && (Max == other.Max);
         
         public ContainmentType Contains(Hitbox box)
         {
@@ -71,16 +63,14 @@ namespace Trestle.Entity
         }
         
         public bool Contains(Vector3 vec)
-        {
-            return Min.X <= vec.X && vec.X <= Max.X &&
+            => Min.X <= vec.X && vec.X <= Max.X &&
                    Min.Y <= vec.Y && vec.Y <= Max.Y &&
                    Min.Z <= vec.Z && vec.Z <= Max.Z;
-        }
         
         public static Hitbox CreateFromPoints(IEnumerable<Vector3> points)
         {
             if (points == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(points), "You must provide points for the hitbox.");
 
             var empty = true;
             var vector2 = new Vector3(float.MaxValue);
@@ -92,15 +82,13 @@ namespace Trestle.Entity
                 empty = false;
             }
             if (empty)
-                throw new ArgumentException();
+                throw new ArgumentException("The hitbox cannot be empty.");
 
             return new Hitbox(vector2, vector1);
         }
         
         public Hitbox OffsetBy(Vector3 offset)
-        {
-            return new Hitbox(Min + offset, Max + offset);
-        }
+            => new(Min + offset, Max + offset);
 
         public Vector3[] GetCorners()
         {
@@ -118,19 +106,14 @@ namespace Trestle.Entity
         }
         
         public override bool Equals(object obj)
-        {
-            return (obj is Hitbox) && Equals((Hitbox) obj);
-        }
+            => (obj is Hitbox hitbox) && Equals(hitbox);
 
         public override int GetHashCode()
-        {
-            return Min.GetHashCode() + Max.GetHashCode();
-        }
+            => Min.GetHashCode() + Max.GetHashCode();
 
         public bool Intersects(Hitbox box)
         {
-            bool result;
-            Intersects(ref box, out result);
+            Intersects(ref box, out bool result);
             return result;
         }
 
@@ -152,23 +135,15 @@ namespace Trestle.Entity
         }
 
         public static Hitbox operator +(Hitbox a, double b)
-        {
-            return new Hitbox(a.Min - b, a.Max + b);
-        }
+            => new(a.Min - b, a.Max + b);
 
         public static bool operator ==(Hitbox a, Hitbox b)
-        {
-            return a.Equals(b);
-        }
+            => a.Equals(b);
 
         public static bool operator !=(Hitbox a, Hitbox b)
-        {
-            return !a.Equals(b);
-        }
+            => !a.Equals(b);
 
         public override string ToString()
-        {
-            return string.Format("{{Min:{0} Max:{1}}}", Min, Max);
-        }
+            => string.Format("{{Min:{0} Max:{1}}}", Min, Max);
     }
 }

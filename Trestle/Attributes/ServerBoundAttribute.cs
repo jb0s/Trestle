@@ -3,6 +3,9 @@ using Trestle.Enums;
 
 namespace Trestle.Attributes
 {
+    /// <summary>
+    /// Assign this to a Packet class to mark it as a ServerBound (client to server) packet.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class ServerBoundAttribute : Attribute
     {

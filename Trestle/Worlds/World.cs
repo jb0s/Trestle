@@ -25,7 +25,6 @@ namespace Trestle.Worlds
         public readonly string Name;
         public Location SpawnPoint;
         public GameMode DefaultGameMode;
-        public EntityManager EntityManager;
 
         private Timer _tickTimer;
         private bool _disposed = false;
@@ -37,7 +36,6 @@ namespace Trestle.Worlds
 
             Players = new ConcurrentDictionary<int, Player>();
             Entities = new ConcurrentDictionary<int, Entity.Entity>();
-            EntityManager = new EntityManager();
             
             SpawnPoint = worldGenerator.GetSpawnPoint();
             
@@ -68,21 +66,13 @@ namespace Trestle.Worlds
         }
 
         public void AddEntity(Entity.Entity entity)
-        {
-            EntityManager.AddEntity(entity);
-            Entities.TryAdd(entity.EntityId, entity);
-        }
+            => Entities.TryAdd(entity.EntityId, entity);
 
         public void RemoveEntity(Entity.Entity entity)
-        {
-            if (Entities.TryRemove(entity.EntityId, out _))
-                EntityManager.RemoveEntity(null, entity);
-        }
+            => Entities.TryRemove(entity.EntityId, out _);
 
         public virtual void AddPlayer(Player player, bool spawn = true)
         {
-            EntityManager.AddEntity(player);
-
             if (Players.TryAdd(player.EntityId, player))
             {
                 SpawnForAll(player);
@@ -98,7 +88,6 @@ namespace Trestle.Worlds
             if (Players.TryRemove(player.EntityId, out _))
             {
                 // TODO: Be arsed
-                EntityManager.RemoveEntity(null, player);
             }
 
             player.IsSpawned = !despawn;

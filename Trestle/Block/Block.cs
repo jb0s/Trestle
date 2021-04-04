@@ -1,12 +1,41 @@
-﻿using Trestle.Entity;
-using Trestle.Enums;
+﻿using Trestle.Enums;
 using Trestle.Utils;
 using Trestle.Worlds;
+using Trestle.Entity;
 
 namespace Trestle.Blocks
 {
+    /// <summary>
+    /// An item that can be placed in the game world.
+    /// </summary>
     public class Block : Item
     {
+        /// <summary>
+        /// The coordinates of the block.
+        /// </summary>
+        public Vector3 Coordinates { get; set; }
+
+        /// <summary>
+        /// Can another block be placed in place of this one?
+        /// </summary>
+        public bool IsReplacable { get; set; }
+
+        /// <summary>
+        /// Is this block solid or can the player walk through it?
+        /// </summary>
+        public bool IsSolid { get; set; }
+
+        /// <summary>
+        /// How durable is this block?
+        /// (Affects mining speed.)
+        /// </summary>
+        public float Durability { get; set; }
+
+        /// <summary>
+        /// What does this block drop when broken?
+        /// </summary>
+        public ItemStack[] Drops { get; set; }
+
         internal Block(Material material) : this((ushort)material)
         {
         }
@@ -19,25 +48,20 @@ namespace Trestle.Blocks
             Drops = new[] {new ItemStack(this, 1)};
 			
             IsSolid = true;
-            IsBuildable = true;
-            IsReplacible = false;
-            IsTransparent = false;
+            IsReplacable = false;
 
-            FuelEfficiency = 0;
             IsBlock = true;
         }
 
-        public Vector3 Coordinates { get; set; }
-        public bool IsReplacible { get; set; }
-        public bool IsSolid { get; set; }
-        public bool IsTransparent { get; set; }
-        public float Durability { get; set; }
-        public ItemStack[] Drops { get; set; }
-        public bool IsBuildable { get; set; }
-
-        public void DoDrop(World world)
+        /// <summary>
+        /// Drops block loot.
+        /// </summary>
+        /// <param name="world"></param>
+        public void Drop(World world)
         {
-            if (Drops == null) return;
+            if (Drops == null) 
+                return;
+            
             foreach (var its in Drops)
             {
                 new ItemEntity(world, its)
@@ -47,22 +71,34 @@ namespace Trestle.Blocks
             }
         }
         
+        /// <summary>
+        /// Gets the hardness of the block.
+        /// </summary>
+        /// <returns></returns>
         public float GetHardness()
-        {
-            return Durability / 5f;
-        }
+            => Durability / 5f;
 
+        /// <summary>
+        /// Called every tick when its chunk is loaded.
+        /// </summary>
+        /// <param name="world"></param>
         public virtual void OnTick(World world)
         {
         }
 
+        /// <summary>
+        /// Starts a physics simulation.
+        /// </summary>
+        /// <param name="world"></param>
         public virtual void DoPhysics(World world)
         {
         }
 
+        /// <summary>
+        /// Breaks the block. (Does NOT drop loot, see <see cref="Drop(World)."/>)
+        /// </summary>
+        /// <param name="playerWorld"></param>
         public void BreakBlock(World playerWorld)
-        {
-            playerWorld.SetBlock(Material.Air, Coordinates);
-        }
+            => playerWorld.SetBlock(Material.Air, Coordinates);
     }
 }

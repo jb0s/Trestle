@@ -1,7 +1,7 @@
 ﻿using LibNoise;
 using LibNoise.Primitive;
 
-namespace Trestle.Worlds.TestWorld
+namespace Trestle.Worlds.StandardWorld
 {
     public class OctaveGenerator
     {

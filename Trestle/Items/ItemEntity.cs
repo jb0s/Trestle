@@ -1,7 +1,6 @@
-﻿using System;
-using Trestle.Networking.Packets.Play.Client;
-using Trestle.Utils;
+﻿using Trestle.Utils;
 using Trestle.Worlds;
+using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.Entity
 {

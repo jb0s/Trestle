@@ -10,7 +10,7 @@ using Trestle.Worlds.Biomes.Forest;
 using Trestle.Worlds.Biomes.Plains;
 using Trestle.Worlds.Decorators;
 
-namespace Trestle.Worlds.TestWorld
+namespace Trestle.Worlds.StandardWorld
 {
     public class StandardWorldGenerator : IWorldGenerator
     {

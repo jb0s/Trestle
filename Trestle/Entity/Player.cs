@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Net;
-using System.Text;
 using System.Linq;
 using Trestle.Utils;
 using Trestle.Enums;
 using Trestle.Worlds;
 using Trestle.Networking;
-using System.Security.Claims;
 using System.Collections.Generic;
 using Trestle.Networking.Packets.Play;
 using Trestle.Networking.Packets.Play.Client;
@@ -23,7 +20,7 @@ namespace Trestle.Entity
         /// <summary>
         /// The position of the current chunk the player is in.
         /// </summary>
-        private Vector2 _currentChunkPosition = new(0, 0);
+        private readonly Vector2 _currentChunkPosition = new(0, 0);
         
         /// <summary>
         /// The player's inventory.
@@ -64,16 +61,11 @@ namespace Trestle.Entity
 		/// Is the player digging?
 		/// </summary>
 		public bool Digging { get; set; }
-		
-		/// <summary>
-		/// Can the player fly?
-		/// </summary>
-		private bool CanFly { get; set; }
-		
-		/// <summary>
-		/// The locale of the client.
-		/// </summary>
-		public string Locale { get; set; }
+
+        /// <summary>
+        /// The locale of the client.
+        /// </summary>
+        public string Locale { get; set; }
 		
 		/// <summary>
 		/// The player's view distance.
@@ -115,14 +107,18 @@ namespace Trestle.Entity
 		/// </summary>
 		public bool IsCrouching { get; set; }
 		
-        public Player(int entityTypeId, World world) : base(-1, world)
+		/// <summary>
+		/// Creates a player instance and registers it to the assigned world.
+		/// You need to call its InitializePlayer function to spawn it as an entity.
+		/// </summary>
+		/// <param name="world"></param>
+        public Player(World world) : base(-1, world)
         {
 	        ChunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
             Inventory = new InventoryManager(this);
 
             SendToWorld(world);
         }
-        
         
         /// <summary>
         /// Initializes the Player entity.
@@ -141,16 +137,23 @@ namespace Trestle.Entity
 			
 	        SetGamemode(GameMode, true);
         }
-        
-        public override void OnTick()
-        {
-        }
 
+        #region Updates
+
+        /// <summary>
+        /// Sends the player to a world.
+        /// </summary>
+        /// <param name="world"></param>
         public void SendToWorld(World world)
         {
+			// Remove the player from the old world.
+			World.RemovePlayer(this);
+
+			// Update the world, and add the player to it.
 	        World = world;
 	        World.AddPlayer(this);
 	        
+			// Teleport the player to the world spawnpoint.
 	        Location = world.SpawnPoint;
         }
 
@@ -164,9 +167,8 @@ namespace Trestle.Entity
         public void PositionChanged(Vector3 location, float yaw = 0.0f, float pitch = 0.0f, bool onGround = false)
         {
 	        var originalchunkcoords = new Vector2(_currentChunkPosition.X, _currentChunkPosition.Z);
-	        var originalcoordinates = Location;
-	        
-	        if (yaw != 0.0f && pitch != 0.0f)
+            
+			if (yaw != 0.0f && pitch != 0.0f)
 	        {
 		        Location.Yaw = yaw;
 		        Location.Pitch = pitch;
@@ -191,20 +193,7 @@ namespace Trestle.Entity
         /// </summary>
         public void LookChanged()
         {
-	        /*
-	        new EntityLook(Wrapper)
-	        {
-		        EntityId = this.EntityId,
-		        Pitch = Location.Pitch,
-		        Yaw = Location.Yaw,
-		        OnGround = Location.OnGround
-	        }.Broadcast(World, false, this);
-			
-	        new EntityHeadLook(Wrapper)
-	        {
-		        EntityId = this.EntityId,
-		        HeadYaw = Location.Yaw,
-	        }.Broadcast(World, false, this);*/
+	        // TODO: [MP] Add this
         }
         
         /// <summary>
@@ -217,11 +206,15 @@ namespace Trestle.Entity
 			BroadcastInventory();
 		}
 
-		/// <summary>
-		/// Makes the player swing their hand.
-		/// </summary>
-		/// <param name="hand"></param>
-		public void PlayerHandSwing(byte hand)
+        #endregion
+
+        #region Animations
+
+        /// <summary>
+        /// Makes the player swing their hand.
+        /// </summary>
+        /// <param name="hand"></param>
+        public void PlayerHandSwing(byte hand)
 			=> PlayerAnimation(AnimationType.SwingArm, hand);
 
 		/// <summary>
@@ -231,77 +224,30 @@ namespace Trestle.Entity
 		/// <param name="hand"></param>
 		public void PlayerAnimation(AnimationType animationType, byte hand = 0)
 		{
-			/*
-			var packet = new Networking.Packets.AnimationType(Wrapper) { EntityId = EntityId, AnimationId = (byte)animationType, Hand = hand};
-			World.BroadcastPacket(packet, false);*/
+			// TODO: [MP] Add this
 		}
 
-		/// <summary>
-		/// Sends the player's inventory to the client.
-		/// </summary>
-		public void BroadcastInventory()
+        #endregion
+
+        #region Inventory
+
+        /// <summary>
+        /// Sends the player's inventory to the client.
+        /// </summary>
+        public void BroadcastInventory()
 		{
-			/*
-			// Main Hand
-			var slotdata = Inventory.GetSlot(36 + Inventory.CurrentSlot);
-			new EntityEquipment(Wrapper)
-			{
-				Slot = EquipmentSlot.Hand0,
-				Item = slotdata,
-				EntityId = EntityId
-			}.Broadcast(World, false, this);
-
-			// Second hand
-			slotdata = Inventory.GetSlot(45);
-			new EntityEquipment(Wrapper)
-			{
-				Slot = EquipmentSlot.Hand1,
-				Item = slotdata,
-				EntityId = EntityId
-			}.Broadcast(World, false, this);
-
-			// Helmet
-			slotdata = Inventory.GetSlot(5);
-			new EntityEquipment(Wrapper)
-			{
-				Slot = EquipmentSlot.Helmet,
-				Item = slotdata,
-				EntityId = EntityId
-			}.Broadcast(World, false, this);
-
-			// Chestplate
-			slotdata = Inventory.GetSlot(6);
-			new EntityEquipment(Wrapper)
-			{
-				Slot = EquipmentSlot.Chestplate,
-				Item = slotdata,
-				EntityId = EntityId
-			}.Broadcast(World, false, this);
-
-			// Leggings
-			slotdata = Inventory.GetSlot(7);
-			new EntityEquipment(Wrapper)
-			{
-				Slot = EquipmentSlot.Leggings,
-				Item = slotdata,
-				EntityId = EntityId
-			}.Broadcast(World, false, this);
-
-			// Boots
-			slotdata = Inventory.GetSlot(8);
-			new EntityEquipment(Wrapper)
-			{
-				Slot = EquipmentSlot.Boots,
-				Item = slotdata,
-				EntityId = EntityId
-			}.Broadcast(World, false, this);*/
+			// TODO: [MP] Add this
 		}
-		
-		/// <summary>
-		/// Sets the player's game mode.
-		/// </summary>
-		/// <param name="target"></param>
-		public void SetGamemode(GameMode target)
+
+        #endregion
+
+        #region Survival mode
+
+        /// <summary>
+        /// Sets the player's game mode.
+        /// </summary>
+        /// <param name="target"></param>
+        public void SetGamemode(GameMode target)
 			=> SetGamemode(target, false);
 		
 		/// <summary>
@@ -313,7 +259,7 @@ namespace Trestle.Entity
 		{
 			GameMode = target;
 
-			new ChangeGameState(GameStateReason.ChangeGameMode, (float)target);
+            _ = new ChangeGameState(GameStateReason.ChangeGameMode, (float)target);
 
 			if (!silent)
 			{
@@ -327,16 +273,14 @@ namespace Trestle.Entity
 		/// </summary>
 		public void Respawn()
 		{
-			// TODO: Health
-			//HealthManager.ResetHealth();
-			//if (Wrapper != null && Wrapper.TcpClient.Connected)
-			//{
-				//new Respawn(Wrapper) {GameMode = (byte) GameMode}.Write();
-				//Teleport(World.GetSpawnPoint());
-			//}
+			// TODO: [Survival] Add this
 		}
 
-		public void SendChunksForLocation(bool force = false)
+        #endregion
+
+        #region WorldGen
+
+        public void SendChunksForLocation(bool force = false)
 			=> SendChunksForLocation(new Vector2((int)Location.X, (int)Location.Z), force);
 		
 		/// <summary>
@@ -384,7 +328,7 @@ namespace Trestle.Entity
 				var z = (int)player.Location.Z >> 4;
 				if (chunkX == x && chunkZ == z)
 				{
-					//new SpawnPlayer(Client){ Player = player }.Write();
+					// TODO: [MP] Add this (Spawn Player)
 				}
 			}
 
@@ -394,44 +338,11 @@ namespace Trestle.Entity
 				var z = (int)entity.Location.Z >> 4;
 				if (chunkX == x && chunkZ == z)
 				{
-					//new SpawnObject(Wrapper){X = entity.Location.X, Y = entity.Location.Y, Z = entity.Location.Z, EntityId = entity.EntityId, Type = (ObjectType)entity.EntityTypeId, Yaw = entity.Location.Yaw, Pitch = entity.Location.Pitch}.Write();
+					// TODO: [MP] Add this (Spawn Entity)
 				}
 			}
 
-			ChunkColumn chunk = World.WorldGenerator.GenerateChunk(new ChunkLocation(chunkX, chunkZ));
-			// TODO: Re-add this
-			/*foreach (var raw in chunk.TileEntities)
-			{
-				var nbt = raw.Value;
-				if (nbt == null) continue;
-
-				string id = null;
-				var idTag = nbt.Get("id");
-				if (idTag != null)
-				{
-					id = idTag.StringValue;
-				}
-
-				if (string.IsNullOrEmpty(id)) continue;
-
-				var tileEntity = TileEntityFactory.GetBlockEntityById(id);
-				tileEntity.Coordinates = raw.Key;
-				tileEntity.SetCompound(nbt);
-
-				if (tileEntity.Id == "Sign")
-				{
-					throw new NotImplementedException();
-					var sign = (SignTileEntity) tileEntity;
-					new UpdateSign(Wrapper)
-					{
-						SignCoordinates = sign.Coordinates,
-						Line1 = sign.Line1,
-						Line2 = sign.Line2,
-						Line3 = sign.Line3,
-						Line4 = sign.Line4,
-					}.Write();
-				}
-			}*/
+			// TODO: [WorldGen] Tile entities
 		}
 		
 		/// <summary>
@@ -446,12 +357,16 @@ namespace Trestle.Entity
 				Unloader = true
 			});
 		}
-		
-		/// <summary>
-		/// Send a chat message.
-		/// </summary>
-		/// <param name="message"></param>
-		public void SendChat(MessageComponent message)
+
+        #endregion
+
+        #region Chat
+
+        /// <summary>
+        /// Send a chat message.
+        /// </summary>
+        /// <param name="message"></param>
+        public void SendChat(MessageComponent message)
 			=> Client.SendPacket(new ChatMessage(message));
 
 		/// <summary>
@@ -469,17 +384,23 @@ namespace Trestle.Entity
 		public void SendChat(string message, ChatColor color)
 			=> SendChat(color.Value + message);
 
-		/// <summary>
-		/// Kick the player from Trestle with a reason.
-		/// </summary>
-		/// <param name="reason"></param>
-		public void Kick(MessageComponent reason)
+        #endregion
+
+        #region Disconnecting
+
+        /// <summary>
+        /// Kick the player from Trestle with a reason.
+        /// </summary>
+        /// <param name="reason"></param>
+        public void Kick(MessageComponent reason)
 			=> Client.SendPacket(new Disconnect(reason));
 
 		/// <summary>
 		/// Kick the player from Trestle.
 		/// </summary>
 		public void Kick()
-			=> Kick(new MessageComponent("Unknown reason."));
+			=> Kick(new MessageComponent("Kicked by an operator."));
+
+        #endregion
     }
 }

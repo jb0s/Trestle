@@ -1,7 +1,4 @@
-﻿using Trestle.Attributes;
-using Trestle.Networking;
-
-namespace Trestle.Enums
+﻿namespace Trestle.Enums
 {
     public enum PlayPacket : byte
     {
