@@ -13,11 +13,12 @@ namespace Trestle.Networking.Packets.Play.Client
         public string Message { get; set; }
 
         [Field]
-        public byte Position { get; set; } = 0;
+        public byte Position { get; set; }
         
-        public ChatMessage(MessageComponent messageComponent)
+        public ChatMessage(MessageComponent messageComponent, ChatMessageType type = ChatMessageType.ChatBox)
         {
             Message = JsonSerializer.Serialize(messageComponent);
+            Position = (byte)type;
         }
     }
 }

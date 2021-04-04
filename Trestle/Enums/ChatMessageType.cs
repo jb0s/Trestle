@@ -1,6 +1,6 @@
 ﻿namespace Trestle.Enums
 {
-    public enum ChatMessageType
+    public enum ChatMessageType : byte
     {
         ChatBox = 0,
         SystemMessage = 1,

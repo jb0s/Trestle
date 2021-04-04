@@ -109,7 +109,7 @@ namespace Trestle.Entity
 		
 		/// <summary>
 		/// Creates a player instance and registers it to the assigned world.
-		/// You need to call its InitializePlayer function to spawn it as an entity.
+		/// You need to call the <see cref="InitializePlayer"/> function to spawn it as an entity.
 		/// </summary>
 		/// <param name="world"></param>
         public Player(World world) : base(-1, world)
@@ -241,7 +241,7 @@ namespace Trestle.Entity
 
         #endregion
 
-        #region Survival mode
+        #region Game modes
 
         /// <summary>
         /// Sets the player's game mode.
@@ -278,7 +278,7 @@ namespace Trestle.Entity
 
         #endregion
 
-        #region WorldGen
+        #region Chunk loading
 
         public void SendChunksForLocation(bool force = false)
 			=> SendChunksForLocation(new Vector2((int)Location.X, (int)Location.Z), force);
@@ -386,7 +386,7 @@ namespace Trestle.Entity
 
         #endregion
 
-        #region Disconnecting
+        #region Kicking
 
         /// <summary>
         /// Kick the player from Trestle with a reason.
