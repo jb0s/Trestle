@@ -16,10 +16,6 @@ namespace Trestle.Worlds.StandardWorld
                     SpawnPoint.Y = y + 1;
                     break;
                 }
-                else
-                {
-                    SetBlock(Material.Glass, new Vector3(SpawnPoint.X, y, SpawnPoint.Y));
-                }
             }
         }
     }
