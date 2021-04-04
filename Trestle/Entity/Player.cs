@@ -125,6 +125,8 @@ namespace Trestle.Entity
         /// </summary>
         internal void InitializePlayer()
         {
+			Console.WriteLine("Spawning on Y " + Location.Y);
+
 	        Client.SendPacket(new JoinGame(this));
 	        Client.SendPacket(new PlayerListItem(Mojang.GetProfileById(Uuid)));
 	        Client.SendPacket(new SpawnPosition());

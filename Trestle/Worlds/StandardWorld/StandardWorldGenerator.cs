@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using Trestle.Blocks;
 using Trestle.Enums;
 using Trestle.Utils;
 using Trestle.Worlds.Biomes;
+using Trestle.Worlds.Decorators;
+using System.Collections.Generic;
 using Trestle.Worlds.Biomes.Desert;
 using Trestle.Worlds.Biomes.Forest;
 using Trestle.Worlds.Biomes.Plains;
-using Trestle.Worlds.Decorators;
 
 namespace Trestle.Worlds.StandardWorld
 {
@@ -131,11 +129,6 @@ namespace Trestle.Worlds.StandardWorld
             }
             
             new WaterDecorator().Decorate(chunk, biome);
-        }
-        
-        public Location GetSpawnPoint()
-        {
-            return new(0, 50, 0);
         }
     }
 }
