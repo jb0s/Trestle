@@ -292,7 +292,7 @@ namespace Trestle.Entity
 		{
 			if (!force && !HasSpawned)
 				return;
-			
+
 			Client.ThreadPool.LaunchThread(() =>
 			{
 				foreach (var chunk in World.GenerateChunks(this, new ChunkLocation(location.X, location.Z), ViewDistance))
