@@ -2,6 +2,7 @@
 using System.Linq;
 using fNbt;
 using Trestle.Attributes;
+using Trestle.Entity;
 using Trestle.Enums;
 
 namespace Trestle.Networking.Packets.Play
@@ -30,12 +31,10 @@ namespace Trestle.Networking.Packets.Play
         [Field] 
         public bool ShowReducedDebugInfo { get; set; } = false;
 
-        public JoinGame(Networking.Client client)
+        public JoinGame(Player player)
         {
-            Client = client;
-
-            EntityId = Client.Player.EntityId;
-            GameMode = (sbyte)Client.Player.GameMode;
+            EntityId = player.EntityId;
+            GameMode = (sbyte)player.GameMode;
             
             MaxPlayers = Config.MaxPlayers;
         }

@@ -1,7 +1,7 @@
 ﻿using Trestle.Attributes;
 using Trestle.Enums;
 
-namespace Trestle.Networking.Packets.Login
+namespace Trestle.Networking.Packets.Login.Client
 {
     [ClientBound(LoginPacket.SetCompression)]
     public class SetCompression : Packet

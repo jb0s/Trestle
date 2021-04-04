@@ -1,6 +1,8 @@
 ﻿using System;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Networking.Packets.Login.Client;
+using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Handshaking
 {
@@ -24,9 +26,19 @@ namespace Trestle.Networking.Packets.Handshaking
         public override void HandlePacket()
         {
             Client.Protocol = ProtocolVersion;
+            
+            if (NextState == NextState.Status)
+                Client.State = ClientState.Status;
+            else if (NextState == NextState.Login)
+            {
+                if (Client.Protocol < Globals.ProtocolVersion)
+                    Client.SendPacket(new Disconnect($"Outdated client! I'm on {Globals.OfficialProtocolName.Replace("Minecraft ", "")}"));
 
-            if (NextState == NextState.Status) Client.State = ClientState.Status;
-            else if (NextState == NextState.Login) Client.State = ClientState.Login;
+                if (Client.Protocol > Globals.ProtocolVersion)
+                    Client.SendPacket(new Disconnect($"Client too new! I'm still on {Globals.OfficialProtocolName.Replace("Minecraft ", "")}"));
+                
+                Client.State = ClientState.Login;
+            }
         }
     }
 }

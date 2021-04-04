@@ -115,55 +115,31 @@ namespace Trestle.Entity
 		/// </summary>
 		public bool IsCrouching { get; set; }
 		
-		/// <summary>
-		/// Is the player authenticated with Mojang?
-		/// </summary>
-		/// <returns></returns>
-		public bool IsAuthenticated
-		{
-			get
-			{
-				if (Config.OnlineMode)
-				{
-					try
-					{
-						var uri = new Uri(
-							string.Format(
-								"http://session.minecraft.net/game/checkserver.jsp?user={0}&serverId={1}",
-								Username,
-								PacketCryptography.JavaHexDigest(Encoding.UTF8.GetBytes("")
-									.Concat(Client.SharedKey)
-									.Concat(PacketCryptography.PublicKeyToAsn1(Globals.ServerKey))
-									.ToArray())
-							));
-						
-						var authenticated = new WebClient().DownloadString(uri);
-						if (authenticated.Contains("NO"))
-						{
-							Console.WriteLine("Player authenticated: " + authenticated);
-							return false;
-						}
-					}
-					catch
-					{
-						Console.WriteLine("Player authenticated: NO");
-						return false;
-					}
-
-					Console.WriteLine("Player authenticated: YES");
-					return true;
-				}
-
-				return true;
-			}
-		}
-        
         public Player(int entityTypeId, World world) : base(-1, world)
         {
 	        ChunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
             Inventory = new InventoryManager(this);
 
             SendToWorld(world);
+        }
+        
+        
+        /// <summary>
+        /// Initializes the Player entity.
+        /// </summary>
+        internal void InitializePlayer()
+        {
+	        Client.SendPacket(new JoinGame(this));
+	        Client.SendPacket(new PlayerListItem(Mojang.GetProfileById(Uuid)));
+	        Client.SendPacket(new SpawnPosition());
+	        Client.SendPacket(new PlayerPositionAndLook(Location));
+
+	        HasSpawned = true;
+			
+	        Client.Player.Inventory.SendToPlayer();
+	        BroadcastInventory();
+			
+	        SetGamemode(GameMode, true);
         }
         
         public override void OnTick()
@@ -358,22 +334,6 @@ namespace Trestle.Entity
 				//new Respawn(Wrapper) {GameMode = (byte) GameMode}.Write();
 				//Teleport(World.GetSpawnPoint());
 			//}
-		}
-
-		/// <summary>
-		/// Initializes the Player entity.
-		/// </summary>
-		internal void InitializePlayer()
-		{
-			Client.SendPacket(new SpawnPosition());
-			Client.SendPacket(new PlayerPositionAndLook(Location));
-
-			HasSpawned = true;
-			
-			Client.Player.Inventory.SendToPlayer();
-			BroadcastInventory();
-			
-			SetGamemode(GameMode, true);
 		}
 
 		public void SendChunksForLocation(bool force = false)

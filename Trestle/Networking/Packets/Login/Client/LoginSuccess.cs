@@ -2,7 +2,7 @@
 using Trestle.Attributes;
 using Trestle.Enums;
 
-namespace Trestle.Networking.Packets.Login
+namespace Trestle.Networking.Packets.Login.Client
 {
     [ClientBound(LoginPacket.LoginSuccess)]
     public class LoginSuccess : Packet
@@ -13,12 +13,10 @@ namespace Trestle.Networking.Packets.Login
         [Field]
         public string Username { get; set; }
 
-        public LoginSuccess(string username, Guid uuid)
+        public LoginSuccess(string uuid, string username)
         {
+            Uuid = uuid;
             Username = username;
-            Uuid = uuid.ToString();
-            
-            Logger.Info($"Player {username} with Uuid {uuid} logged in successfully");
         }
     }
 }

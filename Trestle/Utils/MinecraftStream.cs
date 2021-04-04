@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Numerics;
@@ -327,15 +328,11 @@ public class MinecraftStream : IDisposable
 			Write(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(data)));
 		}
 
-		public void WriteUuid(Guid uuid)
+		public void WriteUuid(Guid guid)
 		{
-			var guid = uuid.ToByteArray();
-			var long1 = new byte[8];
-			var long2 = new byte[8];
-			Array.Copy(guid, 0, long1, 0, 8);
-			Array.Copy(guid, 8, long2, 0, 8);
-			Write(long1);
-			Write(long2);
+			var data = guid.ToString().Replace("-", "");
+			var bigInteger = BigInteger.Parse(data, NumberStyles.HexNumber);
+			Write(bigInteger.ToByteArray(false, true));
 		}
 
 		private byte[] GetVarIntBytes(int integer)

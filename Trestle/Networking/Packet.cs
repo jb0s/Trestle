@@ -93,6 +93,7 @@ namespace Trestle.Networking
                     throw new Exception($"Unable to parse field '{property.Name}'.");
                 }
             }
+            
             return buffer;
         }
 

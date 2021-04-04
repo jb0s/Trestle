@@ -8,7 +8,9 @@ using System.Reflection;
 using System.Net.Sockets;
 using Trestle.Attributes;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
+using Trestle.Networking.Packets.Login.Client;
 using Trestle.Networking.Packets.Play;
 using Trestle.Networking.Packets.Play.Client;
 
@@ -123,6 +125,22 @@ namespace Trestle.Networking
                     TcpClient.Client.Close();
                 }
             }
+        }
+        
+        public void CreatePlayer(string uuid, string username)
+        {
+            Player = new Player(-1, Globals.WorldManager.MainWorld)
+            {
+                Uuid = uuid,
+                Username = username,
+                Client = this,
+                GameMode = Globals.WorldManager.MainWorld.DefaultGameMode
+            };
+            
+            State = ClientState.Play;
+
+            Player.InitializePlayer();
+            Player.SendChunksForLocation(true);
         }
 
         public long UnixTimeNow()

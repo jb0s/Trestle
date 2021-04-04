@@ -18,7 +18,7 @@ namespace Trestle
         
         public static bool DisplayPacketErrors = false;
         public static bool Debug = true;
-        public static string Motd = "\u00A7bA Minecraft Server - Powered by Trestle!";
+        public static string Motd = "A Minecraft server - \u00A7bPowered by Trestle!";
 
         public static bool ReportExceptionsToClient = true;
         

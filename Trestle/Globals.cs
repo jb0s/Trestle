@@ -25,11 +25,6 @@ namespace Trestle
         internal static Listener ServerListener = null;
         private static int _entityId;
 
-        public static void Initialize()
-        {
-            Random = new Random();
-        }
-        
         public static byte[] Compress(byte[] input)
         {
             using (var output = new MemoryStream())
