@@ -14,11 +14,9 @@ namespace Trestle.Worlds.StandardWorld
 
             for(int y = 0; y < 256; y++)
             {
-                    Console.WriteLine(y + " - " + GetBlock(new Vector3(SpawnPoint.X, y, SpawnPoint.Y)).Material);
                 if (GetBlock(new Vector3(SpawnPoint.X, y, SpawnPoint.Y)).Material == Material.Air)
                 {
                     SpawnPoint.Y = y;
-                    Console.WriteLine("Found spawn Y! " + SpawnPoint.Y);
                     break;
                 }
             }
