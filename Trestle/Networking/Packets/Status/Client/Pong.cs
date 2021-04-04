@@ -1,7 +1,7 @@
 ﻿using Trestle.Attributes;
 using Trestle.Enums;
 
-namespace Trestle.Networking.Packets.Status
+namespace Trestle.Networking.Packets.Status.Client
 {
     [ClientBound(StatusPacket.Pong)]
     public class Pong : Packet

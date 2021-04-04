@@ -88,7 +88,7 @@ namespace Trestle.Networking
             var e = (Exception)args.ExceptionObject;
             
             foreach (var client in Globals.ServerListener.Clients)
-                client.Player?.Kick(new MessageComponent($"§cAn unhandled exception occurred.\n\n§f{e.Message}"));
+                client.Player?.Kick(new MessageComponent($"{ChatColor.Red}An unhandled exception occurred.\n\n{ChatColor.Reset}{e.Message}"));
             
             Logger.Error($"An unhandled exception occurred: {e.Message}");
         }

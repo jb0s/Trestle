@@ -4,7 +4,7 @@ using Trestle.Attributes;
 using Trestle.Enums;
 using Trestle.Utils;
 
-namespace Trestle.Networking.Packets.Status
+namespace Trestle.Networking.Packets.Status.Client
 {
     [ClientBound(StatusPacket.Response)]
     public class Response : Packet

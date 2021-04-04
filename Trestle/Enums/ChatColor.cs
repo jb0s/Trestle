@@ -32,5 +32,10 @@
             Gray = new ('7'),
             DarkGray = new ('8'),
             Indigo = new ('9');
+
+        public override string ToString()
+        {
+            return $"§{Value}";
+        }
     }
 }

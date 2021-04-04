@@ -2,8 +2,9 @@
 using System.Text.Json;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Networking.Packets.Status.Client;
 
-namespace Trestle.Networking.Packets.Status
+namespace Trestle.Networking.Packets.Status.Server
 {
     [ServerBound(StatusPacket.Request)]
     public class Request : Packet

@@ -467,7 +467,7 @@ namespace Trestle.Entity
 		/// <param name="message"></param>
 		/// <param name="color"></param>
 		public void SendChat(string message, ChatColor color)
-			=> SendChat("§" + color.Value + message);
+			=> SendChat(color.Value + message);
 
 		/// <summary>
 		/// Kick the player from Trestle with a reason.

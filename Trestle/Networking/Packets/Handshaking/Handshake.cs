@@ -19,7 +19,7 @@ namespace Trestle.Networking.Packets.Handshaking
         [Field]
         public ushort ServerPort { get; set; }
         
-        [Field]
+        [Field(typeof(int))]
         [VarInt]
         public NextState NextState { get; set; }
         
@@ -35,7 +35,7 @@ namespace Trestle.Networking.Packets.Handshaking
                     Client.SendPacket(new Disconnect($"Outdated client! I'm on {Globals.OfficialProtocolName.Replace("Minecraft ", "")}"));
 
                 if (Client.Protocol > Globals.ProtocolVersion)
-                    Client.SendPacket(new Disconnect($"Client too new! I'm still on {Globals.OfficialProtocolName.Replace("Minecraft ", "")}"));
+                    Client.SendPacket(new Disconnect($"Outdated server! I'm still on {Globals.OfficialProtocolName.Replace("Minecraft ", "")}"));
                 
                 Client.State = ClientState.Login;
             }

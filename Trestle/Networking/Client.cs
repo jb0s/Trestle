@@ -2,7 +2,6 @@
 using System.Text;
 using Trestle.Enums;
 using Trestle.Utils;
-using Trestle.Entity;
 using System.Threading;
 using System.Reflection;
 using System.Net.Sockets;
@@ -12,7 +11,9 @@ using System.Linq;
 using System.Security.Cryptography;
 using Trestle.Networking.Packets.Login.Client;
 using Trestle.Networking.Packets.Play;
-using Trestle.Networking.Packets.Play.Client;
+using Trestle.Networking.Packets.Play.Server;
+using KeepAlive = Trestle.Networking.Packets.Play.Client.KeepAlive;
+using Player = Trestle.Entity.Player;
 
 namespace Trestle.Networking
 {
