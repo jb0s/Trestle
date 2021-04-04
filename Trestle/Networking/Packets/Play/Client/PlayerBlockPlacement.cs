@@ -72,12 +72,10 @@ namespace Trestle.Networking.Packets.Play.Client
                 var itemInHand = Client.Player.Inventory.GetItemInHand((PlayerHand)Hand);
 
                 Client.Player.World.SetBlock(itemInHand.Material, newLocation);
-
+                Client.SendPacket(new SoundEffect($"dig.{itemInHand.Material.ToString().ToLower()}", Client.Player.Location.ToVector3()));
+                
                 if (Client.Player.GameMode != GameMode.Creative)
-                {
-                    Console.WriteLine($"Player placed block {itemInHand.Material} at {newLocation}");
                     Client.Player.Inventory.RemoveItem((short)itemInHand.Id, itemInHand.Metadata, 1);
-                }
             }
             catch
             {
