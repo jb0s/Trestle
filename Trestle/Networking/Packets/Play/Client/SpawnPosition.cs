@@ -1,7 +1,7 @@
 ﻿using Trestle.Attributes;
 using Trestle.Enums;
 
-namespace Trestle.Networking.Packets.Play
+namespace Trestle.Networking.Packets.Play.Client
 {
     [ClientBound(PlayPacket.Client_SpawnPosition)]
     public class SpawnPosition : Packet

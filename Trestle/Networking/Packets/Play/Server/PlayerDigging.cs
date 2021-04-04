@@ -9,8 +9,8 @@ namespace Trestle.Networking.Packets.Play.Server
     [ServerBound(PlayPacket.Server_PlayerDigging)]
     public class PlayerDigging : Packet
     {
-        [Field]
-        public byte Status { get; set; }
+        [Field(typeof(byte))]
+        public PlayerDiggingStatus Status { get; set; }
         
         [Field]
         public Vector3 Location { get; set; }
@@ -20,19 +20,35 @@ namespace Trestle.Networking.Packets.Play.Server
 
         public override void HandlePacket()
         {
-            if (Status == 2)
+            switch (Status)
             {
-                var block = Client.Player.World.GetBlock(Location);
-                block.BreakBlock(Client.Player.World);
+                case PlayerDiggingStatus.StartedDigging:
+                    break;
+                case PlayerDiggingStatus.CancelledDigging:
+                    break;
+                case PlayerDiggingStatus.FinishedDigging:
+                    var block = Client.Player.World.GetBlock(Location);
+                    block.BreakBlock(Client.Player.World);
 
-                // Don't drop itemstacks in creative, adventure or spectator
-                if (Client.Player.GameMode == GameMode.Survival)
-                {
-                    new ItemEntity(Client.Player.World, new ItemStack(new Item(block.Id, 0), 1))
+                    // Don't drop itemstacks in creative, adventure or spectator
+                    if (Client.Player.GameMode == GameMode.Survival)
                     {
-                        Location = new Location(Location.X, Location.Y, Location.Z)
-                    }.SpawnEntity();
-                }
+                        new ItemEntity(Client.Player.World, new ItemStack(new Item(block.Id, 0), 1))
+                        {
+                            Location = new Location(Location.X, Location.Y, Location.Z)
+                        }.SpawnEntity();
+                    }
+                    break;
+                case PlayerDiggingStatus.DropItemStack:
+                    Client.Player.Inventory.DropCurrentItemStack();
+                    break;
+                case PlayerDiggingStatus.DropItem:
+                    Client.Player.Inventory.DropCurrentItem();
+                    break;
+                case PlayerDiggingStatus.ShootArrowORFinishEating:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

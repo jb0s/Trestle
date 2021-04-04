@@ -4,13 +4,23 @@ namespace Trestle.Utils
 {
     public class Location
     {
+        
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
+        public byte HeadYaw { get; set; }
+        public float Yaw { get; set; }
+        public float Pitch { get; set; }
+        public bool OnGround { get; set; }
+
+
         public Location(double x, double y, double z)
         {
             X = x;
             Y = y;
             Z = z;
         }
-
+        
         public Location(Location location)
         {
             X = location.X;
@@ -22,14 +32,6 @@ namespace Trestle.Utils
             OnGround = location.OnGround;
         }
         
-        public byte HeadYaw { get; set; }
-        public float Yaw { get; set; }
-        public float Pitch { get; set; }
-        public bool OnGround { get; set; }
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
-
         public Vector3 ToVector3()
         {
             return new Vector3(X, Y, Z);

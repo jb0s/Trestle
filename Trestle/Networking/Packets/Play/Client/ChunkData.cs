@@ -6,7 +6,7 @@ using Trestle.Enums;
 using Trestle.Utils;
 using Trestle.Worlds;
 
-namespace Trestle.Networking.Packets.Play
+namespace Trestle.Networking.Packets.Play.Client
 {
     [ClientBound(PlayPacket.Client_ChunkData)]
     public class ChunkData : Packet

@@ -32,6 +32,8 @@ namespace Trestle.Networking.Packets.Play.Server
             player.ChatColours = ChatColors;
             player.SkinParts = DisplayedSkinParts;
             
+            Console.WriteLine(player.SkinParts);
+            
             // TODO: Fix this shit it's broken
             player.SendChunksForLocation();
         }

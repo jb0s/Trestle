@@ -1,8 +1,9 @@
-﻿using Trestle.Attributes;
+﻿using System;
+using Trestle.Attributes;
 using Trestle.Enums;
 using Trestle.Utils;
 
-namespace Trestle.Networking.Packets.Play
+namespace Trestle.Networking.Packets.Play.Client
 {
     [ClientBound(PlayPacket.Client_PlayerPositionAndLook)]
     public class PlayerPositionAndLook : Packet
@@ -11,7 +12,7 @@ namespace Trestle.Networking.Packets.Play
         public double X { get; set; } = 0;
         
         [Field]
-        public double Y { get; set; } = 5;
+        public double Y { get; set; } = 0;
         
         [Field]
         public double Z { get; set; } = 0;
@@ -23,7 +24,7 @@ namespace Trestle.Networking.Packets.Play
         public float Pitch { get; set; } = 0f;
 
         [Field]
-        public byte Flags { get; set; } = 111;
+        public byte Flags { get; set; } = 0x00;
         
         public PlayerPositionAndLook(Location location)
         {
