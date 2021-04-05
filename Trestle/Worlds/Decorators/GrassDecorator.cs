@@ -1,6 +1,5 @@
 ﻿using System;
 using Trestle.Blocks;
-using Trestle.Enums;
 using Trestle.Worlds.Biomes;
 using Trestle.Worlds.StandardWorld;
 
@@ -14,12 +13,12 @@ namespace Trestle.Worlds.Decorators
             {
                 if (Globals.Random.Next(0, 10) == 5)
                 {
-                    if (chunk.GetBlock(x, y, z) == biome.TopBlock && chunk.GetBlock(x, y + 1, z) == Material.Air)
+                    if (chunk.GetBlock(x, y, z) == biome.TopBlock)
                         chunk.SetBlock(x, y + 1, z, new Block(31) {Metadata = 1});
                 }
                 else if (Globals.Random.Next(0, 5000) < 30)
                 {
-                    if (chunk.GetBlock(x, y, z) == biome.TopBlock && chunk.GetBlock(x, y + 1, z) == Material.Air)
+                    if (chunk.GetBlock(x, y, z) == biome.TopBlock)
                     {
                         // TODO: Fix this shit it's awful fuck
                         chunk.SetBlock(x, y + 1, z, new Block(175) {Metadata = 2});

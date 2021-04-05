@@ -2,7 +2,7 @@
 
 namespace Trestle.Utils
 {
-    public struct Location
+    public class Location
     {
         
         public double X { get; set; }
@@ -19,10 +19,6 @@ namespace Trestle.Utils
             X = x;
             Y = y;
             Z = z;
-            HeadYaw = 0;
-            Yaw = 0;
-            Pitch = 0;
-            OnGround = false;
         }
         
         public Location(Location location)
@@ -38,7 +34,7 @@ namespace Trestle.Utils
         
         public Vector3 ToVector3()
         {
-            return new(X, Y, Z);
+            return new Vector3(X, Y, Z);
         }
 
         public double DistanceTo(Location other)
@@ -60,7 +56,7 @@ namespace Trestle.Utils
 
         public Location Clone()
         {
-            return new(X, Y, Z) {Yaw = Yaw, Pitch = Pitch, OnGround = OnGround};
+            return new Location(X, Y, Z) {Yaw = Yaw, Pitch = Pitch, OnGround = OnGround};
         }
     }
 }

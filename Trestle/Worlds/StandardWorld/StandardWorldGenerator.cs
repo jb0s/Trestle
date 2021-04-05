@@ -26,7 +26,8 @@ namespace Trestle.Worlds.StandardWorld
         public const int FILLING_DEEPNESS = 5;
         public const bool ENABLE_OVERHANG = true;
         public static readonly int WaterLevel = 35;
-        
+
+        public Dictionary<Tuple<int, int>, ChunkColumn> ChunkCache = new();
         private BiomeManager _biomeManager;
 
         public StandardWorldGenerator()
@@ -43,9 +44,18 @@ namespace Trestle.Worlds.StandardWorld
 
         public ChunkColumn GenerateChunk(ChunkLocation location)
         {
-            var chunk = new ChunkColumn() { X = location.X, Z = location.Z };
+            ChunkColumn chunk;
+            
+            if (ChunkCache.TryGetValue(new Tuple<int, int>(location.X, location.Z), out chunk)) 
+                return chunk;
+            else
+                chunk = new ChunkColumn() { X = location.X, Z = location.Z };
+            
             PopulateChunk(chunk);
 
+            if (!ChunkCache.ContainsKey(new Tuple<int, int>(location.X, location.Z)))
+                ChunkCache.Add(new Tuple<int, int>(location.X, location.Z), chunk);
+            
             return chunk;
         }
 

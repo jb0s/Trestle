@@ -52,35 +52,20 @@ namespace Trestle.Entity
         
         public override void OnTick()
         {
-            TimeToLive--;
-
-            if (TimeToLive <= 0)
-            {
-                DespawnEntity();
-                return;
-            }
-            
             foreach (var player in World.Players.Values)
             {
                 if (player.Location.DistanceTo(Location) <= 1.8)
                 {
-                    PickupDelay--;
-
-                    if (PickupDelay <= 0)
-                    {
-                        // Add the item to the player's inventory
-                        player.Inventory.AddItem(Item.ItemId, Item.Metadata);
+                    // Add the item to the player's inventory
+                    player.Inventory.AddItem(Item.ItemId, Item.Metadata);
                     
-                        // Send the pickup animation packets.
-                        // The DespawnEntity is actually overridden to send the "item floating to player" animation before despawning.
-                        player.Client.SendPacket(new SoundEffect("random.pop", player.Location.ToVector3(), 1f, (byte)Globals.Random.Next(40, 100)));
-                        DespawnEntity(player);
-                    }
-
+                    // Send the pickup animation packets.
+                    // The DespawnEntity is actually overridden to send the "item floating to player" animation before despawning.
+                    player.Client.SendPacket(new SoundEffect("random.pop", player.Location.ToVector3(), 1f, (byte)Globals.Random.Next(40, 100)));
+                    DespawnEntity(player);
+                    
                     break;
                 }
-                
-                PickupDelay = 10;
             }
         }
     }

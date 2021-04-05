@@ -29,8 +29,6 @@ namespace Trestle.Worlds
         private Timer _tickTimer;
         private bool _disposed = false;
         
-        public Dictionary<Tuple<int, int>, ChunkColumn> ChunkCache = new();
-        
         public World(string name, IWorldGenerator worldGenerator)
         {
             Name = name;
@@ -57,12 +55,12 @@ namespace Trestle.Worlds
         // TODO: Fix spawn chunks
         public void LoadSpawnChunks()
         {
-            var chunkLoading = Stopwatch.StartNew();
+            //var chunkLoading = Stopwatch.StartNew();
 
-            GenerateChunks(null, new ChunkLocation(SpawnPoint), 16);
+            //GenerateChunks(null, new ChunkLocation(SpawnPoint), 16);
                 
-            chunkLoading.Stop();
-            Logger.Info($"Loaded spawn chunks in {chunkLoading.ElapsedMilliseconds}ms");
+            //chunkLoading.Stop();
+            //Logger.Info($"Loaded spawn chunks in {chunkLoading.ElapsedMilliseconds}ms");
             
             _tickTimer = new Timer(OnTick, null, 50, 50);
         }
@@ -77,12 +75,12 @@ namespace Trestle.Worlds
         {
             if (Players.TryAdd(player.EntityId, player))
             {
-                //SpawnForAll(player);
+                SpawnForAll(player);
             }
 
             player.World = this;
             player.IsSpawned = spawn;
-            player.GameMode = GameMode.Creative;
+            player.GameMode = DefaultGameMode;
         }
         
         public virtual void RemovePlayer(Player player, bool despawn = true)
@@ -140,15 +138,7 @@ namespace Trestle.Worlds
                     if (player.ChunksUsed.ContainsKey(pair.Key) || WorldGenerator == null) 
                         continue;
 
-                    ChunkColumn chunk;
-
-                    if (ChunkCache.ContainsKey(new Tuple<int, int>(pair.Key.Item1, pair.Key.Item2)))
-                        chunk = ChunkCache[new Tuple<int, int>(pair.Key.Item1, pair.Key.Item2)];
-                    else
-                    {
-                        chunk = WorldGenerator.GenerateChunk(new ChunkLocation(pair.Key.Item1, pair.Key.Item2));
-                        ChunkCache.Add(new Tuple<int, int>(pair.Key.Item1, pair.Key.Item2), chunk);
-                    }
+                    ChunkColumn chunk = WorldGenerator.GenerateChunk(new ChunkLocation(pair.Key.Item1, pair.Key.Item2));
 
                     player.ChunksUsed.Add(pair.Key, chunk);
                     yield return chunk;
