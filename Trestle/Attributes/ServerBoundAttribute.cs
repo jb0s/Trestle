@@ -1,5 +1,6 @@
 ﻿using System;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Server;
 
 namespace Trestle.Attributes
 {

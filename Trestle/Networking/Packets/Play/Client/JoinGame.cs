@@ -4,20 +4,21 @@ using fNbt;
 using Trestle.Attributes;
 using Trestle.Entity;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
-    [ClientBound(PlayPacket.Client_JoinGame)]
+    [ClientBound(PlayPacket.JoinGame)]
     public class JoinGame : Packet
     {
         [Field] 
         public int EntityId { get; set; }
 
         [Field] 
-        public sbyte GameMode { get; set; } = 0x00;
+        public byte GameMode { get; set; } = 0x01;
 
         [Field]
-        public sbyte Dimension { get; set; } = 0;
+        public int Dimension { get; set; } = 0;
 
         [Field]
         public byte Difficulty { get; set; } = 3;
@@ -26,7 +27,7 @@ namespace Trestle.Networking.Packets.Play.Client
         public byte MaxPlayers { get; set; }
 
         [Field]
-        public string LevelType { get; set; } = "flat";
+        public string LevelType { get; set; } = "default";
         
         [Field] 
         public bool ShowReducedDebugInfo { get; set; } = false;
@@ -34,7 +35,7 @@ namespace Trestle.Networking.Packets.Play.Client
         public JoinGame(Player player)
         {
             EntityId = player.EntityId;
-            GameMode = (sbyte)player.GameMode;
+            GameMode = (byte)player.GameMode;
             
             MaxPlayers = Config.MaxPlayers;
         }

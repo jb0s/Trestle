@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Login.Client

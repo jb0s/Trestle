@@ -73,6 +73,7 @@ namespace Trestle.Networking
 
             // Client lost connection, remove.
             Logger.Info(client.Player.Username + " lost connection");
+            Globals.BroadcastChat($"{ChatColor.Yellow}{client.Username} left the game");
             Clients.Remove(client);
         }
 
@@ -119,14 +120,6 @@ namespace Trestle.Networking
                 return;
             }
             
-            var type = client.State switch
-            {
-                ClientState.Handshaking => typeof(HandshakingPacket),
-                ClientState.Status => typeof(StatusPacket),
-                ClientState.Login => typeof(LoginPacket),
-                ClientState.Play => typeof(PlayPacket)
-            };
-
             var packet = handler();
             
             try

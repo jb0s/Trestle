@@ -15,4 +15,13 @@
       <ProjectReference Include="..\fNbt\fNbt\fNbt.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Enums\HandshakingPacket.cs" />
+      <Compile Remove="Enums\LoginPacket.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Enums\StatusPacket.cs" />
+    </ItemGroup>
+
 </Project>

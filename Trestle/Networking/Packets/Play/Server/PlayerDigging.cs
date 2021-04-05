@@ -2,11 +2,12 @@
 using Trestle.Attributes;
 using Trestle.Entity;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Server;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Server
 {
-    [ServerBound(PlayPacket.Server_PlayerDigging)]
+    [ServerBound(PlayPacket.PlayerDigging)]
     public class PlayerDigging : Packet
     {
         [Field(typeof(byte))]
@@ -20,7 +21,7 @@ namespace Trestle.Networking.Packets.Play.Server
 
         public override void HandlePacket()
         {
-            switch (Status)
+            /*switch (Status)
             {
                 case PlayerDiggingStatus.StartedDigging:
                     break;
@@ -49,7 +50,7 @@ namespace Trestle.Networking.Packets.Play.Server
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
+            }*/
         }
     }
 }

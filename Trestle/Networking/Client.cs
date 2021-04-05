@@ -130,12 +130,12 @@ namespace Trestle.Networking
         
         public void CreatePlayer(string uuid, string username)
         {
-            Player = new Player(Globals.WorldManager.MainWorld)
+            Player = new Player(Globals.WorldManager.Worlds[WorldType.Normal])
             {
                 Uuid = uuid,
                 Username = username,
                 Client = this,
-                GameMode = Globals.WorldManager.MainWorld.DefaultGameMode
+                GameMode = GameMode.Creative
             };
             
             State = ClientState.Play;

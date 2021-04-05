@@ -1,9 +1,10 @@
 ﻿using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
-    [ClientBound(PlayPacket.Client_ChangeGameState)]
+    [ClientBound(PlayPacket.ChangeGameState)]
     public class ChangeGameState : Packet
     {
         [Field] 

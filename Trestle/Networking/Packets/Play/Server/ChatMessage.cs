@@ -1,10 +1,13 @@
 ﻿using System;
 using Trestle.Attributes;
+using Trestle.Blocks;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Server;
+using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Server
 {
-    [ServerBound(PlayPacket.Server_ChatMessage)]
+    [ServerBound(PlayPacket.ChatMessage)]
     public class ChatMessage : Packet
     {
         [Field]
@@ -14,6 +17,7 @@ namespace Trestle.Networking.Packets.Play.Server
         {
             if (Message.StartsWith("/"))
             {
+                Client.Player.Inventory.AddItem(new ItemStack(new Block(Material.Cactus), 20));
                 return;
             }
             

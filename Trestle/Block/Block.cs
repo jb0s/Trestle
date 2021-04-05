@@ -1,6 +1,6 @@
-﻿using Trestle.Enums;
+﻿using System;
+using Trestle.Enums;
 using Trestle.Utils;
-using Trestle.Worlds;
 using Trestle.Entity;
 
 namespace Trestle.Blocks
@@ -57,7 +57,7 @@ namespace Trestle.Blocks
         /// Drops block loot.
         /// </summary>
         /// <param name="world"></param>
-        public void Drop(World world)
+        public void Drop(World.World world)
         {
             if (Drops == null) 
                 return;
@@ -82,7 +82,7 @@ namespace Trestle.Blocks
         /// Called every tick when its chunk is loaded.
         /// </summary>
         /// <param name="world"></param>
-        public virtual void OnTick(World world)
+        public virtual void OnTick(World.World world)
         {
         }
 
@@ -90,7 +90,7 @@ namespace Trestle.Blocks
         /// Starts a physics simulation.
         /// </summary>
         /// <param name="world"></param>
-        public virtual void DoPhysics(World world)
+        public virtual void DoPhysics(World.World world)
         {
         }
 
@@ -98,7 +98,10 @@ namespace Trestle.Blocks
         /// Breaks the block. (Does NOT drop loot, see <see cref="Drop(World)."/>)
         /// </summary>
         /// <param name="playerWorld"></param>
-        public void BreakBlock(World playerWorld)
-            => playerWorld.SetBlock(Material.Air, Coordinates);
+        public void BreakBlock(World.World playerWorld)
+        {
+            throw new NotImplementedException();
+            //playerWorld.SetBlock(Material.Air, Coordinates);
+        }
     }
 }

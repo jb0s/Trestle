@@ -1,9 +1,11 @@
-﻿using Trestle.Attributes;
+﻿using System.Collections.Generic;
+using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
-    [ClientBound(PlayPacket.Client_EntityMetadata)]
+    [ClientBound(PlayPacket.EntityMetadata)]
     public class EntityMetadata : Packet
     {
         [Field]

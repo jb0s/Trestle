@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Login.Client

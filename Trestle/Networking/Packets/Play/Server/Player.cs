@@ -1,10 +1,11 @@
 ﻿using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Server;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Server
 {
-    [ServerBound(PlayPacket.Server_Player)]
+    [ServerBound(PlayPacket.Player)]
     public class Player : Packet
     {
         [Field]

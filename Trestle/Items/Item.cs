@@ -1,6 +1,5 @@
 ﻿using System;
 using Trestle.Enums;
-using Trestle.Worlds;
 using Trestle.Entity;
 using System.Collections;
 
@@ -31,7 +30,7 @@ namespace Trestle.Utils
             IsBlock = false;
         }
         
-        public virtual void UseItem(World world, Player player, Vector3 blockCoordinates, BlockFace face)
+        public virtual void UseItem(World.World world, Player player, Vector3 blockCoordinates, BlockFace face)
         {
         }
         

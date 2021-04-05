@@ -1,11 +1,12 @@
 ﻿using System;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
-    [ClientBound(PlayPacket.Client_PlayerListItem)]
+    [ClientBound(PlayPacket.PlayerListItem)]
     public class PlayerListItem : Packet
     {
         [Field]

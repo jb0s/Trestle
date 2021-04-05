@@ -1,6 +1,5 @@
 ﻿using System;
 using Trestle.Utils;
-using Trestle.Worlds;
 using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.Entity
@@ -24,7 +23,7 @@ namespace Trestle.Entity
         /// <summary>
         /// The world that the entity is in.
         /// </summary>
-        public World World;
+        public World.World World;
 
         /// <summary>
         /// Has the entity spawned in?
@@ -36,7 +35,7 @@ namespace Trestle.Entity
         /// </summary>
         public Location Location;
         
-        public Entity(int entityTypeId, World world)
+        public Entity(int entityTypeId, World.World world)
         {
             World = world;
             Location = new Location(0, 0, 0);
@@ -72,12 +71,5 @@ namespace Trestle.Entity
             World.AddEntity(this);
             IsSpawned = true;
         }
-
-        /// <summary>
-        /// Spawns the entity for a select few players.
-        /// </summary>
-        /// <param name="players"></param>
-        public virtual void SpawnForPlayers(Player[] players)
-            => new NotImplementedException();
     }
 }

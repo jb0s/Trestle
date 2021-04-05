@@ -1,10 +1,11 @@
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
-    [ClientBound(PlayPacket.Client_SetSlot)]
+    [ClientBound(PlayPacket.SetSlot)]
     public class SetSlot : Packet
     {
         [Field]

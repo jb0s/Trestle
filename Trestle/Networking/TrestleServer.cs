@@ -2,11 +2,12 @@ using System;
 using System.Linq;
 using Trestle.Enums;
 using Trestle.Utils;
-using Trestle.Worlds;
+using Trestle.World;
 using System.Threading;
 using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
-using Trestle.Worlds.StandardWorld;
+using Trestle.World.Generation;
 
 namespace Trestle.Networking
 {
@@ -24,12 +25,15 @@ namespace Trestle.Networking
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += UnhandledException;
             
-            Logger.Info("Loading configuration..");
+            Logger.Info("Loading configuration...");
             Config.Load();
-            Logger.Info("Loaded configuration!");
 
+            Logger.Info("Initializing...");
             InitGlobals();
-
+            
+            Logger.Info("Loading worlds...");
+            GenerateWorlds();
+            
             try
             {
                 new Thread(() => Globals.ServerListener.Start()).Start();
@@ -43,7 +47,7 @@ namespace Trestle.Networking
             _ = ServerLoop();
             
             loadStopwatch.Stop();
-            Logger.Info($"Initialized in {loadStopwatch.ElapsedMilliseconds}ms!");
+            Logger.Info($"Done! {loadStopwatch.ElapsedMilliseconds}ms");
         }
 
         private async Task ServerLoop()
@@ -74,8 +78,13 @@ namespace Trestle.Networking
         {
             Globals.Random = new Random();
             Globals.ServerListener = new Listener();
-            Globals.WorldManager = new WorldManager(new StandardWorld());
+            Globals.WorldManager = new WorldManager();
             Globals.ServerKey = PacketCryptography.GenerateKeyPair();
+        }
+
+        private void GenerateWorlds()
+        {
+            Globals.WorldManager.CreateWorld(WorldType.Normal);
         }
 
         /// <summary>
