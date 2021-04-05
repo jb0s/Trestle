@@ -71,5 +71,16 @@ namespace Trestle.Entity
             World.AddEntity(this);
             IsSpawned = true;
         }
+
+        
+        /// <summary>
+        /// Spawns the entity for a select few players.
+        /// </summary>
+        /// <param name="players"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public virtual void SpawnForPlayers(Player[] players)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
