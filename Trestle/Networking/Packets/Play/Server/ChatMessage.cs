@@ -17,12 +17,11 @@ namespace Trestle.Networking.Packets.Play.Server
         {
             if (Message.StartsWith("/"))
             {
-                Client.Player.Inventory.AddItem(new ItemStack(new Block(Material.Cactus), 20));
+                Globals.CommandManager.HandleCommand(Client, Message);
                 return;
             }
             
             Globals.BroadcastChat($"<{Client.Player.Username}> {Message}");
-            Logger.Info($"<{Client.Player.Username}> {Message}");
         }
     }
 }

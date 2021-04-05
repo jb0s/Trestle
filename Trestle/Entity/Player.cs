@@ -105,7 +105,7 @@ namespace Trestle.Entity
 		/// Is the player crouching?
 		/// </summary>
 		public bool IsCrouching { get; set; }
-		
+
 		/// <summary>
 		/// Creates a player instance and registers it to the assigned world.
 		/// You need to call the <see cref="InitializePlayer"/> function to spawn it as an entity.
@@ -116,6 +116,8 @@ namespace Trestle.Entity
 			ChunksUsed = new Dictionary<Tuple<int, int>, byte[]>();
             Inventory = new InventoryManager(this);
             World = world;
+
+            Metadata = new PlayerMetadata();
 		}
         
         /// <summary>

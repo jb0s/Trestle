@@ -7,6 +7,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
+using Trestle.Commands;
 using Trestle.World.Generation;
 
 namespace Trestle.Networking
@@ -77,8 +78,9 @@ namespace Trestle.Networking
         private void InitGlobals()
         {
             Globals.Random = new Random();
-            Globals.ServerListener = new Listener();
-            Globals.WorldManager = new WorldManager();
+            Globals.ServerListener = new();
+            Globals.WorldManager = new();
+            Globals.CommandManager = new();
             Globals.ServerKey = PacketCryptography.GenerateKeyPair();
         }
 

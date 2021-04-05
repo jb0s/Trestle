@@ -1,5 +1,6 @@
 ﻿using System;
 using Trestle.Attributes;
+using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Server;
 using Trestle.Networking.Packets.Play.Client;
@@ -31,18 +32,13 @@ namespace Trestle.Networking.Packets.Play.Server
 
             player.Locale = Locale;
             player.ViewDistance = ViewDistance;
-            // TODO: ChatMode
             player.ChatColours = ChatColors;
             player.SkinParts = DisplayedSkinParts;
+
+
+            ((PlayerMetadata)Client.Player.Metadata).SkinMask = DisplayedSkinParts;
             
-                
-            // TODO: have an entity metadata builder
-            using var stream = new MinecraftStream();
-            stream.WriteByte(13);
-            stream.WriteVarInt(0);
-            stream.WriteByte(DisplayedSkinParts);
-            stream.WriteByte(0XFF);
-            Client.SendPacket(new EntityMetadata(Client.Player.EntityId, stream.Data));
+            Client.SendPacket(new EntityMetadata(Client.Player));
             
             // TODO: Fix this shit it's broken
             player.SendChunksForLocation();

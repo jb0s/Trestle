@@ -26,6 +26,12 @@ namespace Trestle.Entity
         public World.World World;
 
         /// <summary>
+        /// Metadata of an Entity.
+        /// // TODO: allow this to be overridable with a type.
+        /// </summary>
+        public Metadata Metadata { get; set; } = new();
+        
+        /// <summary>
         /// Has the entity spawned in?
         /// </summary>
         public bool IsSpawned;

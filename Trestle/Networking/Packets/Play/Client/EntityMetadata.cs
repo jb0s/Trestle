@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Trestle.Attributes;
+using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Client;
 
@@ -15,10 +17,10 @@ namespace Trestle.Networking.Packets.Play.Client
         [Field]
         public byte[] Data { get; set; }
 
-        public EntityMetadata(int entityId, byte[] data)
+        public EntityMetadata(Entity.Entity entity)
         {
-            EntityId = entityId;
-            Data = data;
+            EntityId = entity.EntityId;
+            Data = entity.Metadata.ToArray();
         }
     }
 }

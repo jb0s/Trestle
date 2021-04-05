@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using Ionic.Zlib;
+using Trestle.Commands;
 using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Networking;
@@ -20,6 +21,7 @@ namespace Trestle
         internal static string OfficialProtocolName = "Minecraft 1.12.2";
         
         internal static WorldManager WorldManager = null;
+        internal static CommandManager CommandManager = null;
         internal static RSAParameters ServerKey;
 
         internal static Listener ServerListener = null;

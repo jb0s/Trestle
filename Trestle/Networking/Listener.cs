@@ -19,10 +19,10 @@ namespace Trestle.Networking
 
         private bool _isListening = false;
 
-        private Dictionary<byte, Type> _handshakingHandlers = new();
-        private Dictionary<byte, Type> _statusHandlers = new();
-        private Dictionary<byte, Type> _loginHandlers = new();
-        private Dictionary<byte, Type> _playHandlers = new();
+        private readonly Dictionary<byte, Type> _handshakingPackets = new();
+        private readonly Dictionary<byte, Type> _statusPackets = new();
+        private readonly Dictionary<byte, Type> _loginPackets = new();
+        private readonly Dictionary<byte, Type> _playPackets = new();
 
         public List<Client> Clients { get; private set; } = new();
         
@@ -108,10 +108,10 @@ namespace Trestle.Networking
         {
             var type = client.State switch
             {
-                ClientState.Handshaking => _handshakingHandlers.GetValue(packetId),
-                ClientState.Status => _statusHandlers.GetValue(packetId),
-                ClientState.Login => _loginHandlers.GetValue(packetId),
-                ClientState.Play => _playHandlers.GetValue(packetId),
+                ClientState.Handshaking => _handshakingPackets.GetValue(packetId),
+                ClientState.Status => _statusPackets.GetValue(packetId),
+                ClientState.Login => _loginPackets.GetValue(packetId),
+                ClientState.Play => _playPackets.GetValue(packetId),
             };
 
             if (type == null)
@@ -147,13 +147,13 @@ namespace Trestle.Networking
                     continue;
                 
                 if (attribute.State == ClientState.Handshaking)
-                    _handshakingHandlers.Add(attribute.Id, type);
+                    _handshakingPackets.Add(attribute.Id, type);
                 else if (attribute.State == ClientState.Status)
-                    _statusHandlers.Add(attribute.Id, type);
+                    _statusPackets.Add(attribute.Id, type);
                 else if (attribute.State == ClientState.Login)
-                    _loginHandlers.Add(attribute.Id, type);
+                    _loginPackets.Add(attribute.Id, type);
                 else if (attribute.State == ClientState.Play)
-                    _playHandlers.Add(attribute.Id, type);
+                    _playPackets.Add(attribute.Id, type);
             }
         }
         

@@ -29,14 +29,15 @@ namespace Trestle.Entity
 
                 using (MinecraftStream stream = new MinecraftStream())
                 {
+                    /*
                     stream.WriteByte((5 << 5 | 10 & 0x1F) & 0xFF);
                     stream.WriteShort((short) (Item.ItemId != 0 ? Item.ItemId : 1));
                     stream.WriteByte(1);
                     stream.WriteShort(Item.Metadata);
                     stream.WriteByte(0); // nbt tingz :sparkles:
                     stream.WriteByte(127);
-                    
-                    spawnedBy.SendPacket(new EntityMetadata(EntityId, stream.Data));
+                    */
+                   // spawnedBy.SendPacket(new EntityMetadata(EntityId, stream.Data));
                 }
             }
         }

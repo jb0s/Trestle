@@ -33,7 +33,7 @@ namespace Trestle.Networking
             var buffer = new MinecraftStream(Client);
             
             // Checks if the Packet is ClientBound
-            var clientBound = (ClientBoundAttribute)GetType().GetCustomAttribute<ClientBoundAttribute>(false);
+            var clientBound = GetType().GetCustomAttribute<ClientBoundAttribute>(false);
             if (clientBound == null)
                 throw new Exception("Unable to Serialize packet, only ClientBound packets can be serialized.");
             
