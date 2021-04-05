@@ -35,13 +35,15 @@ namespace Trestle.Networking.Packets.Play.Server
             player.ChatColours = ChatColors;
             player.SkinParts = DisplayedSkinParts;
             
-                /*
+                
+            // TODO: have an entity metadata builder
             using var stream = new MinecraftStream();
-            stream.WriteByte((0 << 5 | 10 & 0x1F) & 0xFF);
+            stream.WriteByte(13);
+            stream.WriteVarInt(0);
             stream.WriteByte(DisplayedSkinParts);
-            stream.WriteByte(0x7F);
+            stream.WriteByte(0XFF);
             Client.SendPacket(new EntityMetadata(Client.Player.EntityId, stream.Data));
-            */
+            
             // TODO: Fix this shit it's broken
             player.SendChunksForLocation();
         }
