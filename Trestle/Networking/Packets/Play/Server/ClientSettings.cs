@@ -1,10 +1,13 @@
 ﻿using System;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Server;
+using Trestle.Networking.Packets.Play.Client;
+using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Server
 {
-    [ServerBound(PlayPacket.Server_ClientSettings)]
+    [ServerBound(PlayPacket.ClientSettings)]
     public class ClientSettings : Packet
     {
         [Field]
@@ -32,8 +35,13 @@ namespace Trestle.Networking.Packets.Play.Server
             player.ChatColours = ChatColors;
             player.SkinParts = DisplayedSkinParts;
             
-            Console.WriteLine(player.SkinParts);
-            
+                /*
+            using var stream = new MinecraftStream();
+            stream.WriteByte((0 << 5 | 10 & 0x1F) & 0xFF);
+            stream.WriteByte(DisplayedSkinParts);
+            stream.WriteByte(0x7F);
+            Client.SendPacket(new EntityMetadata(Client.Player.EntityId, stream.Data));
+            */
             // TODO: Fix this shit it's broken
             player.SendChunksForLocation();
         }

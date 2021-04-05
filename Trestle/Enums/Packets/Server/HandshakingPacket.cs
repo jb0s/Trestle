@@ -1,8 +1,7 @@
-﻿namespace Trestle.Enums
+﻿namespace Trestle.Enums.Packets.Server
 {
     public enum HandshakingPacket : byte
     {
-        // Serverbound
         Handshake = 0x00
     }
 }

@@ -119,14 +119,6 @@ namespace Trestle.Networking
                 return;
             }
             
-            var type = client.State switch
-            {
-                ClientState.Handshaking => typeof(HandshakingPacket),
-                ClientState.Status => typeof(StatusPacket),
-                ClientState.Login => typeof(LoginPacket),
-                ClientState.Play => typeof(PlayPacket)
-            };
-
             var packet = handler();
             
             try

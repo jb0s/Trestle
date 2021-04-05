@@ -168,18 +168,6 @@ namespace Trestle.Utils
                 {
                     PickupDelay = 40
                 };
-
-                var f = 0.3f;
-                var f1 = Math.Sin(_player.Location.Pitch * 0.017453292f);
-                var f2 = Math.Cos(_player.Location.Pitch * 0.017453292f);
-                var f3 = Math.Sin(_player.Location.Yaw * 0.017453292f);
-                var f4 = Math.Cos(_player.Location.Yaw * 0.017453292f);
-                var f5 = Globals.Random.NextDouble() * 6.2831855F;
-                var f6 = 0.02f * Globals.Random.NextDouble();
-
-                item.Location = new Location(-f3 * f2 * 0.3f + Math.Cos(f5) * f6, 
-                    -f1 * 0.3f * 0.1f + (Globals.Random.NextDouble() - Globals.Random.NextDouble()), 
-                    f4 * f2 * 0.3f + Math.Sin(f5) * f6);
                 
                 item.SpawnEntity();
             }

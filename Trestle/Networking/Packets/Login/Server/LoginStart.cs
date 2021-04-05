@@ -3,8 +3,8 @@ using System.Linq;
 using System.Text;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Server;
 using Trestle.Networking.Packets.Login.Client;
-using Trestle.Networking.Packets.Play.Client;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Login.Server

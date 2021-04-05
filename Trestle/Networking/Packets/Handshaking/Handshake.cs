@@ -1,6 +1,7 @@
 ﻿using System;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Server;
 using Trestle.Networking.Packets.Login.Client;
 using Trestle.Utils;
 

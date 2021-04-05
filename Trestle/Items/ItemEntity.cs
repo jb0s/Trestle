@@ -1,4 +1,5 @@
-﻿using Trestle.Utils;
+﻿using Trestle.Enums;
+using Trestle.Utils;
 using Trestle.Worlds;
 using Trestle.Networking.Packets.Play.Client;
 
@@ -61,7 +62,7 @@ namespace Trestle.Entity
                     
                     // Send the pickup animation packets.
                     // The DespawnEntity is actually overridden to send the "item floating to player" animation before despawning.
-                    player.Client.SendPacket(new SoundEffect("random.pop", player.Location.ToVector3(), 1f, (byte)Globals.Random.Next(40, 100)));
+                    player.Client.SendPacket(new NamedSoundEffect("entity.item.pickup", SoundCategory.Player, player.Location.ToVector3(), 1f, (byte)Globals.Random.Next(40, 100)));
                     DespawnEntity(player);
                     
                     break;

@@ -1,11 +1,12 @@
 ﻿using System;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Server;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Server
 {
-    [ServerBound(PlayPacket.Server_PlayerPositionAndLook)]
+    [ServerBound(PlayPacket.PlayerPositionAndLook)]
     public class PlayerPositionAndLook : Packet
     {
         [Field]

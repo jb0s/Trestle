@@ -2,11 +2,12 @@
 using System.Text.Json;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
-    [ClientBound(PlayPacket.Client_ChatMessage)]
+    [ClientBound(PlayPacket.ChatMessage)]
     public class ChatMessage : Packet
     {
         [Field]

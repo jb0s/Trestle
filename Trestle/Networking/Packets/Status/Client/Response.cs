@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Status.Client

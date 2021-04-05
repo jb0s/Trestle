@@ -197,13 +197,16 @@ namespace Trestle.Worlds
 
         public void SetBlock(Material block, Vector3 location)
         {
-            ChunkLocation chunkcoords = new ChunkLocation((int) location.X >> 4, (int) location.Z >> 4);
-            var chunk = WorldGenerator.GenerateChunk(chunkcoords);
+            ChunkLocation chunkCoords = new ChunkLocation((int) location.X >> 4, (int) location.Z >> 4);
+            var chunk = WorldGenerator.GenerateChunk(chunkCoords);
 
             chunk.SetBlock(Mod(location.X), (int)location.Y, Mod(location.Z), block);
             chunk.IsDirty = true;
-            
-            // TODO: Broadcast BlockChange
+
+            foreach (var player in Globals.ServerListener.Clients)
+            {
+                player.SendPacket(new BlockChange(location, block));
+            }
         }
         
         private int Mod(double val)

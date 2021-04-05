@@ -15,9 +15,9 @@ namespace Trestle
     {
         public static Random Random;
 
-        internal static int ProtocolVersion = 47;
-        internal static string ProtocolName = "Trestle 1.8.9";
-        internal static string OfficialProtocolName = "Minecraft 1.8.9";
+        internal static int ProtocolVersion = 340;
+        internal static string ProtocolName = "Trestle 1.12.2";
+        internal static string OfficialProtocolName = "Minecraft 1.12.2";
         
         internal static WorldManager WorldManager = null;
         internal static RSAParameters ServerKey;

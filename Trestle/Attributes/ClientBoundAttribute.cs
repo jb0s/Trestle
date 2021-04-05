@@ -1,5 +1,6 @@
 ﻿using System;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 
 namespace Trestle.Attributes
 {
@@ -15,7 +16,7 @@ namespace Trestle.Attributes
         {
             Id = (byte) packet;
         }
-        
+
         public ClientBoundAttribute(LoginPacket packet)
         {
             Id = (byte) packet;

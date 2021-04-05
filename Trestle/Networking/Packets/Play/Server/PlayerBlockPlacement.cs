@@ -2,12 +2,14 @@ using System;
 using Trestle.Attributes;
 using Trestle.Blocks;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Server;
+using Trestle.Networking.Packets.Play.Client;
 using Trestle.Utils;
 
-namespace Trestle.Networking.Packets.Play.Client
+namespace Trestle.Networking.Packets.Play.Server
 {
     [IgnoreExceptions]
-    [ServerBound(PlayPacket.Server_PlayerBlockPlacement)]
+    [ServerBound(PlayPacket.PlayerBlockPlacement)]
     public class PlayerBlockPlacement : Packet
     {
         [Field]
@@ -31,6 +33,9 @@ namespace Trestle.Networking.Packets.Play.Client
 
         public override void HandlePacket()
         {
+            
+            
+            
             try
             {
                 var newLocation = Location;
@@ -72,7 +77,7 @@ namespace Trestle.Networking.Packets.Play.Client
                 var itemInHand = Client.Player.Inventory.GetItemInHand();
 
                 Client.Player.World.SetBlock(itemInHand.Material, newLocation);
-                Client.SendPacket(new SoundEffect($"dig.{itemInHand.Material.ToString().ToLower()}", Client.Player.Location.ToVector3()));
+                Client.SendPacket(new NamedSoundEffect($"block.cloth.place", SoundCategory.Block, Client.Player.Location.ToVector3()));
                 
                 if (Client.Player.GameMode != GameMode.Creative)
                     Client.Player.Inventory.RemoveItem((short)itemInHand.Id, itemInHand.Metadata, 1);

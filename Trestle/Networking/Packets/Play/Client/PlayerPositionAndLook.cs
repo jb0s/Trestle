@@ -1,11 +1,12 @@
 ﻿using System;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
-    [ClientBound(PlayPacket.Client_PlayerPositionAndLook)]
+    [ClientBound(PlayPacket.PlayerPositionAndLook)]
     public class PlayerPositionAndLook : Packet
     {
         [Field] 
@@ -25,6 +26,10 @@ namespace Trestle.Networking.Packets.Play.Client
 
         [Field]
         public byte Flags { get; set; } = 0x00;
+
+        [Field] 
+        [VarInt]
+        public int TeleportId { get; set; } = Globals.Random.Next();
         
         public PlayerPositionAndLook(Location location)
         {

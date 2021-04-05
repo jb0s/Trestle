@@ -3,12 +3,13 @@ using System.IO;
 using fNbt;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 using Trestle.Utils;
 using Trestle.Worlds;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
-    [ClientBound(PlayPacket.Client_ChunkData)]
+    [ClientBound(PlayPacket.ChunkData)]
     public class ChunkData : Packet
     {
         [Field]
@@ -18,14 +19,23 @@ namespace Trestle.Networking.Packets.Play.Client
         public int ChunkZ { get; set; }
 
         [Field] 
-        public bool IsFullChunk { get; set; } = true;
+        public bool IsGroundUpContinuous { get; set; } = true;
         
         [Field]
-        public ushort PrimaryBitMask { get; set; }
+        [VarInt]
+        public int PrimaryBitMask { get; set; }
+        
+        [Field]
+        [VarInt]
+        public int Size { get; set; }
         
         [Field]
         public byte[] Data { get; set; }
         
+        [Field]
+        [VarInt]
+        public int NumberOfBlockEntities { get; set; }
+
         public bool Unloader = false;
 
         public ChunkData(ChunkColumn chunk)
@@ -42,7 +52,11 @@ namespace Trestle.Networking.Packets.Play.Client
 
             PrimaryBitMask = 0xffff;
 
+            Size = sectionData.Length;
+            // TODO: fix
             Data = sectionData;
+            
+            NumberOfBlockEntities = 0;
         }
     }
 }

@@ -125,16 +125,21 @@ namespace Trestle.Entity
         internal void InitializePlayer()
         {
 	        Client.SendPacket(new JoinGame(this));
+	        
+			Client.SendPacket(new PlayerListItem(Mojang.GetProfileById(Uuid)));
 	        Client.SendPacket(new PlayerListItem(Mojang.GetProfileById(Uuid)));
+	        
+	        
 	        Client.SendPacket(new SpawnPosition());
 	        Client.SendPacket(new PlayerPositionAndLook(Location));
 
+	        
 	        HasSpawned = true;
 			
 	        Client.Player.Inventory.SendToPlayer();
 	        BroadcastInventory();
-			
-	        SetGamemode(GameMode, true);
+
+	        SetGamemode(GameMode.Creative, true);
         }
 
         #region Updates
@@ -258,13 +263,14 @@ namespace Trestle.Entity
 		{
 			GameMode = target;
 
-            _ = new ChangeGameState(GameStateReason.ChangeGameMode, (float)target);
+            //Client.SendPacket(new ChangeGameState(GameStateReason.ChangeGameMode, 1f));
 
+             /*
 			if (!silent)
 			{
 				Console.WriteLine(Username + "'s gamemode was changed to " + target.ToString("D"));
 				SendChat("Your gamemode was changed to " + target.ToString());
-			}
+			}*/
 		}
 
 		/// <summary>

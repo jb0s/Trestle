@@ -1,10 +1,11 @@
 ﻿using System;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
-    [ClientBound(PlayPacket.Client_SpawnObject)]
+    [ClientBound(PlayPacket.SpawnObject)]
     public class SpawnObject : Packet
     {
         [Field] 

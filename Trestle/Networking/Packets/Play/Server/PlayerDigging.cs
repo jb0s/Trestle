@@ -2,11 +2,12 @@
 using Trestle.Attributes;
 using Trestle.Entity;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Server;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Server
 {
-    [ServerBound(PlayPacket.Server_PlayerDigging)]
+    [ServerBound(PlayPacket.PlayerDigging)]
     public class PlayerDigging : Packet
     {
         [Field(typeof(byte))]

@@ -1,9 +1,10 @@
 ﻿using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Enums.Packets.Client;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
-    [ClientBound(PlayPacket.Client_DestroyEntities)]
+    [ClientBound(PlayPacket.DestroyEntities)]
     public class DespawnEntities : Packet
     {
         [Field]
