@@ -26,8 +26,9 @@ namespace Trestle.Networking.Packets.Play.Client
         [Field]
         public byte MaxPlayers { get; set; }
 
+        // TODO: make dynamic to world type
         [Field]
-        public string LevelType { get; set; } = "default";
+        public string LevelType { get; set; } = "flat";
         
         [Field] 
         public bool ShowReducedDebugInfo { get; set; } = false;

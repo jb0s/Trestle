@@ -131,7 +131,7 @@ namespace Trestle.Entity
 	        SendToWorld(World);
 	        
 	        // TODO: This causes a nullref.
-	        //Client.SendPacket(new SpawnPosition());
+	        Client.SendPacket(new SpawnPosition(this));
 	        Client.SendPacket(new PlayerPositionAndLook(Location));
 	        
 	        HasSpawned = true;

@@ -19,10 +19,10 @@ namespace Trestle.Networking
 
         private bool _isListening = false;
 
-        private Dictionary<byte, Func<Packet>> _handshakingHandlers = new();
-        private Dictionary<byte, Func<Packet>> _statusHandlers = new();
-        private Dictionary<byte, Func<Packet>> _loginHandlers = new();
-        private Dictionary<byte, Func<Packet>> _playHandlers = new();
+        private Dictionary<byte, Type> _handshakingHandlers = new();
+        private Dictionary<byte, Type> _statusHandlers = new();
+        private Dictionary<byte, Type> _loginHandlers = new();
+        private Dictionary<byte, Type> _playHandlers = new();
 
         public List<Client> Clients { get; private set; } = new();
         
@@ -106,7 +106,7 @@ namespace Trestle.Networking
 
         private void HandlePacket(Client client, MinecraftStream buffer, byte packetId)
         {
-            var handler = client.State switch
+            var type = client.State switch
             {
                 ClientState.Handshaking => _handshakingHandlers.GetValue(packetId),
                 ClientState.Status => _statusHandlers.GetValue(packetId),
@@ -114,16 +114,18 @@ namespace Trestle.Networking
                 ClientState.Play => _playHandlers.GetValue(packetId),
             };
 
-            if (handler == null)
+            if (type == null)
             {
                 Logger.Warn($"Unknown packet '0x{packetId:X2}' for state '{client.State}'");
                 return;
             }
             
-            var packet = handler();
-            
             try
             {
+                var packet = (Packet)Activator.CreateInstance(type);
+                if (packet == null)
+                    throw new Exception($"Unable to create instance of packet handler {type}");
+                
                 packet.Client = client;
 
                 packet.DeserializePacket(buffer);
@@ -131,7 +133,7 @@ namespace Trestle.Networking
             }
             catch (Exception e)
             {
-                if(packet.GetType().GetCustomAttribute<IgnoreExceptionsAttribute>() == null)
+                if(type.GetCustomAttribute<IgnoreExceptionsAttribute>() == null)
                     client.Player?.Kick(new MessageComponent($"{ChatColor.Red}An exception occurred while handling packet.\n\n{ChatColor.Reset}{e.Message}\n{ChatColor.DarkGray}{e.StackTrace}"));
             }
         }
@@ -141,17 +143,17 @@ namespace Trestle.Networking
             foreach(Type type in Assembly.GetExecutingAssembly().GetTypes())
             {
                 var attribute = (ServerBoundAttribute)Attribute.GetCustomAttribute(type, typeof(ServerBoundAttribute));
-                if (attribute != null)
-                {
-                    if (attribute.State == ClientState.Handshaking)
-                        _handshakingHandlers.Add(attribute.Id, () => (Packet)Activator.CreateInstance(type));
-                    else if (attribute.State == ClientState.Status)
-                        _statusHandlers.Add(attribute.Id, () => (Packet)Activator.CreateInstance(type));
-                    else if (attribute.State == ClientState.Login)
-                        _loginHandlers.Add(attribute.Id, () => (Packet)Activator.CreateInstance(type));
-                    else if (attribute.State == ClientState.Play)
-                        _playHandlers.Add(attribute.Id, () => (Packet)Activator.CreateInstance(type));
-                }
+                if (attribute == null) 
+                    continue;
+                
+                if (attribute.State == ClientState.Handshaking)
+                    _handshakingHandlers.Add(attribute.Id, type);
+                else if (attribute.State == ClientState.Status)
+                    _statusHandlers.Add(attribute.Id, type);
+                else if (attribute.State == ClientState.Login)
+                    _loginHandlers.Add(attribute.Id, type);
+                else if (attribute.State == ClientState.Play)
+                    _playHandlers.Add(attribute.Id, type);
             }
         }
         
