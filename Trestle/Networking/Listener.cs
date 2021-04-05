@@ -73,6 +73,7 @@ namespace Trestle.Networking
 
             // Client lost connection, remove.
             Logger.Info(client.Player.Username + " lost connection");
+            Globals.BroadcastChat($"{ChatColor.Yellow}{client.Username} left the game");
             Clients.Remove(client);
         }
 

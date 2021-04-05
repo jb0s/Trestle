@@ -140,6 +140,8 @@ namespace Trestle.Entity
 	        BroadcastInventory();
 
 	        SetGamemode(GameMode.Creative, true);
+	        
+	        Globals.BroadcastChat($"{ChatColor.Yellow}{Username} joined the game");
         }
 
         #region Updates
