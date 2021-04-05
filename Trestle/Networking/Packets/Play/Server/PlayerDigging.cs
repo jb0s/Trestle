@@ -21,7 +21,7 @@ namespace Trestle.Networking.Packets.Play.Server
 
         public override void HandlePacket()
         {
-            switch (Status)
+            /*switch (Status)
             {
                 case PlayerDiggingStatus.StartedDigging:
                     break;
@@ -50,7 +50,7 @@ namespace Trestle.Networking.Packets.Play.Server
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-            }
+            }*/
         }
     }
 }

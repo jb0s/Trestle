@@ -1,34 +1,30 @@
-﻿namespace Trestle.Utils
+﻿using System;
+
+namespace Trestle.Utils
 {
-    public class Vector2
+    public struct Vector2
     {
+        public int X, Z;
+
         public Vector2(int x, int z)
         {
             X = x;
             Z = z;
         }
 
-        public int X { get; set; }
-        public int Z { get; set; }
-
         public static Vector2 operator -(Vector2 a, Vector2 b)
-        {
-            return new(a.X - b.X, a.Z - b.Z);
-        }
+            => new(a.X - b.X, a.Z - b.Z);
         
         public static bool operator ==(Vector2 a, Vector2 b)
-        {
-            return a.X == b.X && a.Z == b.Z;
-        }
+            => a.X == b.X && a.Z == b.Z;
         
         public static bool operator !=(Vector2 a, Vector2 b)
-        {
-            return !(a.X == b.X && a.Z == b.Z);
-        }
+            => !(a.X == b.X && a.Z == b.Z);
 
         public string ToString()
-        {
-            return $"({X}, {Z})";
-        }
+            => $"({X}, {Z})";
+
+        public static Vector2 ToChunkLocation(Location location)
+            => new((int)Math.Floor(location.X) >> 4, (int)Math.Floor(location.Z) >> 4);
     }
 }

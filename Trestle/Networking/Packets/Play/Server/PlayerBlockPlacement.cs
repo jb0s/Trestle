@@ -33,10 +33,7 @@ namespace Trestle.Networking.Packets.Play.Server
 
         public override void HandlePacket()
         {
-            
-            
-            
-            try
+            /*try
             {
                 var newLocation = Location;
                 var existingBlock = Client.Player.World.GetBlock(Location);
@@ -84,7 +81,7 @@ namespace Trestle.Networking.Packets.Play.Server
             }
             catch
             {
-            }
+            }*/
         }
     }
 }

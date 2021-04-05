@@ -1,6 +1,5 @@
 ﻿using Trestle.Enums;
 using Trestle.Utils;
-using Trestle.Worlds;
 using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.Entity
@@ -11,7 +10,7 @@ namespace Trestle.Entity
         public int PickupDelay { get; set; }
         public int TimeToLive { get; set; }
 
-        public ItemEntity(World world, ItemStack item) : base(2, world)
+        public ItemEntity(World.World world, ItemStack item) : base(2, world)
         {
             Item = item;
 

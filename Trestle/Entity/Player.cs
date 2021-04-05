@@ -2,7 +2,7 @@
 using System.Linq;
 using Trestle.Utils;
 using Trestle.Enums;
-using Trestle.Worlds;
+using Trestle.World;
 using Trestle.Networking;
 using System.Collections.Generic;
 using Trestle.Networking.Packets.Play.Client;
@@ -14,12 +14,12 @@ namespace Trestle.Entity
         /// <summary>
         /// The chunks this entity has loaded.
         /// </summary>
-        public Dictionary<Tuple<int, int>, ChunkColumn> ChunksUsed;
+        public Dictionary<Tuple<int, int>, byte[]> ChunksUsed;
         
         /// <summary>
         /// The position of the current chunk the player is in.
         /// </summary>
-        private readonly Vector2 _currentChunkPosition = new(0, 0);
+        private Vector2 _currentChunkPosition = new(0, 0);
         
         /// <summary>
         /// The player's inventory.
@@ -111,13 +111,12 @@ namespace Trestle.Entity
 		/// You need to call the <see cref="InitializePlayer"/> function to spawn it as an entity.
 		/// </summary>
 		/// <param name="world"></param>
-        public Player(World world) : base(-1, world)
-        {
-	        ChunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
+        public Player(World.World world) : base(-1, world)
+		{
+			ChunksUsed = new Dictionary<Tuple<int, int>, byte[]>();
             Inventory = new InventoryManager(this);
-
-            SendToWorld(world);
-        }
+            World = world;
+		}
         
         /// <summary>
         /// Initializes the Player entity.
@@ -129,10 +128,11 @@ namespace Trestle.Entity
 			Client.SendPacket(new PlayerListItem(Mojang.GetProfileById(Uuid)));
 	        Client.SendPacket(new PlayerListItem(Mojang.GetProfileById(Uuid)));
 	        
+	        SendToWorld(World);
 	        
-	        Client.SendPacket(new SpawnPosition());
+	        // TODO: This causes a nullref.
+	        //Client.SendPacket(new SpawnPosition());
 	        Client.SendPacket(new PlayerPositionAndLook(Location));
-
 	        
 	        HasSpawned = true;
 			
@@ -148,17 +148,17 @@ namespace Trestle.Entity
         /// Sends the player to a world.
         /// </summary>
         /// <param name="world"></param>
-        public void SendToWorld(World world)
+        public void SendToWorld(World.World world)
         {
 			// Remove the player from the old world.
-			World.RemovePlayer(this);
+			World.RemoveEntity(this);
 
 			// Update the world, and add the player to it.
 	        World = world;
 	        World.AddPlayer(this);
 	        
 			// Teleport the player to the world spawnpoint.
-	        Location = world.SpawnPoint;
+	        Location = world.Spawnpoint;
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace Trestle.Entity
 
 			Client.ThreadPool.LaunchThread(() =>
 			{
-				foreach (var chunk in World.GenerateChunks(this, new ChunkLocation(location.X, location.Z), ViewDistance))
+				foreach (var chunk in World.GenerateChunks(new Vector2(location.X, location.Z), ChunksUsed, ViewDistance))
 				{
 					if (Client != null && Client.TcpClient.Connected)
 						Client.SendPacket(new ChunkData(chunk));
@@ -316,7 +316,7 @@ namespace Trestle.Entity
 		{
 			int chunkX = (int)Location.X / 16;
 			int chunkZ = (int)Location.Z / 16;
-			ChunkColumn chunk = World.WorldGenerator.GenerateChunk(new ChunkLocation(chunkX, chunkZ));
+			ChunkColumn chunk = World.WorldGenerator.GenerateChunkColumn(new Vector2(chunkX, chunkZ));
 			return chunk;
 		}
 		
@@ -352,20 +352,7 @@ namespace Trestle.Entity
 			// TODO: [WorldGen] Tile entities
 		}
 		
-		/// <summary>
-		/// Unload the chunk at X, Z
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="z"></param>
-		internal void UnloadChunk(int x, int z)
-		{
-			Client.SendPacket(new ChunkData(new ChunkColumn() { X = x, Z = z })
-			{
-				Unloader = true
-			});
-		}
-
-        #endregion
+		#endregion
 
         #region Chat
 

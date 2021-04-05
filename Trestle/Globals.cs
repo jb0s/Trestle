@@ -7,7 +7,7 @@ using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Networking;
 using Trestle.Utils;
-using Trestle.Worlds;
+using Trestle.World;
 
 namespace Trestle
 {
@@ -56,24 +56,10 @@ namespace Trestle
         }
         
         public static void BroadcastChat(string message)
-        {
-            BroadcastChat(new MessageComponent(message), ChatMessageType.ChatBox, null);
-        }
-
-        public static void BroadcastChat(string message, Player sender)
-        {
-            BroadcastChat(new MessageComponent(message), ChatMessageType.ChatBox, sender);
-        }
-
-        public static void BroadcastChat(MessageComponent message, ChatMessageType chattype, Player sender)
-        {
-            WorldManager.MainWorld.BroadcastChat(message, chattype, sender);
-            foreach (var world in WorldManager.Worlds)
-            {
-                // TODO: Broadcast chat
-                world.Value.BroadcastChat(message, chattype, sender);
-            }
-        }
+            => BroadcastChat(new MessageComponent(message), ChatMessageType.ChatBox);
+        
+        public static void BroadcastChat(MessageComponent message, ChatMessageType chattype)
+            => WorldManager.BroadcastChat(message, chattype);
 
         internal static int GetEntityId()
             => ++_entityId;
