@@ -2,6 +2,7 @@
 {
     public enum PlayPacket : byte
     {
+        TabComplete = 0x01,
         KeepAlive = 0x0B,
         ChatMessage = 0x02,
         Player = 0x0C,
@@ -11,5 +12,6 @@
         PlayerDigging = 0x14,
         PlayerBlockPlacement = 0x1F,
         ClientSettings = 0x04,
+        Animation = 0x1D
     }
 }

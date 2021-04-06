@@ -19,6 +19,7 @@
         SetSlot = 0x16,
         PlayerListItem = 0x2E,
         Disconnect = 0x1A,
-        BlockChange = 0x0B
+        BlockChange = 0x0B,
+        TabComplete = 0x0E
     }
 }

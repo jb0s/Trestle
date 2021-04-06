@@ -15,10 +15,10 @@ namespace Trestle.Networking.Packets.Play.Client
         [VarInt]
         public int BlockId { get; set; }
 
-        public BlockChange(Vector3 location, Material block)
+        public BlockChange(Vector3 location, Material block, int meta)
         {
             Location = (((long)location.X & 0x3FFFFFF) << 38) | (((long)location.Z & 0x3FFFFFF) << 12) | ((long)location.Y & 0xFFF);
-            BlockId = (int) block;
+            BlockId = (int)block << 4 | meta & 15;
         }
     }
 }

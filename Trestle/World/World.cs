@@ -9,6 +9,7 @@ using System.Diagnostics;
 using Trestle.World.Generation;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using Trestle.Blocks;
 using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.World
@@ -162,7 +163,7 @@ namespace Trestle.World
 
         #endregion
 
-        #region Chunk generation
+        #region Chunk Generation
 
         /// <summary>
         /// Generates chunks at `chunkPosition` in a radius of `radius`
@@ -221,6 +222,39 @@ namespace Trestle.World
 
         #endregion
 
+        #region Blocks
+        public Block GetBlock(Vector3 location)
+        {
+	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X, (int)location.Z));
+	        
+	        var material = chunk.GetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
+	        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
+
+	        var block = new Block(material)
+	        {
+		        Metadata = data,
+		        Coordinates = location
+	        };
+
+	        return block;
+        }
+        
+        public void SetBlock(Vector3 location, Material block)
+        {
+	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X, (int)location.Z));
+	        
+	        chunk.SetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)), block);
+	        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
+
+	        // TODO: make this work
+	        BroadcastPacket(new BlockChange(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)), block, data));
+        }
+			
+        private int Mod(double val)
+	        => (int)(((val%16) + 16)%16);
+        
+        #endregion
+
         #region Packets
 
         /// <summary>
@@ -229,7 +263,9 @@ namespace Trestle.World
         public void BroadcastPacket(Packet packet)
         {
 	        foreach (var player in Players)
+	        {
 		        player.Value.Client.SendPacket(packet);
+	        }
         }
         
         /// <summary>

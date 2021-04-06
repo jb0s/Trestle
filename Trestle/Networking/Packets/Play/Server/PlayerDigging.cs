@@ -21,7 +21,12 @@ namespace Trestle.Networking.Packets.Play.Server
 
         public override void HandlePacket()
         {
-            /*switch (Status)
+            Console.WriteLine(Status);
+
+            if (Status == PlayerDiggingStatus.StartedDigging && Client.Player.GameMode == GameMode.Creative)
+                Status = PlayerDiggingStatus.FinishedDigging;
+            
+            switch (Status)
             {
                 case PlayerDiggingStatus.StartedDigging:
                     break;
@@ -50,7 +55,7 @@ namespace Trestle.Networking.Packets.Play.Server
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-            }*/
+            }
         }
     }
 }

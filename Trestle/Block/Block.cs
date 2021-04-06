@@ -97,11 +97,8 @@ namespace Trestle.Blocks
         /// <summary>
         /// Breaks the block. (Does NOT drop loot, see <see cref="Drop(World)."/>)
         /// </summary>
-        /// <param name="playerWorld"></param>
-        public void BreakBlock(World.World playerWorld)
-        {
-            throw new NotImplementedException();
-            //playerWorld.SetBlock(Material.Air, Coordinates);
-        }
+        /// <param name="world"></param>
+        public void BreakBlock(World.World world)
+            => world.SetBlock(Coordinates, Material.Air);
     }
 }
