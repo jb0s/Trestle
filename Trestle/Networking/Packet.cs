@@ -111,6 +111,14 @@ namespace Trestle.Networking
                         new NbtFile(data).SaveToStream(stream, NbtCompression.None);
                         buffer.Write(stream.ToArray());
                         break;
+                    case Vector3 data:
+                        var x = Convert.ToInt64(data.X);
+                        var y = Convert.ToInt64(data.Y);
+                        var z = Convert.ToInt64(data.Z);
+
+                        var pos = ((x & 0x3FFFFFF) << 38) | ((y & 0xFFF) << 26) | (z & 0x3FFFFFF);
+                        buffer.WriteLong(pos);
+                        break;
                     default:
                         var message = $"Unable to parse field '{property.Name}' of type '{property.PropertyType}'";
                         Client.Player?.Kick(new MessageComponent($"{ChatColor.Red}An error occured while serializing.\n\n{ChatColor.Reset}{message}"));

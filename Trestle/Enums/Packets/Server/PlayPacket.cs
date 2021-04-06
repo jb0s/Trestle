@@ -12,6 +12,7 @@
         PlayerDigging = 0x14,
         PlayerBlockPlacement = 0x1F,
         ClientSettings = 0x04,
-        Animation = 0x1D
+        Animation = 0x1D,
+        EntityAction = 0x15
     }
 }

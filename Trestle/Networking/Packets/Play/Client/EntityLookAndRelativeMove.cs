@@ -1,3 +1,4 @@
+using System;
 using Trestle.Attributes;
 using Trestle.Enums.Packets.Client;
 using Trestle.Utils;
@@ -37,8 +38,20 @@ namespace Trestle.Networking.Packets.Play.Client
             DeltaY = (short)((newLocation.Y * 32 - prevLocation.Y * 32) * 128);
             DeltaZ = (short)((newLocation.Z * 32 - prevLocation.Z * 32) * 128);
             
-            Yaw = newLocation.HeadYaw;
-            Pitch = (byte)newLocation.Pitch;
+            byte newYaw = (byte)Location.GetBodyRotation(newLocation.Yaw * 256 / 360);
+            byte newPitch = (byte)Location.GetBodyRotation(newLocation.Pitch * 256 / 360);
+            bool doTheMaths = Math.Abs(newYaw - newLocation.Yaw) >= 1 || Math.Abs(newPitch - newLocation.Pitch) >= 1;
+
+            if (doTheMaths)
+            {
+                Yaw = newYaw;
+                Pitch = newPitch;
+            }
+            else
+            {
+                Yaw = (byte)newLocation.Yaw;
+                Pitch = (byte)newLocation.Pitch;
+            }
 
             OnGround = newLocation.OnGround;
         }

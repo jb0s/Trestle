@@ -12,17 +12,17 @@ namespace Trestle.Networking.Packets.Play.Client
         public int EntityId { get; set; }
         
         [Field]
-        public byte Yaw { get; set; }
+        public float Yaw { get; set; }
         
         [Field]
-        public byte Pitch { get; set; }
+        public float Pitch { get; set; }
         
         public EntityLook(int entityId, Location newLocation)
         {
             EntityId = entityId;
 
             Yaw = newLocation.HeadYaw;
-            Pitch = (byte)newLocation.Pitch;
+            Pitch = newLocation.Pitch;
         }
     }
 }

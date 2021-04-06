@@ -22,8 +22,9 @@
         BlockChange = 0x0B,
         TabComplete = 0x0E,
         SpawnPlayer = 0x05,
-        EntityRelativeMove = 0x28,
-        EntityLook = 0x2B,
-        EntityLookAndRelativeMove = 0x29
+        EntityRelativeMove = 0x26,
+        EntityLook = 0x28,
+        EntityLookAndRelativeMove = 0x27,
+        EntityHeadLook = 0x36
     }
 }

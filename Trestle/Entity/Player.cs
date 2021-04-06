@@ -99,12 +99,7 @@ namespace Trestle.Entity
 		/// <summary>
 		/// Last action the entity performed.
 		/// </summary>
-		public EntityAction LastEntityAction { get; set; }
-
-		/// <summary>
-		/// Is the player crouching?
-		/// </summary>
-		public bool IsCrouching { get; set; }
+		public EntityActionType LastEntityActionType { get; set; }
 
 		/// <summary>
 		/// Creates a player instance and registers it to the assigned world.
@@ -169,6 +164,10 @@ namespace Trestle.Entity
 	        Location = world.Spawnpoint;
 	        
 	        SpawnForPlayers(World.Players.Values.ToArray());
+	        foreach (var player in World.Players.Values)
+	        {
+		        player.SpawnForPlayers(new Player[1] { this });
+	        }
         }
 
         public override void SpawnForPlayers(Player[] players)
@@ -191,6 +190,7 @@ namespace Trestle.Entity
 	        {
 		        Location.Yaw = yaw;
 		        Location.Pitch = pitch;
+		        Location.HeadYaw = (byte)(yaw * 256 / 360);
 	        }
 
 			var prevLocation = Location;
@@ -205,9 +205,8 @@ namespace Trestle.Entity
 	        if (originalchunkcoords != _currentChunkPosition)
 		        SendChunksForLocation(_currentChunkPosition);
 	        
-	        // TODO: This crashes
-	        //if(prevLocation.DistanceTo(Location) < 8)
-				//World.BroadcastPacket(new EntityLookAndRelativeMove(EntityId, prevLocation, Location), this);
+	        if(prevLocation.DistanceTo(Location) < 8)
+				World.BroadcastPacket(new EntityLookAndRelativeMove(EntityId, prevLocation, Location), this);
 
 	        LookChanged();
         }
@@ -217,8 +216,7 @@ namespace Trestle.Entity
         /// </summary>
         public void LookChanged()
         {
-	        // TODO: This crashes
-	        //World.BroadcastPacket(new EntityLook(EntityId, Location), this);
+	        World.BroadcastPacket(new EntityHeadLook(EntityId, Location.HeadYaw), this);
         }
         
         /// <summary>

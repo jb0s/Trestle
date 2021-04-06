@@ -58,6 +58,12 @@ namespace Trestle.Utils
             return "X: " + X + ", Y: " + Y + ", Z: " + Z + ", Yaw: " + Yaw + ", Pitch: " + Pitch;
         }
 
+        public static int GetBodyRotation(float rot)
+        {
+            int iRot = (int)rot;
+            return rot < (float)iRot ? iRot - 1 : iRot;
+        }
+        
         public Location Clone()
         {
             return new Location(X, Y, Z) {Yaw = Yaw, Pitch = Pitch, OnGround = OnGround};

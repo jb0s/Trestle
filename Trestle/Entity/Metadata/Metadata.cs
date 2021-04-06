@@ -31,7 +31,7 @@ namespace Trestle.Entity
         [Field]
         [Index(5)]
         public bool HasNoGravity { get; set; } = false;
-        
+
         public byte[] ToArray()
         {
             var buffer = new MinecraftStream();

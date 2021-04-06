@@ -9,7 +9,7 @@ namespace Trestle.Networking.Packets.Play.Client
     public class BlockChange : Packet
     {
         [Field]
-        public long Location { get; set; }
+        public Vector3 Location { get; set; }
         
         [Field]
         [VarInt]
@@ -17,7 +17,7 @@ namespace Trestle.Networking.Packets.Play.Client
 
         public BlockChange(Vector3 location, Material block, int meta)
         {
-            Location = (((long)location.X & 0x3FFFFFF) << 38) | (((long)location.Z & 0x3FFFFFF) << 12) | ((long)location.Y & 0xFFF);
+            Location = location;
             BlockId = (int)block << 4 | meta & 15;
         }
     }

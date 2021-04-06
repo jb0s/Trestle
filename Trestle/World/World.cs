@@ -255,13 +255,12 @@ namespace Trestle.World
         
         public void SetBlock(Vector3 location, Material block)
         {
-	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X, (int)location.Z));
+	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X / 16, (int)location.Z / 16));
 	        
 	        chunk.SetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)), block);
 	        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
 
-	        // TODO: make this work
-	        BroadcastPacket(new BlockChange(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)), block, data));
+	        BroadcastPacket(new BlockChange(new Vector3(location.X, (int) location.Y, location.Z), block, data));
         }
 			
         private int Mod(double val)
