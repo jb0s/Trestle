@@ -20,6 +20,7 @@
         PlayerListItem = 0x2E,
         Disconnect = 0x1A,
         BlockChange = 0x0B,
-        TabComplete = 0x0E
+        TabComplete = 0x0E,
+        SpawnPlayer = 0x05
     }
 }

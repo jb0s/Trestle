@@ -7,6 +7,7 @@ using Trestle.Commands;
 using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Networking;
+using Trestle.Networking.Packets.Play.Client;
 using Trestle.Utils;
 using Trestle.World;
 
@@ -55,6 +56,35 @@ namespace Trestle
                     return bytes.ToArray();
                 }
             }
+        }
+
+        public static void BroadcastPacket(Packet packet)
+        {
+            foreach (var world in WorldManager.Worlds.Values)
+                world.BroadcastPacket(packet);
+        }
+
+        public static Player[] GetOnlinePlayers()
+        {
+            var players = new List<Player>();
+            
+            foreach (var world in WorldManager.Worlds.Values)
+                foreach (var player in world.Players.Values)
+                    players.Add(player);
+
+            return players.ToArray();
+        }
+
+        public static void UnregisterPlayer(Client client)
+        {
+            // Send a global chat message announcing that the player has left :(
+            BroadcastChat($"{ChatColor.Yellow}{client.Username} left the game");
+            
+            // Remove the player from the world (despawns it from other clients)
+            client.Player.World.RemovePlayer(client.Player);
+            
+            // Remove the player from the tab list
+            BroadcastPacket(new PlayerListItem(true, Mojang.GetProfileById(client.Player.Uuid)));
         }
         
         public static void BroadcastChat(string message)

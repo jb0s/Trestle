@@ -21,29 +21,32 @@ namespace Trestle.Networking.Packets.Play.Client
         public byte[] Players { get; set; }
         
         // Add Player
-        public PlayerListItem(params UserProfile[] players)
+        public PlayerListItem(bool remove, params UserProfile[] players)
         {
-            Action = 0;
+            Action = remove ? 4 : 0;
             NumberOfPlayers = players.Length;
 
             var stream = new MinecraftStream();
             foreach (var player in players)
             {
                 stream.WriteUuid(Guid.Parse(player.Id));
-                stream.WriteString(player.Name); 
-                stream.WriteVarInt(player.Properties.Length);
-                foreach (var property in player.Properties)
+                if (!remove)
                 {
-                    stream.WriteString(property.Name);
-                    stream.WriteString(property.Value);
-                    stream.WriteBool(property.Signature != null);
-                    if (property.Signature != null)
-                        stream.WriteString(property.Signature);
-                }
+                    stream.WriteString(player.Name); 
+                    stream.WriteVarInt(player.Properties.Length);
+                    foreach (var property in player.Properties)
+                    {
+                        stream.WriteString(property.Name);
+                        stream.WriteString(property.Value);
+                        stream.WriteBool(property.Signature != null);
+                        if (property.Signature != null)
+                            stream.WriteString(property.Signature);
+                    }
                 
-                stream.WriteVarInt(0);
-                stream.WriteVarInt(0);
-                stream.WriteBool(false);
+                    stream.WriteVarInt(0);
+                    stream.WriteVarInt(0);
+                    stream.WriteBool(false);
+                }
             }
 
             Players = stream.Data;

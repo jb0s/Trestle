@@ -150,7 +150,7 @@ namespace Trestle.World
         /// <summary>
         /// Add a player to the world.
         /// </summary>
-        /// <param type="newPlayer">The new player.</param>
+        /// <param type="player">The new player.</param>
         public virtual void AddPlayer(Player newPlayer)
         {
 	        if (Players.TryAdd(newPlayer.EntityId, newPlayer))
@@ -159,6 +159,20 @@ namespace Trestle.World
 	        }
 
 	        newPlayer.IsSpawned = true;
+        }
+        
+        /// <summary>
+        /// Remove a player from the world.
+        /// </summary>
+        /// <param type="player">The new player.</param>
+        public virtual void RemovePlayer(Player player)
+        {
+	        if (Players.TryRemove(player.EntityId, out _))
+	        {
+		        // TODO: despawn entities, despawn player to other players, etc
+	        }
+
+	        player.IsSpawned = false;
         }
 
         #endregion
@@ -265,6 +279,18 @@ namespace Trestle.World
 	        foreach (var player in Players)
 	        {
 		        player.Value.Client.SendPacket(packet);
+	        }
+        }
+        
+        /// <summary>
+        /// Broadcasts a packet to every player in this world except the player specified as `except.`
+        /// </summary>
+        public void BroadcastPacket(Packet packet, Player except)
+        {
+	        foreach (var player in Players)
+	        {
+		        if(player.Value != except)
+					player.Value.Client.SendPacket(packet);
 	        }
         }
         

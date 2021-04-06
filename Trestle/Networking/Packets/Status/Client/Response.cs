@@ -1,6 +1,8 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Trestle.Attributes;
+using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Client;
 using Trestle.Utils;
@@ -46,15 +48,32 @@ namespace Trestle.Networking.Packets.Status.Client
         {
             [JsonPropertyName("max")] public int Max { get; set; } = Config.MaxPlayers;
 
-            [JsonPropertyName("online")] public int Online { get; set; } = 0;
-            
+            [JsonPropertyName("online")] public int Online { get; set; } = Globals.GetOnlinePlayers().Length;
+
+            [JsonPropertyName("sample")] public ServerListPlayer[] Players { get; set; }
+
             public ServerListPlayers()
-            { }
-            
-            public ServerListPlayers(int max, int online)
             {
-                Max = max;
-                Online = online;
+                var players = Globals.GetOnlinePlayers();
+
+                Players = new ServerListPlayer[players.Length];
+                for(int i = 0; i < players.Length; i++)
+                {
+                    Players[i] = new ServerListPlayer(players[i]);
+                }
+            }
+        }
+
+        public class ServerListPlayer
+        {
+            [JsonPropertyName("name")] public string Username { get; set; }
+            
+            [JsonPropertyName("id")] public Guid Uuid { get; set; }
+            
+            public ServerListPlayer(Player player)
+            {
+                Username = player.Username;
+                Uuid = Guid.Parse(player.Uuid);
             }
         }
     }

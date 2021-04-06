@@ -2,7 +2,7 @@
 
 namespace Trestle.Utils
 {
-    public class Location
+    public struct Location
     {
         
         public double X { get; set; }
@@ -19,6 +19,10 @@ namespace Trestle.Utils
             X = x;
             Y = y;
             Z = z;
+            HeadYaw = 0;
+            Yaw = 0;
+            Pitch = 0;
+            OnGround = false;
         }
         
         public Location(Location location)

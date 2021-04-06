@@ -126,13 +126,17 @@ namespace Trestle.Entity
         internal void InitializePlayer()
         {
 	        Client.SendPacket(new JoinGame(this));
+
+	        foreach (var player in Globals.GetOnlinePlayers())
+	        {
+		        Client.SendPacket(new PlayerListItem(false, Mojang.GetProfileById(player.Uuid)));
+	        }
 	        
-			Client.SendPacket(new PlayerListItem(Mojang.GetProfileById(Uuid)));
-	        Client.SendPacket(new PlayerListItem(Mojang.GetProfileById(Uuid)));
+			Client.SendPacket(new PlayerListItem(false, Mojang.GetProfileById(Uuid)));
+	        Globals.BroadcastPacket(new PlayerListItem(false, Mojang.GetProfileById(Uuid)));
 	        
 	        SendToWorld(World);
 	        
-	        // TODO: This causes a nullref.
 	        Client.SendPacket(new SpawnPosition(this));
 	        Client.SendPacket(new PlayerPositionAndLook(Location));
 	        
@@ -163,6 +167,13 @@ namespace Trestle.Entity
 	        
 			// Teleport the player to the world spawnpoint.
 	        Location = world.Spawnpoint;
+	        
+	        SpawnForPlayers(World.Players.Values.ToArray());
+        }
+
+        public override void SpawnForPlayers(Player[] players)
+        {
+	        World.BroadcastPacket(new SpawnPlayer(this), this);
         }
 
         /// <summary>
