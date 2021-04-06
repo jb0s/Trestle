@@ -192,7 +192,8 @@ namespace Trestle.Entity
 		        Location.Yaw = yaw;
 		        Location.Pitch = pitch;
 	        }
-	        
+
+			var prevLocation = Location;
 	        Location.X = location.X;
 	        Location.Y = location.Y;
 	        Location.Z = location.Z;
@@ -203,6 +204,10 @@ namespace Trestle.Entity
 	        
 	        if (originalchunkcoords != _currentChunkPosition)
 		        SendChunksForLocation(_currentChunkPosition);
+	        
+	        // TODO: This crashes
+	        //if(prevLocation.DistanceTo(Location) < 8)
+				//World.BroadcastPacket(new EntityLookAndRelativeMove(EntityId, prevLocation, Location), this);
 
 	        LookChanged();
         }
@@ -212,7 +217,8 @@ namespace Trestle.Entity
         /// </summary>
         public void LookChanged()
         {
-	        // TODO: [MP] Add this
+	        // TODO: This crashes
+	        //World.BroadcastPacket(new EntityLook(EntityId, Location), this);
         }
         
         /// <summary>

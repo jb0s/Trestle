@@ -35,6 +35,16 @@ namespace Trestle.Networking.Packets.Play.Client
 
         public SpawnPlayer(Player player)
         {
+            EntityId = player.EntityId;
+            Uuid = Guid.Parse(player.Uuid);
+
+            X = player.Location.X;
+            Y = player.Location.Y;
+            Z = player.Location.Z;
+
+            Yaw = player.Location.HeadYaw;
+            Pitch = (byte)player.Location.Pitch;
+
             var metadata = new PlayerMetadata();
             metadata.SkinMask = player.SkinParts;
 

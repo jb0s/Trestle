@@ -35,10 +35,9 @@ namespace Trestle.Networking.Packets.Play.Server
             player.ChatColours = ChatColors;
             player.SkinParts = DisplayedSkinParts;
 
-
             ((PlayerMetadata)Client.Player.Metadata).SkinMask = DisplayedSkinParts;
             
-            Client.SendPacket(new EntityMetadata(Client.Player));
+            Client.Player.World.BroadcastPacket(new EntityMetadata(Client.Player));
             
             // TODO: Fix this shit it's broken
             player.SendChunksForLocation();
