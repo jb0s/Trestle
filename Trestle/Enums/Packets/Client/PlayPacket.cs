@@ -25,6 +25,7 @@
         EntityRelativeMove = 0x26,
         EntityLook = 0x28,
         EntityLookAndRelativeMove = 0x27,
-        EntityHeadLook = 0x36
+        EntityHeadLook = 0x36,
+        BlockBreakAnimation = 0x08
     }
 }

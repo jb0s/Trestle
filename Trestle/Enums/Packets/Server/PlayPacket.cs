@@ -2,6 +2,7 @@
 {
     public enum PlayPacket : byte
     {
+        TeleportConfirm = 0x00,
         TabComplete = 0x01,
         KeepAlive = 0x0B,
         ChatMessage = 0x02,
@@ -13,6 +14,8 @@
         PlayerBlockPlacement = 0x1F,
         ClientSettings = 0x04,
         Animation = 0x1D,
-        EntityAction = 0x15
+        EntityAction = 0x15,
+        CreativeInventoryAction = 0x1B,
+        PluginMessage = 0x09
     }
 }

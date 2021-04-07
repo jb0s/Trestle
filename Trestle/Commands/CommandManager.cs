@@ -25,7 +25,7 @@ namespace Trestle.Commands
             var args = message.Substring(1).Split(' ');
             var command = args[0];
 
-            args = args.Skip(0).ToArray();
+            args = args.Skip(1).ToArray();
 
             if (!Commands.TryGetValue(command, out var data))
             {
@@ -34,11 +34,39 @@ namespace Trestle.Commands
             }
 
             var (type, method) = data;
+            var parameters = method.GetParameters();
+            
+            if (args.Length != parameters.Length)
+            {
+                client.Player.SendChat($"{ChatColor.Red}Missing arguments! Do '/help' for more info.");
+                return;
+            }
+
+            var newArgs = new object[parameters.Length];
+            for (int i = 0; i < newArgs.Length; i++)
+            {
+                try
+                {
+                    var @switch = new Dictionary<Type, Action> {
+                        { typeof(ushort), () => newArgs[i] = ushort.Parse(args[i]) },
+                        { typeof(short), () => newArgs[i] = short.Parse(args[i]) },
+                        { typeof(int), () => newArgs[i] = int.Parse(args[i]) },
+                        { typeof(long), () => newArgs[i] = long.Parse(args[i]) },
+                        { typeof(float), () => newArgs[i] = float.Parse(args[i]) },
+                        { typeof(double), () => newArgs[i] = double.Parse(args[i]) },
+                        { typeof(bool), () => newArgs[i] = bool.Parse(args[i]) },
+                        { typeof(string), () => newArgs[i] = args[i] }
+                    };
+
+                    @switch[parameters[i].ParameterType]();
+                }
+                catch {}
+            }
             
             var instance = (Command)Activator.CreateInstance(type);
             instance.Client = client;
             
-            method.Invoke(instance, Array.Empty<object>());
+            method.Invoke(instance, newArgs);
         }
         
         private void InitializeCommands()

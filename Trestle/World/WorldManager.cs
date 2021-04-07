@@ -37,7 +37,7 @@ namespace Trestle.World
         /// <param name="chattype"></param>
         public void BroadcastChat(MessageComponent message, ChatMessageType chattype)
         {
-            Logger.Info(message.Text);
+            Logger.Info(message.RemoveColors());
 
             foreach (var world in Worlds.Values)
                 world.BroadcastChat(message, chattype);

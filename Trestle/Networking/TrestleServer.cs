@@ -75,7 +75,7 @@ namespace Trestle.Networking
             }
         }
         
-        private void InitGlobals()
+        private void InitGlobals()  
         {
             Globals.Random = new Random();
             Globals.ServerListener = new();

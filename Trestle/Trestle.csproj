@@ -24,4 +24,8 @@
       <Compile Remove="Enums\StatusPacket.cs" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Commands\Commands\Misc" />
+    </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
-﻿using Trestle.Enums;
+﻿using System;
+using Trestle.Enums;
 using Trestle.Utils;
 using Trestle.Networking.Packets.Play.Client;
 
@@ -16,6 +17,11 @@ namespace Trestle.Entity
 
             PickupDelay = 10;
             TimeToLive = 6000;
+
+            Metadata = new ItemMetadata()
+            {
+                Item = new Slot(item)
+            };
         }
 
         public override void SpawnEntity()
@@ -24,21 +30,8 @@ namespace Trestle.Entity
 
             foreach (var player in World.Players.Values)
             {
-                var spawnedBy = player.Client;
-                spawnedBy.SendPacket(new SpawnObject(EntityId, 2, (int)Location.X, (int)Location.Y, (int)Location.Z, 0, 0, 1));
-
-                using (MinecraftStream stream = new MinecraftStream())
-                {
-                    /*
-                    stream.WriteByte((5 << 5 | 10 & 0x1F) & 0xFF);
-                    stream.WriteShort((short) (Item.ItemId != 0 ? Item.ItemId : 1));
-                    stream.WriteByte(1);
-                    stream.WriteShort(Item.Metadata);
-                    stream.WriteByte(0); // nbt tingz :sparkles:
-                    stream.WriteByte(127);
-                    */
-                   // spawnedBy.SendPacket(new EntityMetadata(EntityId, stream.Data));
-                }
+                player.Client.SendPacket(new SpawnObject(this, Location, 2, 1));
+                player.Client.SendPacket(new EntityMetadata(this));
             }
         }
 
@@ -53,18 +46,20 @@ namespace Trestle.Entity
         
         public override void OnTick()
         {
+            if (PickupDelay != 0)
+                PickupDelay--;
+            
             foreach (var player in World.Players.Values)
             {
-                if (player.Location.DistanceTo(Location) <= 1.8)
+                if (player.Location.DistanceTo(Location) <= 1.8 && PickupDelay == 0)
                 {
                     // Add the item to the player's inventory
-                    player.Inventory.AddItem(Item.ItemId, Item.Metadata);
+                    player.Inventory.AddItem(Item.ItemId, Item.Metadata, Item.ItemCount);
                     
                     // Send the pickup animation packets.
                     // The DespawnEntity is actually overridden to send the "item floating to player" animation before despawning.
                     player.Client.SendPacket(new NamedSoundEffect("entity.item.pickup", SoundCategory.Player, player.Location.ToVector3(), 1f, (byte)Globals.Random.Next(40, 100)));
                     DespawnEntity(player);
-                    
                     break;
                 }
             }

@@ -119,6 +119,11 @@ namespace Trestle.Networking
                         var pos = ((x & 0x3FFFFFF) << 38) | ((y & 0xFFF) << 26) | (z & 0x3FFFFFF);
                         buffer.WriteLong(pos);
                         break;
+                    case Velocity data:
+                        buffer.WriteShort(data.X);
+                        buffer.WriteShort(data.Y);
+                        buffer.WriteShort(data.Z);
+                        break;
                     default:
                         var message = $"Unable to parse field '{property.Name}' of type '{property.PropertyType}'";
                         Client.Player?.Kick(new MessageComponent($"{ChatColor.Red}An error occured while serializing.\n\n{ChatColor.Reset}{message}"));
@@ -142,6 +147,10 @@ namespace Trestle.Networking
 
                 // Checks if the field has a VarInt override
                 var isVarInt = property.GetCustomAttribute<VarIntAttribute>(false) != null;
+
+                // Checks if the field is optional
+                var isOptional = property.GetCustomAttribute<OptionalAttribute>(false) != null;
+
                 
                 // Dictionary of functions based on a type
                 var @switch = new Dictionary<Type, Action> {
@@ -173,15 +182,26 @@ namespace Trestle.Networking
                             Convert.ToDouble(val << 38 >> 38)));
                     } },
                 };
-                
-                // Checks if the type is in the dictionary, and then executes it
-                if(@switch.ContainsKey(field.OverrideType != null ? field.OverrideType: property.PropertyType)) 
-                    @switch[field.OverrideType != null ? field.OverrideType: property.PropertyType]();
-                else
+
+                try
                 {
-                    var message = $"Unable to parse field '{property.Name}' of type '{property.PropertyType}'";
-                    Client.Player?.Kick(new MessageComponent($"{ChatColor.Red}An error occured while deserializing.\n\n{ChatColor.Reset}{message}"));
-                    throw new Exception(message);
+                    // Checks if the type is in the dictionary, and then executes it
+                    if (@switch.ContainsKey(field.OverrideType != null ? field.OverrideType : property.PropertyType))
+                        @switch[field.OverrideType != null ? field.OverrideType : property.PropertyType]();
+                    else
+                    {
+                        var message = $"Unable to parse field '{property.Name}' of type '{property.PropertyType}'";
+                        Client.Player?.Kick(new MessageComponent(
+                            $"{ChatColor.Red}An error occured while deserializing.\n\n{ChatColor.Reset}{message}"));
+                        throw new Exception(message);
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (isOptional)
+                        return;
+                    else
+                        throw;
                 }
             }
         }

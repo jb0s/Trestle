@@ -1,4 +1,5 @@
 ﻿using Trestle.Attributes;
+using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Client;
 
@@ -14,11 +15,16 @@ namespace Trestle.Networking.Packets.Play.Client
         [Field]
         [VarInt]
         public int CollectorEntityId { get; set; }
+        
+        [Field]
+        [VarInt]
+        public int PickupItemCount { get; set; }
 
-        public CollectItem(Entity.Entity collected, Entity.Entity collector)
+        public CollectItem(ItemEntity collected, Entity.Entity collector)
         {
             CollectedEntityId = collected.EntityId;
             CollectorEntityId = collector.EntityId;
+            PickupItemCount = collected.Item.ItemCount;
         }
     }
 }

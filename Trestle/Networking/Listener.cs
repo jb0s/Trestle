@@ -72,7 +72,6 @@ namespace Trestle.Networking
             }
 
             // Client lost connection, remove.
-            Logger.Info(client.Player.Username + " lost connection");
             Globals.UnregisterPlayer(client);
             Clients.Remove(client);
         }

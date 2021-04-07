@@ -16,72 +16,66 @@ namespace Trestle.Networking.Packets.Play.Server
         public Vector3 Location { get; set; }
 
         [Field] 
-        public byte Face { get; set; }
+        [VarInt]
+        public int Face { get; set; }
         
         [Field]
         [VarInt]
         public int Hand { get; set; }
         
         [Field]
-        public byte CursorX { get; set; }
+        public float CursorX { get; set; }
         
         [Field]
-        public byte CursorY { get; set; }
+        public float CursorY { get; set; }
         
         [Field]
-        public byte CursorZ { get; set; }
+        public float CursorZ { get; set; }
 
         public override void HandlePacket()
         {
-            /*try
+            var newLocation = Location;
+            var existingBlock = Client.Player.World.GetBlock(Location);
+
+            switch (Face)
             {
-                var newLocation = Location;
-                var existingBlock = Client.Player.World.GetBlock(Location);
+                case 0:
+                    newLocation.Y--;
+                    break;
 
-                switch (Face)
-                {
-                    case 0:
-                        newLocation.Y--;
-                        break;
+                case 1:
+                    newLocation.Y++;
+                    break;
 
-                    case 1:
-                        newLocation.Y++;
-                        break;
+                case 2:
+                    newLocation.Z--;
+                    break;
 
-                    case 2:
-                        newLocation.Z--;
-                        break;
+                case 3:
+                    newLocation.Z++;
+                    break;
 
-                    case 3:
-                        newLocation.Z++;
-                        break;
+                case 4:
+                    newLocation.X--;
+                    break;
 
-                    case 4:
-                        newLocation.X--;
-                        break;
-
-                    case 5:
-                        newLocation.X++;
-                        break;
-                }
-
-                if (existingBlock.IsUsable && !Client.Player.IsCrouching)
-                {
-                    existingBlock.UseItem(Client.Player.World, Client.Player, Location, (BlockFace)Face);
-                    return;
-                }
-
-                var itemInHand = Client.Player.Inventory.GetItemInHand();
-
-                Client.Player.World.SetBlock(itemInHand.Material, newLocation);
-                Client.SendPacket(new NamedSoundEffect($"block.cloth.place", SoundCategory.Block, Client.Player.Location.ToVector3()));
-                
-                if (Client.Player.GameMode != GameMode.Creative)
-                    Client.Player.Inventory.RemoveItem((short)itemInHand.Id, itemInHand.Metadata, 1);
+                case 5:
+                    newLocation.X++;
+                    break;
             }
-            catch
+
+            if (existingBlock.IsUsable)
             {
-            }*/
+                existingBlock.UseItem(Client.Player.World, Client.Player, Location, (BlockFace)Face);
+                return;
+            }
+
+            var itemInHand = Client.Player.Inventory.GetItemInHand();
+
+            Client.Player.World.SetBlock(newLocation, itemInHand.Material);
+                
+            if (Client.Player.GameMode != GameMode.Creative)
+                Client.Player.Inventory.RemoveItem((short)itemInHand.Id, itemInHand.Metadata, 1);
         }
     }
 }

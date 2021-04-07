@@ -135,7 +135,7 @@ namespace Trestle.Networking
                 Uuid = uuid,
                 Username = username,
                 Client = this,
-                GameMode = GameMode.Creative
+                GameMode = GameMode.Survival
             };
             
             State = ClientState.Play;

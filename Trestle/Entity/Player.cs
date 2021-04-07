@@ -280,7 +280,7 @@ namespace Trestle.Entity
 		/// <param name="silent"></param>
 		public void SetGamemode(GameMode target, bool silent)
 		{
-			GameMode = target;
+			//GameMode = target;
 
             //Client.SendPacket(new ChangeGameState(GameStateReason.ChangeGameMode, 1f));
 

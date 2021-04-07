@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Numerics;
 using Trestle.Attributes;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Client;
+using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
@@ -13,16 +15,19 @@ namespace Trestle.Networking.Packets.Play.Client
         public int EntityId { get; set; }
         
         [Field]
+        public Guid Uuid { get; set; } = Guid.NewGuid();
+        
+        [Field]
         public byte Type { get; set; }
         
         [Field]
-        public int X { get; set; }
+        public double X { get; set; }
+
+        [Field]
+        public double Y { get; set; }
         
         [Field]
-        public int Y { get; set; }
-        
-        [Field]
-        public int Z { get; set; }
+        public double Z { get; set; }
         
         [Field]
         public byte Pitch { get; set; }
@@ -31,27 +36,23 @@ namespace Trestle.Networking.Packets.Play.Client
         public byte Yaw { get; set; }
         
         [Field]
-        public int Info { get; set; }
+        public int Data { get; set; }
         
         [Field]
-        public short SpeedX { get; set; }
-        
-        [Field]
-        public short SpeedY { get; set; }
-        
-        [Field]
-        public short SpeedZ { get; set; }
+        public Velocity Velocity { get; set; }
 
-        public SpawnObject(int entityId, byte type, int x, int y, int z, byte pitch, byte yaw, int info)
+        public SpawnObject(Entity.Entity entity, Location location, byte type, int data)
         {
-            EntityId = entityId;
+            EntityId = entity.EntityId;
+
+            X = location.X;
+            Y = location.Y;
+            Z = location.Z;
+            
             Type = type;
-            X = x * 32;
-            Y = y * 32;
-            Z = z * 32;
-            Pitch = pitch;
-            Yaw = (byte)((Yaw / 360) * 256);
-            Info = info;
+            Data = data;
+
+            Velocity = new Velocity(0, 0, 0);
         }
     }
 }

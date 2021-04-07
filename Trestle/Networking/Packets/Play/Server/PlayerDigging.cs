@@ -3,6 +3,7 @@ using Trestle.Attributes;
 using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Server;
+using Trestle.Networking.Packets.Play.Client;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Server
@@ -21,8 +22,6 @@ namespace Trestle.Networking.Packets.Play.Server
 
         public override void HandlePacket()
         {
-            Console.WriteLine(Status);
-
             if (Status == PlayerDiggingStatus.StartedDigging && Client.Player.GameMode == GameMode.Creative)
                 Status = PlayerDiggingStatus.FinishedDigging;
             
@@ -36,7 +35,6 @@ namespace Trestle.Networking.Packets.Play.Server
                     var block = Client.Player.World.GetBlock(Location);
                     block.BreakBlock(Client.Player.World);
 
-                    // Don't drop itemstacks in creative, adventure or spectator
                     if (Client.Player.GameMode == GameMode.Survival)
                     {
                         new ItemEntity(Client.Player.World, new ItemStack(new Item(block.Id, 0), 1))
@@ -51,10 +49,10 @@ namespace Trestle.Networking.Packets.Play.Server
                 case PlayerDiggingStatus.DropItem:
                     Client.Player.Inventory.DropCurrentItem();
                     break;
-                case PlayerDiggingStatus.ShootArrowORFinishEating:
+                case PlayerDiggingStatus.ShootArrow:
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                case PlayerDiggingStatus.SwapItemInHand:
+                    break;
             }
         }
     }

@@ -66,6 +66,14 @@ namespace Trestle.Entity
                         buffer.WriteVarInt(3);
                         buffer.WriteString(data);
                         break;
+                    case Slot data:
+                        buffer.WriteVarInt(5);
+                        
+                        buffer.WriteShort(data.BlockId);
+                        buffer.WriteByte(data.ItemCount);
+                        buffer.WriteShort(data.ItemDamage);
+                        buffer.WriteByte(data.NBT);
+                        break;
                     case bool data:
                         buffer.WriteVarInt(6);
                         buffer.WriteBool(data);

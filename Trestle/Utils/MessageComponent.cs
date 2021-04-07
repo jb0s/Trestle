@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace Trestle.Utils
 {
@@ -25,6 +26,19 @@ namespace Trestle.Utils
         public MessageComponent(string message)
         {
             Text = message;
+        }
+
+        public string RemoveColors()
+        {
+            var final = "";
+            foreach (var str in Text.Split('§'))
+            {
+                if (string.IsNullOrEmpty(str))
+                    continue;
+                final += str.Remove(0,1);
+            }
+            
+            return final;
         }
     }
 }

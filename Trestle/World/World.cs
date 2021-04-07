@@ -118,6 +118,10 @@ namespace Trestle.World
 			    // Tick every player.
 			    foreach (var player in Players.Values.ToArray())
 				    player.OnTick();
+			    
+			    // Tick every entity.
+			    foreach (var entity in Entities.Values.ToArray())
+				    entity.OnTick();
 		    }
 		    finally
 		    {
@@ -137,6 +141,7 @@ namespace Trestle.World
         /// <param type="entity"></param>
         public void AddEntity(Entity.Entity entity)
         {
+	        Entities.TryAdd(entity.EntityId, entity);
         }
 
         /// <summary>
@@ -145,6 +150,7 @@ namespace Trestle.World
         /// <param type="entity"></param>
         public void RemoveEntity(Entity.Entity entity)
         {
+	        Entities.TryRemove(entity.EntityId, out _);
         }
         
         /// <summary>

@@ -70,16 +70,17 @@ namespace Trestle.Utils
             return true;
         }
         
-        public void SetSlot(int slot, short itemId, byte metadata, byte itemcount)
+        public void SetSlot(int slot, short itemId, byte metadata, byte itemCount)
         {
             if (slot <= 45 && slot >= 5)
             {
-                _slots[slot] = new ItemStack(itemId, itemcount, metadata);
+                _slots[slot] = new ItemStack(itemId, itemCount, metadata);
                 if (_player != null && _player.HasSpawned)
                 {
                     _player.Client.SendPacket(new SetSlot(0, (short)slot, _slots[slot]));
                 }
             }
+            
             UpdateHandItems();
         }
         
@@ -88,7 +89,7 @@ namespace Trestle.Utils
             return AddItem(item.ItemId, item.Metadata, item.ItemCount);
         }
 
-        public bool AddItem(short itemId, byte metadata, byte itemcount = 1)
+        public bool AddItem(short itemId, byte metadata, byte itemCount = 1)
         {
             // Try quickbars first
             for(int i = 36; i < 44; i++)
@@ -96,13 +97,13 @@ namespace Trestle.Utils
                 if (_slots[i].ItemId == itemId && _slots[i].Metadata == metadata && _slots[i].ItemCount < 64)
                 {
                     var oldslot = _slots[i];
-                    if (oldslot.ItemCount + itemcount <= 64)
+                    if (oldslot.ItemCount + itemCount <= 64)
                     {
-                        SetSlot(i, itemId, metadata, (byte) (oldslot.ItemCount + itemcount));
+                        SetSlot(i, itemId, metadata, (byte) (oldslot.ItemCount + itemCount));
                         return true;
                     }
                     SetSlot(i, itemId, metadata, 64);
-                    var remaining = (oldslot.ItemCount + itemcount) - 64;
+                    var remaining = (oldslot.ItemCount + itemCount) - 64;
                     return AddItem(itemId, metadata, (byte) remaining);
                 }
             }
@@ -112,13 +113,13 @@ namespace Trestle.Utils
                 if (_slots[i].ItemId == itemId && _slots[i].Metadata == metadata && _slots[i].ItemCount < 64)
                 {
                     var oldslot = _slots[i];
-                    if (oldslot.ItemCount + itemcount <= 64)
+                    if (oldslot.ItemCount + itemCount <= 64)
                     {
-                        SetSlot(i, itemId, metadata, (byte) (oldslot.ItemCount + itemcount));
+                        SetSlot(i, itemId, metadata, (byte) (oldslot.ItemCount + itemCount));
                         return true;
                     }
                     SetSlot(i, itemId, metadata, 64);
-                    var remaining = (oldslot.ItemCount + itemcount) - 64;
+                    var remaining = (oldslot.ItemCount + itemCount) - 64;
                     return AddItem(itemId, metadata, (byte) remaining);
                 }
             }
@@ -128,7 +129,7 @@ namespace Trestle.Utils
             {
                 if (_slots[i].ItemId == -1)
                 {
-                    SetSlot(i, itemId, metadata, itemcount);
+                    SetSlot(i, itemId, metadata, itemCount);
                     return true;
                 }
             }
@@ -137,7 +138,7 @@ namespace Trestle.Utils
             {
                 if (_slots[i].ItemId == -1)
                 {
-                    SetSlot(i, itemId, metadata, itemcount);
+                    SetSlot(i, itemId, metadata, itemCount);
                     return true;
                 }
             }
@@ -164,12 +165,17 @@ namespace Trestle.Utils
 
             if (slot.ItemId != -1)
             {
-                var item = new ItemEntity(_player.World, new ItemStack(slot.ItemId, 1, slot.Metadata))
+                var location = new Location(_player.Location.X, _player.Location.Y + 1.32f, _player.Location.Z);
+                var entity = new ItemEntity(_player.World, new ItemStack(slot.ItemId, 1, slot.Metadata))
                 {
+                    Location = location,
                     PickupDelay = 40
                 };
-                
-                item.SpawnEntity();
+                entity.SpawnEntity();
+
+                // todo: add velocity & checking of velocity for entities
+                _player.World.BroadcastPacket(new SpawnObject(entity, location, 2, 1));
+                _player.World.BroadcastPacket(new EntityMetadata(entity));
             }
         }
         
@@ -177,14 +183,22 @@ namespace Trestle.Utils
         {
             int slotTarget = 36 + CurrentSlot;
             var slot = GetSlot(slotTarget);
+            
             if (slot.ItemId != -1)
             {
-                for (int i = 0; i <= slot.ItemCount; i++)
-                {
-                    new ItemEntity(_player.World, new ItemStack(slot.ItemId, 1, slot.Metadata)) {Location = _player.Location}
-                        .SpawnEntity();
-                }
                 SetSlot(slotTarget, -1, 0, 0);
+
+                var location = new Location(_player.Location.X, _player.Location.Y + 1.32f, _player.Location.Z);
+                var entity = new ItemEntity(_player.World, new ItemStack(slot.ItemId, slot.ItemCount, slot.Metadata))
+                {
+                    Location = location,
+                    PickupDelay = 40
+                };
+                entity.SpawnEntity();
+
+                // todo: add velocity & checking of velocity
+                _player.World.BroadcastPacket(new SpawnObject(entity, location, 2, 1));
+                _player.World.BroadcastPacket(new EntityMetadata(entity));
             }
         }
         
