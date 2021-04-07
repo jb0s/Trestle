@@ -110,6 +110,8 @@ namespace Trestle
 
             var msg = _joinMessages[Random.Next(0, _joinMessages.Length)].Replace("{PLAYER}", $"{ChatColor.Aqua}{client.Username}{ChatColor.Gray}");
             BroadcastChat($"{ChatColor.DarkGray}[{ChatColor.Green}+{ChatColor.DarkGray}] {ChatColor.Gray}{msg}");
+            
+            client.Player.SendToWorld(client.Player.World);
         }
         
         public static void UnregisterPlayer(Client client)

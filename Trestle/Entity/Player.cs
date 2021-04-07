@@ -122,11 +122,9 @@ namespace Trestle.Entity
         {
 	        Client.SendPacket(new JoinGame(this));
 
-	        SendToWorld(World);
-			
 			Globals.RegisterPlayer(Client);
-	        
-	        Client.SendPacket(new SpawnPosition(this));
+			
+			Client.SendPacket(new SpawnPosition(this));
 	        Client.SendPacket(new PlayerPositionAndLook(Location));
 	        
 	        HasSpawned = true;
