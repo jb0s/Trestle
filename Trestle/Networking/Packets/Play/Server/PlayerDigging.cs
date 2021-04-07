@@ -33,7 +33,6 @@ namespace Trestle.Networking.Packets.Play.Server
                     break;
                 case PlayerDiggingStatus.FinishedDigging:
                     var block = Client.Player.World.GetBlock(Location);
-                    block.BreakBlock(Client.Player.World);
 
                     if (Client.Player.GameMode == GameMode.Survival)
                     {
@@ -42,6 +41,8 @@ namespace Trestle.Networking.Packets.Play.Server
                             Location = new Location(Location.X, Location.Y, Location.Z)
                         }.SpawnEntity();
                     }
+                    
+                    block.BreakBlock(Client.Player.World);
                     break;
                 case PlayerDiggingStatus.DropItemStack:
                     Client.Player.Inventory.DropCurrentItemStack();

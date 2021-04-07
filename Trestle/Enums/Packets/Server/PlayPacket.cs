@@ -16,6 +16,7 @@
         Animation = 0x1D,
         EntityAction = 0x15,
         CreativeInventoryAction = 0x1B,
-        PluginMessage = 0x09
+        PluginMessage = 0x09,
+        HeldItemChange = 0x1A
     }
 }

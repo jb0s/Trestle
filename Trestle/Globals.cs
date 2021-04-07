@@ -28,6 +28,29 @@ namespace Trestle
         internal static Listener ServerListener = null;
         private static int _entityId;
 
+        private static string[] _joinMessages = new string[]
+        {
+            "{PLAYER} hopped into the server.",
+            "{PLAYER} just joined the server - glhf!",
+            "Welcome, {PLAYER}. We hope you brought pizza.",
+            "Wild {PLAYER} appeared!",
+            "Never gonna give {PLAYER} up, never gonna let {PLAYER} down.",
+            "{PLAYER} just slid into the server.",
+            "Where's {PLAYER}? In the server!",
+            "Knock knock. Who's there? It's {PLAYER}.",
+            "Cheers, love! {PLAYER}'s here!",
+            "You made it, {PLAYER}!",
+            "{PLAYER} bounces into the server.",
+        };
+        
+        private static string[] _leaveMessages = new string[]
+        {
+            "Leaving so soon, {PLAYER}?",
+            "{PLAYER} will be missed.",
+            "Don't let the door hit you on the way out, {PLAYER}.",
+            "{PLAYER}.exe has stopped responding",
+        };
+
         public static byte[] Compress(byte[] input)
         {
             using (var output = new MemoryStream())
@@ -75,16 +98,34 @@ namespace Trestle
             return players.ToArray();
         }
 
+        public static void RegisterPlayer(Client client)
+        {
+            // Add every online player to the tab list for the new player.
+            foreach (var player in GetOnlinePlayers())
+                client.SendPacket(new PlayerListItem(false, Mojang.GetProfileById(player.Uuid)));
+	        
+            // Add the new player to the tab list, too.
+            client.SendPacket(new PlayerListItem(false, Mojang.GetProfileById(client.Player.Uuid)));
+            BroadcastPacket(new PlayerListItem(false, Mojang.GetProfileById(client.Player.Uuid)));
+
+            var msg = _joinMessages[Random.Next(0, _joinMessages.Length)].Replace("{PLAYER}", $"{ChatColor.Aqua}{client.Username}{ChatColor.Gray}");
+            BroadcastChat($"{ChatColor.DarkGray}[{ChatColor.Green}+{ChatColor.DarkGray}] {ChatColor.Gray}{msg}");
+            
+            client.Player.SendToWorld(client.Player.World);
+        }
+        
         public static void UnregisterPlayer(Client client)
         {
             // Send a global chat message announcing that the player has left :(
-            BroadcastChat($"{ChatColor.Yellow}{client.Username} left the game");
+            var msg = _leaveMessages[Random.Next(0, _leaveMessages.Length)].Replace("{PLAYER}", $"{ChatColor.Aqua}{client.Username}{ChatColor.Gray}");
+            BroadcastChat($"{ChatColor.DarkGray}[{ChatColor.Red}-{ChatColor.DarkGray}] {ChatColor.Gray}{msg}");
             
             // Remove the player from the world (despawns it from other clients)
             client.Player.World.RemovePlayer(client.Player);
             
-            // Remove the player from the tab list
+            // Remove the player from the tab list & despawn its entity
             BroadcastPacket(new PlayerListItem(true, Mojang.GetProfileById(client.Player.Uuid)));
+            client.Player.World.BroadcastPacket(new DestroyEntities(new int[1] { client.Player.EntityId }));
         }
         
         public static void BroadcastChat(string message)
