@@ -5,7 +5,7 @@ using Trestle.Enums.Packets.Client;
 namespace Trestle.Networking.Packets.Play.Client
 {
     [ClientBound(PlayPacket.DestroyEntities)]
-    public class DespawnEntities : Packet
+    public class DestroyEntities : Packet
     {
         [Field]
         [VarInt]
@@ -15,7 +15,7 @@ namespace Trestle.Networking.Packets.Play.Client
         [VarInt]
         public int[] EntityIds { get; set; }
 
-        public DespawnEntities(int[] entityIds)
+        public DestroyEntities(int[] entityIds)
         {
             Count = entityIds.Length;
             EntityIds = entityIds;

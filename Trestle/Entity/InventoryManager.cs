@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Trestle.Entity;
+using Trestle.Enums;
 using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.Utils
@@ -22,7 +23,17 @@ namespace Trestle.Utils
             for(var i = 0; i < _slots.Length; i++)
                 _slots[i] = new ItemStack(-1, 0, 0);
 
-            UpdateHandItems();
+            // If debug mode is enabled, give the player some tools for quick debugging.
+            if (Config.Debug)
+            {
+                AddItem(276, 0, 1); // Sword
+                AddItem(278, 0, 1); // Pickaxe
+                AddItem(279, 0, 1); // Axe
+                AddItem(277, 0, 1); // Shovel
+                AddItem(1, 0, 64); // Building blocks
+            }
+
+            HeldItemChanged(0);
         }
         
         public void InventoryClosed()
@@ -158,6 +169,7 @@ namespace Trestle.Utils
             //Drop the current hold item
             var slotTarget = 36 + CurrentSlot;
             var slot = GetSlot(slotTarget);
+            
             if (slot.ItemCount > 1)
                 SetSlot(slotTarget, slot.ItemId, slot.Metadata, (byte) (slot.ItemCount - 1));
             else

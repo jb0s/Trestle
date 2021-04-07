@@ -63,7 +63,7 @@ namespace Trestle.Entity
         {
             foreach (var player in World.Players.Values)
             {
-                player.Client.SendPacket(new DespawnEntities(new []{ EntityId }));
+                player.Client.SendPacket(new DestroyEntities(new []{ EntityId }));
             }
             
             World.RemoveEntity(this);

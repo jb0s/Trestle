@@ -122,27 +122,19 @@ namespace Trestle.Entity
         {
 	        Client.SendPacket(new JoinGame(this));
 
-	        foreach (var player in Globals.GetOnlinePlayers())
-	        {
-		        Client.SendPacket(new PlayerListItem(false, Mojang.GetProfileById(player.Uuid)));
-	        }
-	        
-			Client.SendPacket(new PlayerListItem(false, Mojang.GetProfileById(Uuid)));
-	        Globals.BroadcastPacket(new PlayerListItem(false, Mojang.GetProfileById(Uuid)));
-	        
 	        SendToWorld(World);
+			
+			Globals.RegisterPlayer(Client);
 	        
 	        Client.SendPacket(new SpawnPosition(this));
 	        Client.SendPacket(new PlayerPositionAndLook(Location));
 	        
 	        HasSpawned = true;
 			
-	        Client.Player.Inventory.SendToPlayer();
+	        Inventory.SendToPlayer();
 	        BroadcastInventory();
 
-	        SetGamemode(GameMode.Creative, true);
-	        
-	        Globals.BroadcastChat($"{ChatColor.Yellow}{Username} joined the game");
+	        //SetGamemode(World.DefaultGamemode, true);
         }
 
         #region Updates
@@ -280,16 +272,15 @@ namespace Trestle.Entity
 		/// <param name="silent"></param>
 		public void SetGamemode(GameMode target, bool silent)
 		{
-			//GameMode = target;
+			GameMode = target;
 
-            //Client.SendPacket(new ChangeGameState(GameStateReason.ChangeGameMode, 1f));
-
-             /*
+            Client.SendPacket(new ChangeGameState(GameStateReason.ChangeGameMode, (int)target));
+			
 			if (!silent)
 			{
 				Console.WriteLine(Username + "'s gamemode was changed to " + target.ToString("D"));
 				SendChat("Your gamemode was changed to " + target.ToString());
-			}*/
+			}
 		}
 
 		/// <summary>
@@ -413,6 +404,12 @@ namespace Trestle.Entity
 		/// </summary>
 		public void Kick()
 			=> Kick(new MessageComponent("Kicked by an operator."));
+		
+		/// <summary>
+		/// Kick the player from Trestle for cheating suspicions.
+		/// </summary>
+		public void KickAntiCheat(string reason)
+			=> Kick(new MessageComponent($"{ChatColor.Gray}[{ChatColor.Aqua}TresGuard{ChatColor.Gray}] {ChatColor.Reset}{reason}"));
 
         #endregion
     }

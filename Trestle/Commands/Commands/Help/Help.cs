@@ -25,7 +25,7 @@ namespace Trestle.Commands.Commands.Help
                 commands.Add($"{ChatColor.DarkGray}/{ChatColor.Gray}{command} {ChatColor.DarkGray}-{ChatColor.Gray} {description?.Description ?? "It's a mystery..."}");
             }
             
-            Player.SendChat($"{ChatColor.Aqua}Trestle {ChatColor.DarkGray}- {ChatColor.Gray}Help {ChatColor.DarkGray}({ChatColor.Gray}1/{(commands.Count - 1) / 8 + 1}{ChatColor.DarkGray})\n" +
+            Player.SendChat($"{ChatColor.Aqua}Trestle {ChatColor.DarkGray}- {ChatColor.Gray}Commands {ChatColor.DarkGray}({ChatColor.Gray}1/{(commands.Count - 1) / 8 + 1}{ChatColor.DarkGray})\n" +
                             $"{ChatColor.DarkGray}{ChatColor.StrikeThrough}-----------------\n" +
                             string.Join('\n', commands));
         }
