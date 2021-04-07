@@ -1,11 +1,17 @@
 ﻿using Trestle.Attributes;
+using Trestle.Enums;
 
 namespace Trestle.Entity
 {
     public class PlayerMetadata : LivingMetadata
     {
-        [Field] 
+        [Field(typeof(byte))] 
         [Index(13)] 
-        public byte SkinMask { get; set; } = 0x00;
+        public SkinParts SkinMask => ((Player)Entity).SkinParts;
+        
+        public PlayerMetadata(Player entity) : base(entity)
+        {
+            
+        }
     }
 }

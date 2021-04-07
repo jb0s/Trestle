@@ -30,11 +30,17 @@ namespace Trestle.Utils
 
         public string RemoveColors()
         {
+            var split = Text.Split('§');
+            
+            if (split.Length == 1)
+                return Text;
+            
             var final = "";
             foreach (var str in Text.Split('§'))
             {
                 if (string.IsNullOrEmpty(str))
                     continue;
+                
                 final += str.Remove(0,1);
             }
             

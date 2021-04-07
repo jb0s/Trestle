@@ -44,11 +44,8 @@ namespace Trestle.Networking.Packets.Play.Client
 
             Yaw = player.Location.HeadYaw;
             Pitch = (byte)player.Location.Pitch;
-
-            var metadata = new PlayerMetadata();
-            metadata.SkinMask = player.SkinParts;
-
-            Metadata = metadata.ToArray();
+            
+            Metadata = new PlayerMetadata(player).ToArray();
         }
     }
 }

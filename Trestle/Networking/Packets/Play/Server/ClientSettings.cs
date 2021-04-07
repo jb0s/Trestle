@@ -23,8 +23,8 @@ namespace Trestle.Networking.Packets.Play.Server
         [Field]
         public bool ChatColors { get; set; }
         
-        [Field]
-        public byte DisplayedSkinParts { get; set; }
+        [Field(typeof(byte))]
+        public SkinParts DisplayedSkinParts { get; set; }
 
         public override void HandlePacket()
         {
@@ -34,8 +34,6 @@ namespace Trestle.Networking.Packets.Play.Server
             player.ViewDistance = ViewDistance;
             player.ChatColours = ChatColors;
             player.SkinParts = DisplayedSkinParts;
-
-            ((PlayerMetadata)Client.Player.Metadata).SkinMask = DisplayedSkinParts;
             
             Client.Player.World.BroadcastPacket(new EntityMetadata(Client.Player));
             

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Trestle.Attributes;
+using Trestle.Enums;
 using Trestle.Networking;
 using Trestle.Utils;
 
@@ -8,9 +9,9 @@ namespace Trestle.Entity
 {
     public class Metadata
     {
-        [Field]
+        [Field(typeof(byte))]
         [Index(0)]
-        public byte Status { get; set; } = 0x00;
+        public EntityStatus Status { get; set; } = 0x00;
 
         [Field]
         [Index(1)]
@@ -32,6 +33,13 @@ namespace Trestle.Entity
         [Index(5)]
         public bool HasNoGravity { get; set; } = false;
 
+        public readonly Entity Entity;
+
+        public Metadata(Entity entity)
+        {
+            Entity = entity;
+        }
+        
         public byte[] ToArray()
         {
             var buffer = new MinecraftStream();
@@ -48,7 +56,12 @@ namespace Trestle.Entity
                     continue;
 
                 buffer.WriteByte((byte)index.Index);
-                switch (property.GetValue(this))
+
+                var value = property.GetValue(this);
+                if (field.OverrideType != null)
+                    value = Convert.ChangeType(value, field.OverrideType);
+                
+                switch (value)
                 {
                     case byte data:
                         buffer.WriteVarInt(0);

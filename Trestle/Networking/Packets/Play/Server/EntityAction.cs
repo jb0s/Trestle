@@ -14,33 +14,27 @@ namespace Trestle.Networking.Packets.Play.Server
         [VarInt]
         public int EntityId { get; set; }
         
-        [Field]
+        [Field(typeof(int))]
         [VarInt]
-        public int ActionId { get; set; }
+        public EntityActionType ActionId { get; set; }
         
         [Field]
         [VarInt]
         public int JumpBoost { get; set; }
 
-        // TODO: Add proper implementation for this.
         public override void HandlePacket()
         {
-            var action = (EntityActionType)ActionId;
-            switch (action)
+            switch (ActionId)
             {
                 case EntityActionType.StartSneaking:
-                    Client.Player.Metadata.Status = 0x02;
-                    break;
-                
                 case EntityActionType.StopSneaking:
-                    Client.Player.Metadata.Status = 0x00;
+                    Client.Player.IsCrouching = ActionId == EntityActionType.StartSneaking;
                     break;
-                
-                default:
+                case EntityActionType.StartSprinting:
+                case EntityActionType.StopSprinting:
+                    Client.Player.IsSprinting = ActionId == EntityActionType.StartSprinting;
                     break;
             }
-            
-            Client.Player.World.BroadcastPacket(new EntityMetadata(Client.Player), Client.Player);
         }
     }
 }

@@ -10,7 +10,8 @@ namespace Trestle.Entity
 
         [Field] 
         [Index(7)]
-        public float Health { get; set; } = 1.0f;
+        // TODO: make health dynamic to entity
+        public float Health { get; set; } = 20.0f;
 
         [Field] 
         [Index(8)] 
@@ -23,5 +24,10 @@ namespace Trestle.Entity
         [Field] 
         [Index(10)] 
         public int Arrows { get; set; } = 0;
+
+        public LivingMetadata(Entity entity) : base(entity)
+        {
+            
+        }
     }
 }

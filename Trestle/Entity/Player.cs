@@ -59,9 +59,43 @@ namespace Trestle.Entity
 		/// <summary>
 		/// Is the player digging?
 		/// </summary>
-		public bool Digging { get; set; }
+		public bool IsDigging { get; set; }
 
-        /// <summary>
+		/// <summary>
+		/// Is the player crouching?
+		/// </summary>
+		public bool IsCrouching
+		{
+			get => (Metadata.Status & EntityStatus.Crouched) != 0;
+			set
+			{
+				if (value)
+					Metadata.Status |= EntityStatus.Crouched;
+				else
+					Metadata.Status &= ~EntityStatus.Crouched;
+				
+				World.BroadcastPacket(new EntityMetadata(Client.Player), Client.Player);
+			}
+		}
+		
+		/// <summary>
+		/// Is the player sprinting?
+		/// </summary>
+		public bool IsSprinting
+		{
+			get => (Metadata.Status & EntityStatus.Sprinting) != 0;
+			set
+			{
+				if (value)
+					Metadata.Status |= EntityStatus.Sprinting;
+				else
+					Metadata.Status &= ~EntityStatus.Sprinting;
+				
+				World.BroadcastPacket(new EntityMetadata(Client.Player), Client.Player);
+			}
+		}
+
+		/// <summary>
         /// The locale of the client.
         /// </summary>
         public string Locale { get; set; }
@@ -84,7 +118,7 @@ namespace Trestle.Entity
 		/// <summary>
 		/// Player's skin parts.
 		/// </summary>
-		public byte SkinParts { get; set; }
+		public SkinParts SkinParts { get; set; }
 		
 		/// <summary>
 		/// Player's main hand.
@@ -112,7 +146,7 @@ namespace Trestle.Entity
             Inventory = new InventoryManager(this);
             World = world;
 
-            Metadata = new PlayerMetadata();
+            Metadata = new PlayerMetadata(this);
 		}
         
         /// <summary>

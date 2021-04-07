@@ -18,10 +18,7 @@ namespace Trestle.Entity
             PickupDelay = 10;
             TimeToLive = 6000;
 
-            Metadata = new ItemMetadata()
-            {
-                Item = new Slot(item)
-            };
+            Metadata = new ItemMetadata(this);
         }
 
         public override void SpawnEntity()

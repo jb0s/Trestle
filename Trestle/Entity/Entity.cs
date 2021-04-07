@@ -27,9 +27,8 @@ namespace Trestle.Entity
 
         /// <summary>
         /// Metadata of an Entity.
-        /// // TODO: allow this to be overridable with a type.
         /// </summary>
-        public Metadata Metadata { get; set; } = new();
+        public Metadata Metadata { get; set; }
         
         /// <summary>
         /// Has the entity spawned in?
@@ -47,6 +46,8 @@ namespace Trestle.Entity
             Location = new Location(0, 0, 0);
             EntityId = Globals.GetEntityId();
             EntityTypeId = entityTypeId;
+
+            Metadata = new Metadata(this);
         }
         
         /// <summary>
