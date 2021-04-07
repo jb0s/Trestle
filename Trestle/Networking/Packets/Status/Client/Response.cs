@@ -48,13 +48,13 @@ namespace Trestle.Networking.Packets.Status.Client
         {
             [JsonPropertyName("max")] public int Max { get; set; } = Config.MaxPlayers;
 
-            [JsonPropertyName("online")] public int Online { get; set; } = Globals.GetOnlinePlayers().Length;
+            [JsonPropertyName("online")] public int Online { get; set; } = TrestleServer.GetOnlinePlayers().Length;
 
             [JsonPropertyName("sample")] public ServerListPlayer[] Players { get; set; }
 
             public ServerListPlayers()
             {
-                var players = Globals.GetOnlinePlayers();
+                var players = TrestleServer.GetOnlinePlayers();
 
                 Players = new ServerListPlayer[players.Length];
                 for(int i = 0; i < players.Length; i++)

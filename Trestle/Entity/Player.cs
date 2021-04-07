@@ -156,7 +156,7 @@ namespace Trestle.Entity
         {
 	        Client.SendPacket(new JoinGame(this));
 
-			Globals.RegisterPlayer(Client);
+	        TrestleServer.RegisterPlayer(Client);
 			
 			Client.SendPacket(new SpawnPosition(this));
 	        Client.SendPacket(new PlayerPositionAndLook(Location));

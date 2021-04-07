@@ -23,11 +23,17 @@ namespace Trestle.Networking
             Client = client;
         }
         
+        /// <summary>
+        /// Virtual function for handling packets.
+        /// </summary>
         public virtual void HandlePacket()
         {
             Console.WriteLine("not special..");
         }
 
+        /// <summary>
+        /// Serializes a packet.
+        /// </summary>
         public MinecraftStream SerializePacket()
         {
             var buffer = new MinecraftStream(Client);
@@ -135,6 +141,9 @@ namespace Trestle.Networking
             return buffer;
         }
 
+        /// <summary>
+        /// Deserializes a packet.
+        /// </summary>
         public void DeserializePacket(MinecraftStream buffer)
         {
             // Iterates over all properties

@@ -9,24 +9,39 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Networking.Packets.Login.Client;
 using Trestle.Utils;
 
 namespace Trestle.Networking
 {
     public class Listener
     {
+        /// <summary>
+        /// Are we listening for incoming connections?
+        /// </summary>
+        private bool _isListening = false;
+
+        /// <summary>
+        /// The socket that listens to incoming connections.
+        /// </summary>
         private TcpListener _listener = new(IPAddress.Any, Config.Port);
 
-        private bool _isListening = false;
+        /// <summary>
+        /// A list of clients that are connected to the server.
+        /// </summary>
+        public List<Client> Clients { get; private set; } = new();
 
         private readonly Dictionary<byte, Type> _handshakingPackets = new();
         private readonly Dictionary<byte, Type> _statusPackets = new();
         private readonly Dictionary<byte, Type> _loginPackets = new();
         private readonly Dictionary<byte, Type> _playPackets = new();
 
-        public List<Client> Clients { get; private set; } = new();
-        
-        public void Start()
+        #region Intialization
+
+        /// <summary>
+        /// Initializes the listener and starts listening.
+        /// </summary>
+        internal void Start()
         {
             LoadHandlers();
             
@@ -40,9 +55,60 @@ namespace Trestle.Networking
                 var client = _listener.AcceptTcpClient();
                 new Task(() => HandleConnection(client)).Start();
             }
+            
+            // We're not listening for connections anymore, shut down the server.
+            if(!TrestleServer.Stopped)
+                TrestleServer.Shutdown();
         }
 
-        private void HandleConnection(TcpClient tcpClient)
+        /// <summary>
+        /// Stops the listener and disconnects any established connections.
+        /// </summary>
+        internal void Stop()
+        {
+            _listener.Stop();
+            _isListening = false;
+
+            // Disconnect any established connections.
+            foreach (var client in Clients)
+            {
+                if(client.Player != null)
+                    client.Player.Kick(new MessageComponent("Server closed"));
+                else
+                    client.SendPacket(new Disconnect(new MessageComponent("Server closed")));
+            }
+        }
+
+        /// <summary>
+        /// In charge of defining the packet handlers.
+        /// </summary>
+        internal void LoadHandlers()
+        {
+            foreach(var type in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                var attribute = (ServerBoundAttribute)Attribute.GetCustomAttribute(type, typeof(ServerBoundAttribute));
+                if (attribute == null) 
+                    continue;
+                
+                if (attribute.State == ClientState.Handshaking)
+                    _handshakingPackets.Add(attribute.Id, type);
+                else if (attribute.State == ClientState.Status)
+                    _statusPackets.Add(attribute.Id, type);
+                else if (attribute.State == ClientState.Login)
+                    _loginPackets.Add(attribute.Id, type);
+                else if (attribute.State == ClientState.Play)
+                    _playPackets.Add(attribute.Id, type);
+            }
+        }
+        
+        #endregion
+
+        #region Packet handling
+
+        /// <summary>
+        /// Handles an incoming connection.
+        /// </summary>
+        internal void HandleConnection(TcpClient tcpClient)
         {
             var stream = tcpClient.GetStream();
             var client = new Client(tcpClient);
@@ -72,11 +138,16 @@ namespace Trestle.Networking
             }
 
             // Client lost connection, remove.
-            Globals.UnregisterPlayer(client);
+            TrestleServer.UnregisterPlayer(client);
             Clients.Remove(client);
         }
 
-        private void HandleUncompressedPacket(Client client, NetworkStream stream)
+        /// <summary>
+        /// Handles an uncompressed packet.
+        /// </summary>
+        /// <param name="client">The connected client that sent this packet.</param>
+        /// <param name="stream">The incoming packet.</param>
+        internal void HandleUncompressedPacket(Client client, NetworkStream stream)
         {
             int length = ReadVarInt(stream);
             byte[] buffer = new byte[length];
@@ -103,7 +174,13 @@ namespace Trestle.Networking
             }
         }
 
-        private void HandlePacket(Client client, MinecraftStream buffer, byte packetId)
+        /// <summary>
+        /// Handles a compressed packet.
+        /// </summary>
+        /// <param name="client">The connected client that sent this packet.</param>
+        /// <param name="buffer">The incoming packet.</param>
+        /// <param name="packetId">The identifier of the incoming packet.</param>
+        internal void HandlePacket(Client client, MinecraftStream buffer, byte packetId)
         {
             var type = client.State switch
             {
@@ -136,30 +213,15 @@ namespace Trestle.Networking
                     client.Player?.Kick(new MessageComponent($"{ChatColor.Red}An exception occurred while handling packet.\n\n{ChatColor.Reset}{e.Message}\n{ChatColor.DarkGray}{e.StackTrace}"));
             }
         }
-        
-        private void LoadHandlers()
+
+        #endregion
+
+        #region Utilities
+
+        internal int ReadVarInt(NetworkStream stream)
         {
-            foreach(Type type in Assembly.GetExecutingAssembly().GetTypes())
-            {
-                var attribute = (ServerBoundAttribute)Attribute.GetCustomAttribute(type, typeof(ServerBoundAttribute));
-                if (attribute == null) 
-                    continue;
-                
-                if (attribute.State == ClientState.Handshaking)
-                    _handshakingPackets.Add(attribute.Id, type);
-                else if (attribute.State == ClientState.Status)
-                    _statusPackets.Add(attribute.Id, type);
-                else if (attribute.State == ClientState.Login)
-                    _loginPackets.Add(attribute.Id, type);
-                else if (attribute.State == ClientState.Play)
-                    _playPackets.Add(attribute.Id, type);
-            }
-        }
-        
-        private int ReadVarInt(NetworkStream stream)
-        {
-            var value = 0;
-            var size = 0;
+            int value = 0;
+            int size = 0;
             int b;
 
             while (((b = stream.ReadByte()) & 0x80) == 0x80)
@@ -172,5 +234,7 @@ namespace Trestle.Networking
 
             return value | ((b & 0x7F) << (size * 7));
         }
+
+        #endregion
     }
 }

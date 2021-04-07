@@ -21,7 +21,7 @@ namespace Trestle.Networking.Packets.Play.Server
                 return;
             }
             
-            Globals.BroadcastChat($"<{Client.Player.Username}> {Message}");
+            TrestleServer.BroadcastChat($"<{Client.Player.Username}> {Message}");
         }
     }
 }

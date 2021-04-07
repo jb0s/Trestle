@@ -7,8 +7,19 @@ namespace Trestle.Entity
 {
     public class ItemEntity : Entity
     {
+        /// <summary>
+        /// The item this entity defines as.
+        /// </summary>
         public ItemStack Item { get; private set; }
+        
+        /// <summary>
+        /// The amount of lifetime that has to pass until the item can be picked up.
+        /// </summary>
         public int PickupDelay { get; set; }
+        
+        /// <summary>
+        /// Ticks left until the entity despawns.
+        /// </summary>
         public int TimeToLive { get; set; }
 
         public ItemEntity(World.World world, ItemStack item) : base(2, world)
