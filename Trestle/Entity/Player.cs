@@ -166,7 +166,7 @@ namespace Trestle.Entity
 	        Inventory.SendToPlayer();
 	        BroadcastInventory();
 
-	        //SetGamemode(World.DefaultGamemode, true);
+	        SetGamemode(World.DefaultGamemode, true);
         }
 
         #region Updates

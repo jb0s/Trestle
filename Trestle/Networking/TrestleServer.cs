@@ -183,10 +183,6 @@ namespace Trestle.Networking
             foreach (var player in GetOnlinePlayers())
                 client.SendPacket(new PlayerListItem(false, Mojang.GetProfileById(player.Uuid)));
 	        
-            // At this point, the player isn't in any world yet, so the packet above will *not* be sent to them.
-            // We have to do it manually, as the player only gets moved to a world at the end of this function.
-            client.SendPacket(new PlayerListItem(false, Mojang.GetProfileById(client.Player.Uuid)));
-            
             // Add the new player to every online player's tab list.
             BroadcastPacket(new PlayerListItem(false, Mojang.GetProfileById(client.Player.Uuid)));
 
@@ -197,6 +193,10 @@ namespace Trestle.Networking
             // Send the player to the world it's supposed to be in.
             // (We do this in here after the PlayerListItems because of packet orders and shit.)
             client.Player.SendToWorld(client.Player.World);
+            
+            // At the point of the list item packet being broadcasted, the player wasn't in any world yet, so the packet above 
+            // will *not* be sent to them. We have to do it manually, as the player only gets moved to a world at the end of this function.
+            client.SendPacket(new PlayerListItem(false, Mojang.GetProfileById(client.Player.Uuid)));
         }
         
         /// <summary>

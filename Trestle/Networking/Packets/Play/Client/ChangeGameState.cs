@@ -8,10 +8,10 @@ namespace Trestle.Networking.Packets.Play.Client
     public class ChangeGameState : Packet
     {
         [Field] 
-        public byte Reason;
+        public byte Reason { get; set; }
 
         [Field] 
-        public float Value;
+        public float Value { get; set; }
 
         public ChangeGameState(GameStateReason reason, float value = 0f)
         {
