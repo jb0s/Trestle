@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Reflection;
+using Trestle.Enums;
+using Trestle.Networking;
 
 namespace Trestle
 {
@@ -54,6 +56,11 @@ namespace Trestle
             {
                 _writer.WriteLine(data);
                 _writer.Flush();
+            }
+
+            if (verbosity == LogVerbosity.Debug && Globals.ServerListener != null)
+            {
+                TrestleServer.BroadcastChat($"{ChatColor.DarkGray}[{DateTime.UtcNow} - {verbosity.ToString().ToUpper()}] {ChatColor.Gray}{message}");
             }
             
             Console.WriteLine(data);
