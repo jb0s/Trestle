@@ -245,7 +245,7 @@ namespace Trestle.World
         #region Blocks
         public Block GetBlock(Vector3 location)
         {
-	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X, (int)location.Z));
+	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X / 16, (int)location.Z / 16));
 	        
 	        var material = chunk.GetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
 	        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
@@ -261,7 +261,7 @@ namespace Trestle.World
         
         public void SetBlock(Vector3 location, Material block)
         {
-	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X, (int)location.Z));
+	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X / 16, (int)location.Z / 16));
 	        
 	        chunk.SetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)), block);
 	        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
