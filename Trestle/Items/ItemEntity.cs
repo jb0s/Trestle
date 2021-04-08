@@ -54,12 +54,12 @@ namespace Trestle.Entity
         
         public override void OnTick()
         {
-            if (PickupDelay != 0)
+            if (PickupDelay > 0)
                 PickupDelay--;
             
             foreach (var player in World.Players.Values)
             {
-                if (player.Location.DistanceTo(Location) <= 1.8 && PickupDelay == 0)
+                if (player.Location.DistanceTo(Location) <= 1.8 && PickupDelay <= 0)
                 {
                     // Add the item to the player's inventory
                     player.Inventory.AddItem(Item.ItemId, Item.Metadata, Item.ItemCount);

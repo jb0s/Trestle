@@ -184,10 +184,6 @@ namespace Trestle.Utils
                     PickupDelay = 40
                 };
                 entity.SpawnEntity();
-
-                // todo: add velocity & checking of velocity for entities
-                _player.World.BroadcastPacket(new SpawnObject(entity, location, 2, 1));
-                _player.World.BroadcastPacket(new EntityMetadata(entity));
             }
         }
         
@@ -207,10 +203,6 @@ namespace Trestle.Utils
                     PickupDelay = 40
                 };
                 entity.SpawnEntity();
-
-                // todo: add velocity & checking of velocity
-                _player.World.BroadcastPacket(new SpawnObject(entity, location, 2, 1));
-                _player.World.BroadcastPacket(new EntityMetadata(entity));
             }
         }
         

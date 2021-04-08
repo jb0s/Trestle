@@ -29,6 +29,17 @@ namespace Trestle.Utils
             IsUsable = false;
             IsBlock = false;
         }
+
+        public Item(ItemStack item)
+        {
+            Id = (ushort) item.ItemId;
+            Metadata = item.Metadata;
+
+            MaxStackSize = 64;
+            IsUsable = false;
+            IsBlock = false;
+        }
+
         
         public virtual void UseItem(World.World world, Player player, Vector3 blockCoordinates, BlockFace face)
         {
