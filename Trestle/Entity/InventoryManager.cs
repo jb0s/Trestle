@@ -62,48 +62,41 @@ namespace Trestle.Entity
             }
         }
         
-        // Slots
-
-        public void SetSlot(int slot, short itemId, byte itemCount = 1, byte metaData = 0, bool sendPacket = false)
+        #region Slots
+        
+        public void SetSlot(int slot, short itemId, byte itemCount = 1, byte metaData = 0)
         {
-            if (slot > 45 || slot < 5)
-                throw new ArgumentOutOfRangeException(nameof(slot), slot, "Slot is out of range for inventory.");
-
             Slots[slot] = new ItemStack(itemId, itemCount, metaData);
             
-            if (Player != null && Player.HasSpawned && sendPacket)
+            if (Player != null && Player.HasSpawned)
                 Player.Client.SendPacket(new SetSlot(0, (short)slot, Slots[slot]));
         }
 
-        public void SetSlot(int slot, short itemId, int itemCount = 1, byte metaData = 0, bool sendPacket = false)
-            => SetSlot(slot, itemId, (byte)itemCount, metaData, sendPacket);
+        public void SetSlot(int slot, short itemId, int itemCount = 1, byte metaData = 0)
+            => SetSlot(slot, itemId, (byte)itemCount, metaData);
         
-        public void SetSlot(int slot, ItemStack itemStack, bool sendPacket = false)
-            => SetSlot(slot, itemStack.ItemId, itemStack.ItemCount, itemStack.Metadata, sendPacket);
+        public void SetSlot(int slot, ItemStack itemStack, bool sendPacket = true)
+            => SetSlot(slot, itemStack.ItemId, itemStack.ItemCount, itemStack.Metadata);
 
         public void SetSlotItemCount(int slot, int itemCount)
         {
-            if (slot > 45 || slot < 5)
-                throw new ArgumentOutOfRangeException(nameof(slot), slot, "Slot is out of range for inventory.");
-
             var itemStack = Slots[slot];
             
             if (itemCount == 0)
-                SetSlot(slot, -1, 0, 0, true);
+                SetSlot(slot, -1, 0);
             else
-                SetSlot(slot, itemStack.ItemId, itemCount, itemStack.Metadata, true);
-            
+                SetSlot(slot, itemStack.ItemId, itemCount, itemStack.Metadata);
         }
 
         public void ClearSlot(int slot)
         {
-            if (slot > 45 || slot < 5)
-                throw new ArgumentOutOfRangeException(nameof(slot), slot, "Slot is out of range for inventory.");
-            
             Slots[slot] = new ItemStack(-1, 0, 0);
         }
+        
+        #endregion
 
-        // Items
+        #region Items
+        
         public bool AddItem(short itemId, int itemCount = 1, byte metadata = 0)
         {
             // Try quickbars first
@@ -114,7 +107,7 @@ namespace Trestle.Entity
                     var oldslot = Slots[i];
                     if (oldslot.ItemCount + itemCount <= 64)
                     {
-                        SetSlot(i, itemId, oldslot.ItemCount + itemCount, metadata, true);
+                        SetSlot(i, itemId, oldslot.ItemCount + itemCount, metadata);
                         return true;
                     }
                     
@@ -130,10 +123,10 @@ namespace Trestle.Entity
                     var oldslot = Slots[i];
                     if (oldslot.ItemCount + itemCount <= 64)
                     {
-                        SetSlot(i, itemId, oldslot.ItemCount + itemCount, metadata, true);
+                        SetSlot(i, itemId, oldslot.ItemCount + itemCount, metadata);
                         return true;
                     }
-                    SetSlot(i, itemId, itemCount, metadata, true);
+                    SetSlot(i, itemId, itemCount, metadata);
                     return AddItem(itemId, oldslot.ItemCount + itemCount - 64, metadata);
                 }
             }
@@ -143,7 +136,7 @@ namespace Trestle.Entity
             {
                 if (Slots[i].ItemId == -1)
                 {
-                    SetSlot(i, itemId, itemCount, metadata, true);
+                    SetSlot(i, itemId, itemCount, metadata);
                     return true;
                 }
             }
@@ -152,7 +145,7 @@ namespace Trestle.Entity
             {
                 if (Slots[i].ItemId == -1)
                 {
-                    SetSlot(i, itemId, itemCount, metadata, true);
+                    SetSlot(i, itemId, itemCount, metadata);
                     return true;
                 }
             }
@@ -169,18 +162,21 @@ namespace Trestle.Entity
                 {
                     if ((itemStack.ItemCount - count) > 0)
                     {
-                        SetSlot(i, itemStack.ItemId, itemStack.ItemCount - count, itemStack.Metadata, true);
+                        SetSlot(i, itemStack.ItemId, itemStack.ItemCount - count, itemStack.Metadata);
                         return true;
                     }
                     
-                    SetSlot(i, -1, 0, 0, true);
+                    SetSlot(i, -1, 0);
                     return true;
                 }
             }
             return false;
         }
+
+        #endregion
         
-        // Clicked Item
+        #region Clicked Item
+        
         public void ClearClickedItem()
             => ClickedItem = null;
         
@@ -194,5 +190,6 @@ namespace Trestle.Entity
             }
         }
 
+        #endregion
     }
 }

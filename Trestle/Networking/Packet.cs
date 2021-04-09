@@ -16,6 +16,7 @@ namespace Trestle.Networking
     {
         public Client Client { get; set; }
         public Player Player => Client.Player;
+        public World.World World => Player.World;
         public InventoryManager Inventory => Player.Inventory;
         
         public Packet()
@@ -61,8 +62,12 @@ namespace Trestle.Networking
                 // Checks if the field has a VarInt override
                 var isVarInt = property.GetCustomAttribute<VarIntAttribute>(false) != null;
 
+                var value = property.GetValue(this);
+                if (field.OverrideType != null)
+                    value = Convert.ChangeType(value, field.OverrideType);
+                
                 // Finds the proper type for the field and then writes it to the buffer
-                switch (property.GetValue(this))
+                switch (value)
                 {
                     case byte data:
                         buffer.WriteByte(data);

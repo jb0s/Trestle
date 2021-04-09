@@ -2,6 +2,7 @@
 using Trestle.Attributes;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Server;
+using Trestle.Items;
 
 namespace Trestle.Networking.Packets.Play.Server
 {
@@ -12,23 +13,15 @@ namespace Trestle.Networking.Packets.Play.Server
         public short Slot { get; set; }
         
         [Field]
-        public short BlockId { get; set; }
+        public ItemStack Item { get; set; }
         
-        [Field]
-        [Optional]
-        public byte ItemCount { get; set; }
-        
-        [Field]
-        [Optional]
-        public short ItemDamage { get; set; }
-
         public override void HandlePacket()
         {
             // Sanity check, if this is sent without creative someones probably messing with packets.
             if (Client.Player.GameMode != GameMode.Creative)
                 return;
             
-            Client.Player.Inventory.SetSlot(Slot, BlockId, 0, ItemCount);
+            Client.Player.Inventory.SetSlot(Slot, Item.ItemId, Item.ItemCount);
         }
     }
 }

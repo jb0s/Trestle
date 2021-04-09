@@ -299,6 +299,7 @@ namespace Trestle.World
 	        }
         }
         
+        
         /// <summary>
         /// Broadcasts a chat message to every player in this world.
         /// </summary>

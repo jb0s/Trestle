@@ -18,6 +18,8 @@
         CreativeInventoryAction = 0x1B,
         PluginMessage = 0x09,
         HeldItemChange = 0x1A,
-        ClickWindow = 0x07
+        ClickWindow = 0x07,
+        CloseWindow = 0x08,
+        UseItem = 0x20
     }
 }

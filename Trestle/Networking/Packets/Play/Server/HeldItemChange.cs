@@ -1,5 +1,7 @@
 using Trestle.Attributes;
+using Trestle.Enums;
 using Trestle.Enums.Packets.Server;
+using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.Networking.Packets.Play.Server
 {
@@ -14,7 +16,8 @@ namespace Trestle.Networking.Packets.Play.Server
             if(Slot > 8 || Slot < 0)
                 Client.Player.KickAntiCheat("Illegal item slot");
             
-            Client.Player.Inventory.CurrentSlot = Slot;
+            Inventory.CurrentSlot = Slot;
+            World.BroadcastPacket(new EntityEquipment(Player.EntityId, EntityEquipmentSlot.MainHand, Inventory.CurrentItem), Player);
         }
     }
 }
