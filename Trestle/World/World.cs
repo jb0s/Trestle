@@ -245,7 +245,7 @@ namespace Trestle.World
         #region Blocks
         public Block GetBlock(Vector3 location)
         {
-	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X / 16, (int)location.Z / 16));
+	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X >> 4, (int)location.Z >> 4));
 	        
 	        var material = chunk.GetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
 	        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
@@ -261,12 +261,26 @@ namespace Trestle.World
         
         public void SetBlock(Vector3 location, Material block)
         {
-	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X / 16, (int)location.Z / 16));
+	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X >> 4, (int)location.Z >> 4));
 	        
-	        chunk.SetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)), block);
-	        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
+	        Console.WriteLine(block);
 
-	        BroadcastPacket(new BlockChange(new Vector3(location.X, (int) location.Y, location.Z), block, data));
+	        try
+	        {
+		        chunk.SetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)), block);
+		        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
+		        
+		        var material = chunk.GetBlock(new Vector3(Mod(location.X), (int)location.Y, Mod(location.Z)));
+		        
+		        Console.WriteLine(material);
+		        
+		        BroadcastPacket(new BlockChange(new Vector3(location.X, (int) location.Y, location.Z), block, data));
+	        }
+	        catch (Exception e)
+	        {
+		        Console.WriteLine(e.Message);
+		        Console.WriteLine(e.StackTrace);
+	        }
         }
 			
         private int Mod(double val)
@@ -308,6 +322,22 @@ namespace Trestle.World
         /// <param type="sender">The sender of the message.</param>
         public void BroadcastChat(MessageComponent message, ChatMessageType chatType)
 			=> BroadcastPacket(new ChatMessage(message, chatType));
+
+        #endregion
+
+        #region Utilities
+
+        private int ChunkRound(int number)
+        {
+	        // Smaller multiple
+	        int a = (number / 16) * 16;
+     
+	        // Larger multiple
+	        int b = a + 16;
+ 
+	        // Return of closest of two
+	        return (number - a > b - number)? b : a;
+        }
 
         #endregion
         

@@ -135,7 +135,6 @@ namespace Trestle.World
 
             IsDirty = true;
             _cache = null;
-        
         }
         #endregion
     }

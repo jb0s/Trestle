@@ -26,6 +26,7 @@ namespace Trestle.Utils
         public MessageComponent(string message)
         {
             Text = message;
+            Text = Text.Replace("&nl", "\n").Replace("&", "§");
         }
 
         public string RemoveColors()

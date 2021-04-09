@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using fNbt;
 using Trestle.Attributes;
 using Trestle.Entity;
@@ -148,6 +149,9 @@ namespace Trestle.Networking
                             buffer.WriteShort(data.ItemDamage);
                             buffer.WriteByte(0);   
                         }
+                        break;
+                    case MessageComponent data:
+                        buffer.WriteString(JsonSerializer.Serialize(data));
                         break;
                     default:
                         var message = $"Unable to parse field '{property.Name}' of type '{property.PropertyType}'";

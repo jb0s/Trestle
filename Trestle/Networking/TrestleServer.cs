@@ -198,6 +198,8 @@ namespace Trestle.Networking
             var msg = Constants.SystemMessages.JoinMessages[Globals.Random.Next(0, Constants.SystemMessages.JoinMessages.Length)].Replace("{PLAYER}", $"{ChatColor.Aqua}{client.Username}{ChatColor.Gray}");
             BroadcastChat($"{ChatColor.DarkGray}[{ChatColor.Green}+{ChatColor.DarkGray}] {ChatColor.Gray}{msg}");
 
+            // Send player header list and footer
+            client.SendPacket(new PlayerListHeaderAndFooter(new MessageComponent(Config.TabListHeader), new MessageComponent(Config.TabListFooter)));
         }
         
         /// <summary>

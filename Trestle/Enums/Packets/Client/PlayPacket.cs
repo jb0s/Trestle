@@ -26,6 +26,7 @@
         EntityLook = 0x28,
         EntityLookAndRelativeMove = 0x27,
         EntityHeadLook = 0x36,
-        BlockBreakAnimation = 0x08
+        BlockBreakAnimation = 0x08,
+        PlayerListHeaderAndFooter = 0x4A
     }
 }

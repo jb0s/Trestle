@@ -51,15 +51,6 @@ namespace Trestle.Entity
             
             for(var i = 0; i < Slots.Length; i++)
                 Slots[i] = new ItemStack(-1, 0, 0);
-
-            if (Config.Debug)
-            {
-                AddItem(276); // Sword
-                AddItem(278); // Pickaxe
-                AddItem(279); // Axe
-                AddItem(277); // Shovel
-                AddItem(1, 64); // Building blocks   
-            }
         }
         
         #region Slots

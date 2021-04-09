@@ -19,6 +19,7 @@ namespace Trestle.Networking.Packets.Play.Server
         {
             // Sanity check, if this is sent without creative someones probably messing with packets.
             if (Client.Player.GameMode != GameMode.Creative)
+                Client.Player.KickAntiCheat("Illegal item request");
                 return;
             
             Client.Player.Inventory.SetSlot(Slot, Item.ItemId, Item.ItemCount);

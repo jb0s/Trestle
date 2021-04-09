@@ -17,6 +17,10 @@ namespace Trestle
                 "",
                 "# World Settings",
                 "seed=" + new Random().Next(999999999),
+                "",
+                "# Tab list",
+                "tab_list_header=Online players:&nl",
+                "tab_list_footer=&nl&bPowered by Trestle!&nl&7(You can edit this message in server.properties)"
             };
         }
         

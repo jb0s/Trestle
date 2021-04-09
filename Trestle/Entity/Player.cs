@@ -429,7 +429,7 @@ namespace Trestle.Entity
 		/// Kick the player from Trestle for cheating suspicions.
 		/// </summary>
 		public void KickAntiCheat(string reason)
-			=> Kick(new MessageComponent($"{ChatColor.Gray}[{ChatColor.Aqua}TresGuard{ChatColor.Gray}] {ChatColor.Reset}{reason}"));
+			=> Kick(new MessageComponent($"{ChatColor.Aqua}Trestle AC {ChatColor.Gray}- {ChatColor.Red}you've been kicked for cheating!\n\n{ChatColor.Reset}{reason}"));
 
         #endregion
     }
