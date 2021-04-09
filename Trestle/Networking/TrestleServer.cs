@@ -186,10 +186,6 @@ namespace Trestle.Networking
             // Add the new player to every online player's tab list.
             BroadcastPacket(new PlayerListItem(false, Mojang.GetProfileById(client.Player.Uuid)));
 
-            // Send a global chat message announcing that the player's joined.
-            var msg = Constants.SystemMessages.JoinMessages[Globals.Random.Next(0, Constants.SystemMessages.JoinMessages.Length)].Replace("{PLAYER}", $"{ChatColor.Aqua}{client.Username}{ChatColor.Gray}");
-            BroadcastChat($"{ChatColor.DarkGray}[{ChatColor.Green}+{ChatColor.DarkGray}] {ChatColor.Gray}{msg}");
-            
             // Send the player to the world it's supposed to be in.
             // (We do this in here after the PlayerListItems because of packet orders and shit.)
             client.Player.SendToWorld(client.Player.World);
@@ -197,6 +193,11 @@ namespace Trestle.Networking
             // At the point of the list item packet being broadcasted, the player wasn't in any world yet, so the packet above 
             // will *not* be sent to them. We have to do it manually, as the player only gets moved to a world at the end of this function.
             client.SendPacket(new PlayerListItem(false, Mojang.GetProfileById(client.Player.Uuid)));
+            
+            // Send a global chat message announcing that the player's joined.
+            var msg = Constants.SystemMessages.JoinMessages[Globals.Random.Next(0, Constants.SystemMessages.JoinMessages.Length)].Replace("{PLAYER}", $"{ChatColor.Aqua}{client.Username}{ChatColor.Gray}");
+            BroadcastChat($"{ChatColor.DarkGray}[{ChatColor.Green}+{ChatColor.DarkGray}] {ChatColor.Gray}{msg}");
+
         }
         
         /// <summary>

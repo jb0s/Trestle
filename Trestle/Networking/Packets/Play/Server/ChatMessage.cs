@@ -21,7 +21,7 @@ namespace Trestle.Networking.Packets.Play.Server
                 return;
             }
             
-            TrestleServer.BroadcastChat($"<{Client.Player.Username}> {Message}");
+            TrestleServer.BroadcastChat($"{ChatColor.Aqua}{Client.Player.Username}{ChatColor.DarkGray}: {ChatColor.Gray}{Message.Replace("&", "§")}");
         }
     }
 }

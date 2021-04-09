@@ -103,7 +103,7 @@ namespace Trestle.Networking
         
         #endregion
 
-        #region Packet handling
+        #region Packet Handling
 
         /// <summary>
         /// Handles an incoming connection.

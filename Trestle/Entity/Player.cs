@@ -298,8 +298,8 @@ namespace Trestle.Entity
 			
 			if (!silent)
 			{
-				Console.WriteLine(Username + "'s gamemode was changed to " + target.ToString("D"));
-				SendChat("Your gamemode was changed to " + target.ToString());
+				Logger.Info($"Updated {Username}'s gamemode to '{target}'");
+				SendChat($"{ChatColor.Gray}Your gamemode was updated to {ChatColor.Aqua}{target}{ChatColor.Gray}!");
 			}
 		}
 
