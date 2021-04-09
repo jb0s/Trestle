@@ -2,6 +2,7 @@
 using System.Reflection;
 using Trestle.Attributes;
 using Trestle.Enums;
+using Trestle.Items;
 using Trestle.Networking;
 using Trestle.Utils;
 
@@ -79,10 +80,10 @@ namespace Trestle.Entity
                         buffer.WriteVarInt(3);
                         buffer.WriteString(data);
                         break;
-                    case Slot data:
+                    case ItemStack data:
                         buffer.WriteVarInt(5);
                         
-                        buffer.WriteShort(data.BlockId);
+                        buffer.WriteShort(data.ItemId);
                         buffer.WriteByte(data.ItemCount);
                         buffer.WriteShort(data.ItemDamage);
                         buffer.WriteByte(data.NBT);

@@ -18,6 +18,7 @@
     <ItemGroup>
       <Compile Remove="Enums\HandshakingPacket.cs" />
       <Compile Remove="Enums\LoginPacket.cs" />
+      <Compile Remove="Utils\Slot.cs" />
     </ItemGroup>
 
     <ItemGroup>

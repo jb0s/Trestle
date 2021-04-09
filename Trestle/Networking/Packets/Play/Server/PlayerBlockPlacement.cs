@@ -72,17 +72,17 @@ namespace Trestle.Networking.Packets.Play.Server
             }
 
             var loc = Client.Player.Location.ToVector3();
-            var itemInHand = Client.Player.Inventory.GetItemInHand();
+            var itemInHand = Client.Player.Inventory.CurrentItem;
             var blockCenter = new Vector3(newLocation.X + 0.5, newLocation.Y, newLocation.Z + 0.5);
             
             // Prevent the player from placing blocks inside themselves.
             if (loc.DistanceTo(blockCenter) < 0.8)
                 return;
             
-            Client.Player.World.SetBlock(newLocation, itemInHand.Material);
+            Client.Player.World.SetBlock(newLocation, (Material)itemInHand.ItemId);
             
             if (Client.Player.GameMode != GameMode.Creative)
-                Client.Player.Inventory.RemoveItem((short)itemInHand.Id, itemInHand.Metadata, 1);
+                Client.Player.Inventory.SetSlotItemCount(Client.Player.Inventory.CurrentSlot + 36, Client.Player.Inventory.CurrentItem.ItemCount - 1);
         }
     }
 }

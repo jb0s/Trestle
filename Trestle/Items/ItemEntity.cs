@@ -1,5 +1,6 @@
 ﻿using System;
 using Trestle.Enums;
+using Trestle.Items;
 using Trestle.Utils;
 using Trestle.Networking.Packets.Play.Client;
 
@@ -62,7 +63,7 @@ namespace Trestle.Entity
                 if (player.Location.DistanceTo(Location) <= 1.8 && PickupDelay <= 0)
                 {
                     // Add the item to the player's inventory
-                    player.Inventory.AddItem(Item.ItemId, Item.Metadata, Item.ItemCount);
+                    player.Inventory.AddItem(Item.ItemId, Item.ItemCount, Item.Metadata);
                     
                     // Send the pickup animation packets.
                     // The DespawnEntity is actually overridden to send the "item floating to player" animation before despawning.

@@ -1,6 +1,8 @@
+using System;
 using Trestle.Attributes;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Client;
+using Trestle.Items;
 using Trestle.Utils;
 
 namespace Trestle.Networking.Packets.Play.Client
@@ -15,25 +17,14 @@ namespace Trestle.Networking.Packets.Play.Client
         public short Slot { get; set; }
         
         [Field]
-        public byte[] ItemData { get; set; }
+        public ItemStack ItemData { get; set; }
 
         public SetSlot(byte windowId, short slot, ItemStack item)
         {
             WindowId = windowId;
             Slot = slot;
-            
-            using (MinecraftStream stream = new MinecraftStream())
-            {
-                stream.WriteShort(item.ItemId);
-                if (item.ItemId != -1)
-                {
-                    stream.WriteByte(item.ItemCount);
-                    stream.WriteShort(item.Metadata);
-                    stream.WriteByte(0);
-                }
 
-                ItemData = stream.Data;
-            }
+            ItemData = item;
         }
     }
-}
+} 

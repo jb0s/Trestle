@@ -3,6 +3,7 @@ using Trestle.Attributes;
 using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Server;
+using Trestle.Items;
 using Trestle.Networking.Packets.Play.Client;
 using Trestle.Utils;
 
@@ -45,10 +46,10 @@ namespace Trestle.Networking.Packets.Play.Server
                     block.BreakBlock(Client.Player.World);
                     break;
                 case PlayerDiggingStatus.DropItemStack:
-                    Client.Player.Inventory.DropCurrentItemStack();
+                   // Client.Player.Inventory.DropCurrentItemStack();
                     break;
                 case PlayerDiggingStatus.DropItem:
-                    Client.Player.Inventory.DropCurrentItem();
+                   // Client.Player.Inventory.DropCurrentItem();
                     break;
                 case PlayerDiggingStatus.ShootArrow:
                     break;

@@ -5,7 +5,9 @@ using System.Linq;
 using System.Reflection;
 using fNbt;
 using Trestle.Attributes;
+using Trestle.Entity;
 using Trestle.Enums;
+using Trestle.Items;
 using Trestle.Utils;
 
 namespace Trestle.Networking
@@ -13,6 +15,8 @@ namespace Trestle.Networking
     public class Packet
     {
         public Client Client { get; set; }
+        public Player Player => Client.Player;
+        public InventoryManager Inventory => Player.Inventory;
         
         public Packet()
         {
@@ -130,6 +134,16 @@ namespace Trestle.Networking
                         buffer.WriteShort(data.Y);
                         buffer.WriteShort(data.Z);
                         break;
+                    case ItemStack data:
+                        buffer.WriteShort(data.ItemId);
+
+                        if (data.ItemId != -1)
+                        {
+                            buffer.WriteByte(data.ItemCount);
+                            buffer.WriteShort(data.ItemDamage);
+                            buffer.WriteByte(0);   
+                        }
+                        break;
                     default:
                         var message = $"Unable to parse field '{property.Name}' of type '{property.PropertyType}'";
                         Client.Player?.Kick(new MessageComponent($"{ChatColor.Red}An error occured while serializing.\n\n{ChatColor.Reset}{message}"));
@@ -189,6 +203,18 @@ namespace Trestle.Networking
                             Convert.ToDouble(val >> 38), 
                             Convert.ToDouble((val >> 26) & 0xFFF), 
                             Convert.ToDouble(val << 38 >> 38)));
+                    } },
+                    { typeof(ItemStack), () =>
+                    {
+                        var itemId = buffer.ReadShort();
+                        if (itemId != -1)
+                        {
+                            var itemCount = buffer.ReadByte();
+                            var itemDamage = buffer.ReadShort();
+                            property.SetValue(this, new ItemStack(itemId, (byte)itemCount, itemDamage, 0));
+                        }
+                        else 
+                            property.SetValue(this, new ItemStack(itemId, 0, 0, 0));
                     } },
                 };
 

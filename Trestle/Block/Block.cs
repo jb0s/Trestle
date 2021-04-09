@@ -2,6 +2,7 @@
 using Trestle.Enums;
 using Trestle.Utils;
 using Trestle.Entity;
+using Trestle.Items;
 
 namespace Trestle.Blocks
 {

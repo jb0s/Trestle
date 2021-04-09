@@ -165,8 +165,6 @@ namespace Trestle.Entity
 			
 	        Inventory.SendToPlayer();
 	        BroadcastInventory();
-
-	        SetGamemode(World.DefaultGamemode, true);
         }
 
         #region Updates
@@ -243,16 +241,6 @@ namespace Trestle.Entity
 	        World.BroadcastPacket(new EntityHeadLook(EntityId, Location.HeadYaw), this);
         }
         
-        /// <summary>
-		/// Handler for when the client changes the held item.
-		/// </summary>
-		/// <param name="slot"></param>
-		public void HeldItemChanged(int slot)
-		{
-			Inventory.HeldItemChanged(slot);
-			BroadcastInventory();
-		}
-
         #endregion
 
         #region Animations

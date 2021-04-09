@@ -1,279 +1,198 @@
 ﻿using System;
-using System.Linq;
-using Trestle.Entity;
-using Trestle.Enums;
+using System.Threading;
+using Trestle.Items;
 using Trestle.Networking.Packets.Play.Client;
+using Trestle.Utils;
 
-namespace Trestle.Utils
+namespace Trestle.Entity
 {
     public class InventoryManager
     {
-        private readonly Player _player;
-        private readonly ItemStack[] _slots = new ItemStack[46];
+        /// <summary>
+        /// Owner of the inventory.
+        /// </summary>
+        public Player Player { get; }
         
+
+        /// <summary>
+        /// Array of inventory slots.
+        /// </summary>
+        public ItemStack[] Slots = new ItemStack[46];
+
+        /// <summary>
+        /// Item that was last clicked by the player (used for the ClickWindow packet)
+        /// </summary>
         public ItemStack ClickedItem { get; set; }
-        public int CurrentSlot { get; set; }
 
-        private Item Hand { get; set; }
+        /// <summary>
+        /// Is the player dragging in the inventory.
+        /// </summary>
+        public bool IsDragging { get; set; }
+        
+        /// <summary>
+        /// The current slot number.
+        /// </summary>
+        public short CurrentSlot { get; set; } = 0;
+        
+        /// <summary>
+        /// Item that is currently held by the player.
+        /// </summary>
+        public ItemStack CurrentItem => Slots[CurrentSlot + 36];
 
+        public ItemStack this[int index]
+        {
+            get => Slots[index];
+            set => Slots[index] = value;
+        }
+        
         public InventoryManager(Player player)
         {
-            _player = player;
+            Player = player;
             
-            for(var i = 0; i < _slots.Length; i++)
-                _slots[i] = new ItemStack(-1, 0, 0);
+            for(var i = 0; i < Slots.Length; i++)
+                Slots[i] = new ItemStack(-1, 0, 0);
 
-            // If debug mode is enabled, give the player some tools for quick debugging.
             if (Config.Debug)
             {
-                AddItem(276, 0, 1); // Sword
-                AddItem(278, 0, 1); // Pickaxe
-                AddItem(279, 0, 1); // Axe
-                AddItem(277, 0, 1); // Shovel
-                AddItem(1, 0, 64); // Building blocks
+                AddItem(276); // Sword
+                AddItem(278); // Pickaxe
+                AddItem(279); // Axe
+                AddItem(277); // Shovel
+                AddItem(1, 64); // Building blocks   
             }
+        }
+        
+        // Slots
 
-            HeldItemChanged(0);
-        }
-        
-        public void InventoryClosed()
+        public void SetSlot(int slot, short itemId, byte itemCount = 1, byte metaData = 0, bool sendPacket = false)
         {
-            if (ClickedItem != null)
-            {
-                AddItem(ClickedItem);
-                ClickedItem = null;
-            }
-        }
-        
-        public void HeldItemChanged(int newSlot)
-        {
-            CurrentSlot = newSlot;
-            UpdateHandItems();
-        }
-        
-        private void UpdateHandItems()
-        {
-            var s = GetSlot(CurrentSlot + 36);
-            Hand = new Item((ushort)s.ItemId, s.Metadata);
-        }
-        
-        public Item GetItemInHand()
-        {
-            UpdateHandItems();
-            return Hand;
-        }
+            if (slot > 45 || slot < 5)
+                throw new ArgumentOutOfRangeException(nameof(slot), slot, "Slot is out of range for inventory.");
 
-        public void SwapHands()
-        {
-            UpdateHandItems();
-            var primaryHand = GetSlot(CurrentSlot + 36);
-            var offHand = GetSlot(45);
-            SetSlot(CurrentSlot + 36, offHand.ItemId, offHand.Metadata, offHand.ItemCount);
-            SetSlot(45, primaryHand.ItemId, primaryHand.Metadata, primaryHand.ItemCount);
-        }
-        
-        public bool HasItems(ItemStack[] items)
-        {
-            foreach (var item in items)
-            {
-                if (!HasItem(item.ItemId)) return false;
-            }
-            return true;
-        }
-        
-        public void SetSlot(int slot, short itemId, byte metadata, byte itemCount)
-        {
-            if (slot <= 45 && slot >= 5)
-            {
-                _slots[slot] = new ItemStack(itemId, itemCount, metadata);
-                if (_player != null && _player.HasSpawned)
-                {
-                    _player.Client.SendPacket(new SetSlot(0, (short)slot, _slots[slot]));
-                }
-            }
+            Slots[slot] = new ItemStack(itemId, itemCount, metaData);
             
-            UpdateHandItems();
-        }
-        
-        public bool AddItem(ItemStack item)
-        {
-            return AddItem(item.ItemId, item.Metadata, item.ItemCount);
+            if (Player != null && Player.HasSpawned && sendPacket)
+                Player.Client.SendPacket(new SetSlot(0, (short)slot, Slots[slot]));
         }
 
-        public bool AddItem(short itemId, byte metadata, byte itemCount = 1)
+        public void SetSlot(int slot, short itemId, int itemCount = 1, byte metaData = 0, bool sendPacket = false)
+            => SetSlot(slot, itemId, (byte)itemCount, metaData, sendPacket);
+        
+        public void SetSlot(int slot, ItemStack itemStack, bool sendPacket = false)
+            => SetSlot(slot, itemStack.ItemId, itemStack.ItemCount, itemStack.Metadata, sendPacket);
+
+        public void SetSlotItemCount(int slot, int itemCount)
+        {
+            if (slot > 45 || slot < 5)
+                throw new ArgumentOutOfRangeException(nameof(slot), slot, "Slot is out of range for inventory.");
+
+            var itemStack = Slots[slot];
+            
+            if (itemCount == 0)
+                SetSlot(slot, -1, 0, 0, true);
+            else
+                SetSlot(slot, itemStack.ItemId, itemCount, itemStack.Metadata, true);
+            
+        }
+
+        public void ClearSlot(int slot)
+        {
+            if (slot > 45 || slot < 5)
+                throw new ArgumentOutOfRangeException(nameof(slot), slot, "Slot is out of range for inventory.");
+            
+            Slots[slot] = new ItemStack(-1, 0, 0);
+        }
+
+        // Items
+        public bool AddItem(short itemId, int itemCount = 1, byte metadata = 0)
         {
             // Try quickbars first
             for(int i = 36; i < 44; i++)
             {
-                if (_slots[i].ItemId == itemId && _slots[i].Metadata == metadata && _slots[i].ItemCount < 64)
+                if (Slots[i].ItemId == itemId && Slots[i].Metadata == metadata && Slots[i].ItemCount < 64)
                 {
-                    var oldslot = _slots[i];
+                    var oldslot = Slots[i];
                     if (oldslot.ItemCount + itemCount <= 64)
                     {
-                        SetSlot(i, itemId, metadata, (byte) (oldslot.ItemCount + itemCount));
+                        SetSlot(i, itemId, oldslot.ItemCount + itemCount, metadata, true);
                         return true;
                     }
-                    SetSlot(i, itemId, metadata, 64);
-                    var remaining = (oldslot.ItemCount + itemCount) - 64;
-                    return AddItem(itemId, metadata, (byte) remaining);
+                    
+                    SetSlot(i, itemId, 64, metadata);
+                    return AddItem(itemId, oldslot.ItemCount + itemCount - 64, metadata);
                 }
             }
             
             for (var i = 9; i <= 45; i++)
             {
-                if (_slots[i].ItemId == itemId && _slots[i].Metadata == metadata && _slots[i].ItemCount < 64)
+                if (Slots[i].ItemId == itemId && Slots[i].Metadata == metadata && Slots[i].ItemCount < 64)
                 {
-                    var oldslot = _slots[i];
+                    var oldslot = Slots[i];
                     if (oldslot.ItemCount + itemCount <= 64)
                     {
-                        SetSlot(i, itemId, metadata, (byte) (oldslot.ItemCount + itemCount));
+                        SetSlot(i, itemId, oldslot.ItemCount + itemCount, metadata, true);
                         return true;
                     }
-                    SetSlot(i, itemId, metadata, 64);
-                    var remaining = (oldslot.ItemCount + itemCount) - 64;
-                    return AddItem(itemId, metadata, (byte) remaining);
+                    SetSlot(i, itemId, itemCount, metadata, true);
+                    return AddItem(itemId, oldslot.ItemCount + itemCount - 64, metadata);
                 }
             }
 
             // Try quickbars first
             for (var i = 36; i < 44; i++)
             {
-                if (_slots[i].ItemId == -1)
+                if (Slots[i].ItemId == -1)
                 {
-                    SetSlot(i, itemId, metadata, itemCount);
+                    SetSlot(i, itemId, itemCount, metadata, true);
                     return true;
                 }
             }
             
             for (var i = 9; i <= 45; i++)
             {
-                if (_slots[i].ItemId == -1)
+                if (Slots[i].ItemId == -1)
                 {
-                    SetSlot(i, itemId, metadata, itemCount);
+                    SetSlot(i, itemId, itemCount, metadata, true);
                     return true;
                 }
             }
-            return false;
-        }
-        
-        public ItemStack GetSlot(int slot)
-        {
-            if (slot <= 45 && slot >= 0)
-                return _slots[slot];
             
-            throw new IndexOutOfRangeException("Invalid slot: " + slot);
-        }
-
-        public void DropCurrentItem()
-        {
-            //Drop the current hold item
-            var slotTarget = 36 + CurrentSlot;
-            var slot = GetSlot(slotTarget);
-            
-            if (slot.ItemCount > 1)
-                SetSlot(slotTarget, slot.ItemId, slot.Metadata, (byte) (slot.ItemCount - 1));
-            else
-                SetSlot(slotTarget, -1, 0, 0);
-
-            if (slot.ItemId != -1)
-            {
-                var location = new Location(_player.Location.X, _player.Location.Y + 1.32f, _player.Location.Z);
-                var entity = new ItemEntity(_player.World, new ItemStack(slot.ItemId, 1, slot.Metadata))
-                {
-                    Location = location,
-                    PickupDelay = 40
-                };
-                entity.SpawnEntity();
-            }
-        }
-        
-        public void DropCurrentItemStack()
-        {
-            int slotTarget = 36 + CurrentSlot;
-            var slot = GetSlot(slotTarget);
-            
-            if (slot.ItemId != -1)
-            {
-                SetSlot(slotTarget, -1, 0, 0);
-
-                var location = new Location(_player.Location.X, _player.Location.Y + 1.32f, _player.Location.Z);
-                var entity = new ItemEntity(_player.World, new ItemStack(slot.ItemId, slot.ItemCount, slot.Metadata))
-                {
-                    Location = location,
-                    PickupDelay = 40
-                };
-                entity.SpawnEntity();
-            }
-        }
-        
-        public bool HasItem(int itemId)
-        {
-            if (_slots.Any(itemStack => itemStack.ItemId == itemId))
-            {
-                return true;
-            }
             return false;
         }
 
-        public bool RemoveItem(short itemId, short metaData, short count)
+        public bool RemoveItem(short itemId, short count, short metaData)
         {
-            for (var index = 0; index <= 45; index++)
+            for (var i = 0; i <= 45; i++)
             {
-                var itemStack = _slots[index];
-                if (itemStack.ItemId == itemId && itemStack.Metadata == metaData && itemStack.ItemCount >= count)
+                var itemStack = Slots[i];
+                if (itemStack.ItemId == itemId && itemStack.Metadata == metaData)
                 {
                     if ((itemStack.ItemCount - count) > 0)
                     {
-                        SetSlot(index, itemStack.ItemId, itemStack.Metadata, (byte) (itemStack.ItemCount - count));
+                        SetSlot(i, itemStack.ItemId, itemStack.ItemCount - count, itemStack.Metadata, true);
                         return true;
                     }
-                    SetSlot(index, -1, 0, 0);
+                    
+                    SetSlot(i, -1, 0, 0, true);
                     return true;
                 }
             }
             return false;
         }
-
+        
+        // Clicked Item
+        public void ClearClickedItem()
+            => ClickedItem = null;
+        
         public void SendToPlayer()
         {
             for (short i = 0; i <= 45; i++)
             {
-                var value = _slots[i];
+                var value = Slots[i];
                 if (value.ItemId != -1)
-                {
-                    _player.Client.SendPacket(new SetSlot(0, i, value));
-                }
+                    Player.Client.SendPacket(new SetSlot(0, i, value));
             }
         }
 
-        public byte[] GetBytes()
-        {
-            var buffer = new MinecraftStream();
-            for (int i = 0; i <= 45; i++)
-            {
-                var slot = _slots[i];
-                buffer.WriteInt(i);
-                buffer.WriteShort(slot.ItemId);
-                buffer.WriteByte(slot.Metadata);
-                buffer.WriteByte(slot.ItemCount);
-            }
-            return buffer.Data;
-        }
-
-        public void Import(byte[] data)
-        {
-            var buffer = new MinecraftStream(data);
-
-            for (int i = 0; i <= 45; i++)
-            {
-                int slotId = buffer.ReadInt();
-                short itemId = buffer.ReadShort();
-                byte metaData = (byte)buffer.ReadByte();
-                byte itemCount = (byte)buffer.ReadByte();
-
-                _slots[slotId] = new ItemStack(itemId, itemCount, metaData);
-                UpdateHandItems();
-            }
-        }
     }
 }

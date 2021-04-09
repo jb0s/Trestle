@@ -1,4 +1,5 @@
 ﻿using Trestle.Attributes;
+using Trestle.Items;
 using Trestle.Utils;
 
 namespace Trestle.Entity
@@ -7,7 +8,7 @@ namespace Trestle.Entity
     {
         [Field] 
         [Index(6)] 
-        public Slot Item => new(((ItemEntity)Entity).Item);
+        public ItemStack Item => ((ItemEntity)Entity).Item;
         
         public ItemMetadata(ItemEntity entity) : base(entity)
         {

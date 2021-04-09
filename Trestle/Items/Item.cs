@@ -2,6 +2,7 @@
 using Trestle.Enums;
 using Trestle.Entity;
 using System.Collections;
+using Trestle.Items;
 
 namespace Trestle.Utils
 {
@@ -12,6 +13,7 @@ namespace Trestle.Utils
         public bool IsUsable { get; set; }
         public int MaxStackSize { get; set; }
         public bool IsBlock { get; set; }
+        
         public Material Material
         {
             get => (Material)Id;
