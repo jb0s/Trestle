@@ -263,24 +263,12 @@ namespace Trestle.World
         {
 	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X >> 4, (int)location.Z >> 4));
 	        
-	        Console.WriteLine(block);
-
-	        try
-	        {
-		        chunk.SetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)), block);
-		        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
+	        chunk.SetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)), block);
+	        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
 		        
-		        var material = chunk.GetBlock(new Vector3(Mod(location.X), (int)location.Y, Mod(location.Z)));
+	        var material = chunk.GetBlock(new Vector3(Mod(location.X), (int)location.Y, Mod(location.Z)));
 		        
-		        Console.WriteLine(material);
-		        
-		        BroadcastPacket(new BlockChange(new Vector3(location.X, (int) location.Y, location.Z), block, data));
-	        }
-	        catch (Exception e)
-	        {
-		        Console.WriteLine(e.Message);
-		        Console.WriteLine(e.StackTrace);
-	        }
+	        BroadcastPacket(new BlockChange(new Vector3(location.X, (int) location.Y, location.Z), block, data));
         }
 			
         private int Mod(double val)

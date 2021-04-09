@@ -66,7 +66,7 @@ namespace Trestle.Networking
         private async Task ServerLoop()
         {
             var keepAliveTicks = 0;
-
+            
             short iterationsPerSecond = 0;
             var stopwatch = Stopwatch.StartNew();
 
