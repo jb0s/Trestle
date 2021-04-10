@@ -4,23 +4,23 @@ using Trestle.Utils;
 
 namespace Trestle.World.Generation
 {
-    public class FlatWorldGenerator : IWorldGenerator
+    public class FlatWorldGenerator : WorldGenerator
     {
-        public ConcurrentDictionary<Vector2, ChunkColumn> Chunks { get; }
-			 
         public FlatWorldGenerator()
         {
             Chunks = new ConcurrentDictionary<Vector2, ChunkColumn>();
         }
 
-        public ChunkColumn GenerateChunkColumn(Vector2 coordinates)
-            => Chunks.GetOrAdd(coordinates, CreateChunk);
-
-        public void Initialize()
+        public override ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates)
         {
+            // If there's a saved chunk, return that instead.
+            if (Chunks.ContainsKey(chunkCoordinates))
+                return Chunks[chunkCoordinates];
+            
+            return CreateChunk(chunkCoordinates);
         }
 
-        public Location GetSpawnPoint()
+        public override Location GetSpawnPoint()
             => new(0.5, 4f, 0.5f);
 
         private static ChunkColumn CreateChunk(Vector2 chunkCoordinates)

@@ -33,7 +33,7 @@ namespace Trestle.Networking.Packets.Play.Server
                 case PlayerDiggingStatus.CancelledDigging:
                     break;
                 case PlayerDiggingStatus.FinishedDigging:
-                    var block = Client.Player.World.GetBlock(Location);
+                    var block = Client.Player.World.GetBlock(Location, true);
 
                     if (Client.Player.GameMode == GameMode.Survival)
                     {

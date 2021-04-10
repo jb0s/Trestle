@@ -45,7 +45,7 @@ namespace Trestle.World
 	    /// <summary>
 	    /// The world's generator.
 	    /// </summary>
-	    public IWorldGenerator WorldGenerator { get; }
+	    public WorldGenerator WorldGenerator { get; }
 	    
 	    /// <summary>
 	    /// The amount of players in this world.
@@ -72,7 +72,7 @@ namespace Trestle.World
 	    /// </summary>
         private bool _disposed = false;
 
-	    public World(WorldType type, IWorldGenerator worldGenerator)
+	    public World(WorldType type, WorldGenerator worldGenerator)
         {
             Type = type;
             WorldGenerator = worldGenerator;
@@ -248,9 +248,14 @@ namespace Trestle.World
         #endregion
 
         #region Blocks
-        public Block GetBlock(Vector3 location)
+        public Block GetBlock(Vector3 location, bool cacheChunk = false)
         {
-	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X >> 4, (int)location.Z >> 4));
+	        ChunkColumn chunk;
+	        
+	        if(cacheChunk)
+		        chunk = WorldGenerator.CreateAndCache(new Vector2((int)location.X >> 4, (int)location.Z >> 4));
+	        else
+		        chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X >> 4, (int)location.Z >> 4));
 	        
 	        var material = chunk.GetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
 	        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
