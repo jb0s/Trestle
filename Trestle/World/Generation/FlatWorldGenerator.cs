@@ -6,7 +6,7 @@ namespace Trestle.World.Generation
 {
     public class FlatWorldGenerator : IWorldGenerator
     {
-        private ConcurrentDictionary<Vector2, ChunkColumn> Chunks { get; }
+        public ConcurrentDictionary<Vector2, ChunkColumn> Chunks { get; }
 			 
         public FlatWorldGenerator()
         {

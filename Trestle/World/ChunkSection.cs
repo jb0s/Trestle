@@ -1,4 +1,5 @@
 using System;
+using Trestle.Blocks;
 using Trestle.Enums;
 using Trestle.Utils;
 
@@ -66,6 +67,31 @@ namespace Trestle.World
 
             _airBlocks = CAPACITY;
         }
+        
+        public ChunkSection(byte[] data)
+        {
+            using (var stream = new MinecraftStream(data))
+            {
+                SkyLight = new NibbleArray(CAPACITY);
+                BlockLight = new NibbleArray(CAPACITY);
+
+                int bitsPerBlock = stream.ReadByte();
+                int paletteLength = stream.ReadVarInt();
+                Types = new CompactedDataArray(13, CAPACITY);
+                long[] blocks = Types.Backing;
+
+                int blockLength = stream.ReadVarInt();
+                for(int i = 0; i < blocks.Length; i++)
+                {
+                    blocks[i] = stream.ReadLong();
+                }
+
+                BlockLight.Data = stream.Read(2048);
+                SkyLight.Data = stream.Read(2048);
+
+                RefreshAirBlockCount();
+            }
+        }
 
         #region Utilities
 
@@ -95,7 +121,7 @@ namespace Trestle.World
                 
                 stream.WriteByte(13); // Bits per block
                 stream.WriteVarInt(0); // Palette length
-                
+
                 stream.WriteVarInt(blocks.Length); // Amount of blocks
                 
                 for(int i = 0; i < blocks.Length; i++)
@@ -103,7 +129,7 @@ namespace Trestle.World
                 
                 stream.Write(BlockLight.Data);
                 stream.Write(SkyLight.Data);
-
+                
                 return stream.Data;
             }
         }

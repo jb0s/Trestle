@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using LibNoise.Model;
 using Trestle.Enums;
@@ -24,7 +25,7 @@ namespace Trestle.World
 
         public readonly Vector2 Coordinates;
         public readonly byte[] Heightmap;
-        public bool IsDirty { get; private set; }
+        public bool IsDirty;
         
         private ChunkSection[] _sections;
         private byte[] _cache;
@@ -45,6 +46,34 @@ namespace Trestle.World
 
             for(int i = 0; i < _biomes.Length; i++)
                 _biomes[i] = 1;
+        }
+
+        public ChunkColumn(byte[] data)
+        {
+            using (var stream = new MinecraftStream(data))
+            {
+                Coordinates = new Vector2(stream.ReadInt(), stream.ReadInt());
+                Heightmap = new byte[WIDTH * DEPTH];
+                _sections = new ChunkSection[16];
+                _biomes = new byte[WIDTH * DEPTH];
+                
+                bool isFullChunk = stream.ReadBool();
+                int sectionBitmask = stream.ReadVarInt();
+                int sectionDataLength = stream.ReadVarInt();
+                byte[] sectionData = stream.Read(sectionDataLength);
+
+                using (var sectionStream = new MinecraftStream(sectionData))
+                {
+                    for(int i = 0; i < sectionBitmask; i++)
+                        _sections[i] = new ChunkSection(sectionStream.Read(10756));
+
+                    for(int i = sectionBitmask; i < _sections.Length; i++)
+                        _sections[i] = new ChunkSection();
+                    
+                    for(int i = 0; i < _biomes.Length; i++)
+                        _biomes[i] = 1;
+                }
+            }
         }
 
         #region Utilities

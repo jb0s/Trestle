@@ -9,6 +9,7 @@ using System.Diagnostics;
 using Trestle.World.Generation;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.IO;
 using Trestle.Blocks;
 using Trestle.Networking.Packets.Play.Client;
 
@@ -226,15 +227,19 @@ namespace Trestle.World
 
 			        if (WorldGenerator == null) continue;
 
-			        ChunkColumn chunkColumn = WorldGenerator.GenerateChunkColumn(new Vector2(pair.Key.Item1, pair.Key.Item2));
 			        byte[] chunk = null;
-			        if (chunkColumn != null)
+			        if (File.Exists($"worlds/{Type.ToString().ToLower()}/{new Vector2(pair.Key.Item1, pair.Key.Item2).ToString()}"))
 			        {
-				        chunk = chunkColumn.Export();
+				        ChunkColumn chunkColumn = WorldGenerator.LoadChunkFromSave(new Vector2(pair.Key.Item1, pair.Key.Item2), $"worlds/{Type.ToString().ToLower()}/{new Vector2(pair.Key.Item1, pair.Key.Item2).ToString()}");
+				        chunk = chunkColumn?.Export();
+			        }
+			        else
+			        {
+				        ChunkColumn chunkColumn = WorldGenerator.GenerateChunkColumn(new Vector2(pair.Key.Item1, pair.Key.Item2));
+				        chunk = chunkColumn?.Export();
 			        }
 
 			        chunksUsed.Add(pair.Key, chunk);
-
 			        yield return chunk;
 		        }
 	        }
@@ -325,6 +330,26 @@ namespace Trestle.World
  
 	        // Return of closest of two
 	        return (number - a > b - number)? b : a;
+        }
+
+        #endregion
+
+        #region Saving & loading
+
+        public void Save()
+        {
+	        // IF the world doesn't have a save directory yet, create one.
+	        if (!Directory.Exists($"worlds/{Type.ToString().ToLower()}"))
+		        Directory.CreateDirectory($"worlds/{Type.ToString().ToLower()}");
+
+	        foreach (var chunk in WorldGenerator.Chunks.Values)
+	        {
+		        if (chunk.IsDirty)
+		        {
+			        File.WriteAllBytes($"worlds/{Type.ToString().ToLower()}/{chunk.Coordinates.ToString()}", chunk.Export());
+			        chunk.IsDirty = false;
+		        }
+	        }
         }
 
         #endregion

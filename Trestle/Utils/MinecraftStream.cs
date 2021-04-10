@@ -256,6 +256,19 @@ public class MinecraftStream : IDisposable
 			WriteLong(toSend);
 		}
 
+		public void WriteLocation(Location location)
+		{
+			WriteDouble(location.X);
+			WriteDouble(location.Y);
+			WriteDouble(location.Z);
+			
+			WriteDouble(location.Pitch);
+			WriteDouble(location.Yaw);
+			WriteByte(location.HeadYaw);
+			
+			WriteBool(location.OnGround);
+		}
+
 		public void WriteVarInt(int integer)
 		{
 			while ((integer & -128) != 0)
@@ -431,6 +444,22 @@ public class MinecraftStream : IDisposable
 				Array.Reverse(bytes);
 
 			return bytes;
+		}
+
+		public Location ReadLocation()
+		{
+			var location = new Location()
+			{
+				X = ReadDouble(),
+				Y = ReadDouble(),
+				Z = ReadDouble(),
+				Yaw = (float)ReadDouble(),
+				Pitch = (float)ReadDouble(),
+				HeadYaw = (byte)ReadByte(),
+				OnGround = ReadBool()
+			};
+
+			return location;
 		}
     }
 }

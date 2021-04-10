@@ -5,6 +5,8 @@ using Trestle.Enums;
 using Trestle.World;
 using Trestle.Networking;
 using System.Collections.Generic;
+using System.IO;
+using Microsoft.Win32.SafeHandles;
 using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.Entity
@@ -154,6 +156,9 @@ namespace Trestle.Entity
         /// </summary>
         internal void InitializePlayer()
         {
+	        if (!Load())
+		        Location = World.Spawnpoint;
+	        
 	        Client.SendPacket(new JoinGame(this));
 
 	        TrestleServer.RegisterPlayer(Client);
@@ -182,9 +187,6 @@ namespace Trestle.Entity
 	        World = world;
 	        World.AddPlayer(this);
 	        
-			// Teleport the player to the world spawnpoint.
-	        Location = world.Spawnpoint;
-	        
 	        SpawnForPlayers(World.Players.Values.ToArray());
 	        foreach (var player in World.Players.Values)
 	        {
@@ -193,9 +195,7 @@ namespace Trestle.Entity
         }
 
         public override void SpawnForPlayers(Player[] players)
-        {
-	        World.BroadcastPacket(new SpawnPlayer(this), this);
-        }
+	        => World.BroadcastPacket(new SpawnPlayer(this), this);
 
         /// <summary>
         /// Handler for when the client moves around the world.
@@ -221,15 +221,17 @@ namespace Trestle.Entity
 	        Location.Z = location.Z;
 	        Location.OnGround = onGround;
 	        
-	        _currentChunkPosition.X = (int) location.X / 16;
-	        _currentChunkPosition.Z = (int) location.Z / 16;
+	        _currentChunkPosition.X = (int) location.X >> 4;
+	        _currentChunkPosition.Z = (int) location.Z >> 4;
 	        
 	        if (originalchunkcoords != _currentChunkPosition)
 		        SendChunksForLocation(_currentChunkPosition);
-	        
+
 	        if(prevLocation.DistanceTo(Location) < 8)
 				World.BroadcastPacket(new EntityLookAndRelativeMove(EntityId, prevLocation, Location), this);
-
+			else
+				World.BroadcastPacket(new EntityTeleport(EntityId, Location));
+	        
 	        LookChanged();
         }
         
@@ -237,9 +239,7 @@ namespace Trestle.Entity
         /// Handler for when the client changes look direction.
         /// </summary>
         public void LookChanged()
-        {
-	        World.BroadcastPacket(new EntityHeadLook(EntityId, Location.HeadYaw), this);
-        }
+	        => World.BroadcastPacket(new EntityHeadLook(EntityId, Location.HeadYaw), this);
         
         #endregion
 
@@ -316,9 +316,7 @@ namespace Trestle.Entity
 		#region Chunk loading
 
 		public void SendChunksForLocation(bool force = false)
-        {
-			SendChunksForLocation(new Vector2((int)Location.X / 16, (int)Location.Z / 16), force);
-		}
+			=> SendChunksForLocation(new Vector2((int)Location.X >> 4, (int)Location.Z >> 4), force);
 		
 		/// <summary>
 		/// Send cached chunk for position.
@@ -334,7 +332,10 @@ namespace Trestle.Entity
 				foreach (var chunk in World.GenerateChunks(new Vector2(location.X, location.Z), ChunksUsed, ViewDistance))
 				{
 					if (Client != null && Client.TcpClient.Connected)
+					{
 						Client.SendPacket(new ChunkData(chunk));
+						GetEntitysInChunk(_currentChunkPosition.X, _currentChunkPosition.Z);
+					}
 				}
 			});
 		}
@@ -344,8 +345,8 @@ namespace Trestle.Entity
 		/// </summary>
 		public ChunkColumn GetChunk()
 		{
-			int chunkX = (int)Location.X / 16;
-			int chunkZ = (int)Location.Z / 16;
+			int chunkX = (int)Location.X >> 4;
+			int chunkZ = (int)Location.Z >> 4;
 			ChunkColumn chunk = World.WorldGenerator.GenerateChunkColumn(new Vector2(chunkX, chunkZ));
 			return chunk;
 		}
@@ -365,7 +366,7 @@ namespace Trestle.Entity
 				var z = (int)player.Location.Z >> 4;
 				if (chunkX == x && chunkZ == z)
 				{
-					// TODO: [MP] Add this (Spawn Player)
+					Client.SendPacket(new SpawnPlayer(player));
 				}
 			}
 
@@ -407,6 +408,51 @@ namespace Trestle.Entity
 		/// <param name="color"></param>
 		public void SendChat(string message, ChatColor color)
 			=> SendChat(color.Value + message);
+
+        #endregion
+
+        #region Saving and loading
+
+        public void Save()
+        {
+	        byte[] saveData;
+	        using (var stream = new MinecraftStream())
+	        {
+		        // Chunk position
+		        stream.WriteInt(_currentChunkPosition.X);
+		        stream.WriteInt(_currentChunkPosition.Z);
+		        
+		        // Location
+		        stream.WriteLocation(Location);
+		        
+		        // Inventory
+		        stream.Write(Inventory.Export());
+
+		        saveData = stream.Data;
+	        }
+	        
+	        // Write the data to a file.
+	        File.WriteAllBytes($"Players/{Uuid}", saveData);
+        }
+
+        public bool Load()
+        {
+	        string filePath = $"Players/{Uuid}";
+
+	        if (!File.Exists(filePath))
+		        return false;
+	        
+	        byte[] saveData = File.ReadAllBytes($"Players/{Uuid}");
+	        using (var stream = new MinecraftStream(saveData))
+	        {
+		        _currentChunkPosition = new Vector2(stream.ReadInt(), stream.ReadInt());
+
+		        Location = stream.ReadLocation();
+		        Inventory.Import(stream.Read(276));
+	        }
+
+	        return true;
+        }
 
         #endregion
 

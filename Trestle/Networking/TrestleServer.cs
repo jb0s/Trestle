@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Trestle.World.Generation;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.ExceptionServices;
 using Trestle.Networking.Packets.Play.Client;
 
@@ -31,6 +32,9 @@ namespace Trestle.Networking
             // Properly close the server if something goes terribly wrong.
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += UnhandledException;
+            
+            // Create folders for the players & world, etc
+            InitializeFileStructure();
             
             Logger.Info("Loading configuration...");
             Config.Load();
@@ -65,7 +69,7 @@ namespace Trestle.Networking
         /// </summary>
         private async Task ServerLoop()
         {
-            var keepAliveTicks = 0;
+            int keepAliveTicks = 0;
             
             short iterationsPerSecond = 0;
             var stopwatch = Stopwatch.StartNew();
@@ -77,7 +81,7 @@ namespace Trestle.Networking
                 keepAliveTicks++;
                 if (keepAliveTicks > 50)
                 {
-                    var keepAliveId = DateTime.Now.Millisecond;
+                    int keepAliveId = DateTime.Now.Millisecond;
 
                     foreach (var client in Globals.ServerListener.Clients.Where(x => x.State == ClientState.Play))
                         client.ProcessKeepAlive(keepAliveId);
@@ -104,6 +108,21 @@ namespace Trestle.Networking
         
         #region Initialization
 
+        /// <summary>
+        /// Creates folders which will hold data for logs, players, worlds, etc.
+        /// </summary>
+        private void InitializeFileStructure()
+        {
+            if (!Directory.Exists("logs"))
+                Directory.CreateDirectory("logs");
+
+            if (!Directory.Exists("players"))
+                Directory.CreateDirectory("players");
+            
+            if (!Directory.Exists("worlds"))
+                Directory.CreateDirectory("worlds");
+        }
+        
         /// <summary>
         /// This function is in charge of initializing globals & managers.
         /// </summary>
@@ -209,6 +228,8 @@ namespace Trestle.Networking
         /// <param name="client"></param>
         public static void UnregisterPlayer(Client client)
         {
+            client.Player.Save();
+            
             // Send a global chat message announcing that the player has left :(
             var msg = Constants.SystemMessages.LeaveMessages[Globals.Random.Next(0, Constants.SystemMessages.LeaveMessages.Length)].Replace("{PLAYER}", $"{ChatColor.Aqua}{client.Username}{ChatColor.Gray}");
             BroadcastChat($"{ChatColor.DarkGray}[{ChatColor.Red}-{ChatColor.DarkGray}] {ChatColor.Gray}{msg}");

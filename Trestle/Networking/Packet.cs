@@ -153,6 +153,16 @@ namespace Trestle.Networking
                     case MessageComponent data:
                         buffer.WriteString(JsonSerializer.Serialize(data));
                         break;
+                    case Location data:
+                        buffer.WriteDouble(data.X);
+                        buffer.WriteDouble(data.Y);
+                        buffer.WriteDouble(data.Z);
+                        
+                        buffer.WriteByte((byte)data.Yaw);
+                        buffer.WriteByte((byte)data.Pitch);
+                        
+                        buffer.WriteBool(data.OnGround);
+                        break;
                     default:
                         var message = $"Unable to parse field '{property.Name}' of type '{property.PropertyType}'";
                         Client.Player?.Kick(new MessageComponent($"{ChatColor.Red}An error occured while serializing.\n\n{ChatColor.Reset}{message}"));

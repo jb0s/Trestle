@@ -182,5 +182,42 @@ namespace Trestle.Entity
         }
 
         #endregion
+
+        #region Exporting & importing
+
+        public byte[] Export()
+        {
+            using (var stream = new MinecraftStream())
+            {
+                for (short i = 0; i <= 45; i++)
+                {
+                    var value = Slots[i];
+                    stream.WriteShort(value.ItemId);
+                    stream.WriteByte(value.ItemCount);
+                    stream.WriteShort(value.ItemDamage);
+                    stream.WriteByte(0);
+                }
+
+                return stream.Data;
+            }
+        }
+        
+        public void Import(byte[] data)
+        {
+            using (var stream = new MinecraftStream(data))
+            {
+                for (short i = 0; i <= 45; i++)
+                {
+                    short itemId = stream.ReadShort();
+                    int itemCount = stream.ReadByte();
+                    short itemDamage = stream.ReadShort();
+                    int metadata = stream.ReadByte();
+
+                    Slots[i] = new ItemStack(itemId, (byte)itemCount, itemDamage, (byte)metadata);
+                }
+            }
+        }
+
+        #endregion
     }
 }
