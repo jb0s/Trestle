@@ -14,4 +14,4 @@ namespace Trestle.Networking.Packets.Status.Server
         public override void HandlePacket()
             => Client.SendPacket(new Pong(Payload));
     }
-}
+}   

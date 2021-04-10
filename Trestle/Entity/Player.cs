@@ -7,6 +7,8 @@ using Trestle.Networking;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Win32.SafeHandles;
+using Trestle.Block;
+using Trestle.Inventory.Inventories;
 using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.Entity
@@ -26,7 +28,7 @@ namespace Trestle.Entity
         /// <summary>
         /// The player's inventory.
         /// </summary>
-        public InventoryManager Inventory;
+        public PlayerInventory Inventory;
         
         /// <summary>
         /// The player's skin blob.
@@ -145,7 +147,7 @@ namespace Trestle.Entity
         public Player(World.World world) : base(-1, world)
 		{
 			ChunksUsed = new Dictionary<Tuple<int, int>, byte[]>();
-            Inventory = new InventoryManager(this);
+            Inventory = new PlayerInventory(this);
             World = world;
 
             Metadata = new PlayerMetadata(this);
@@ -448,7 +450,7 @@ namespace Trestle.Entity
 		        _currentChunkPosition = new Vector2(stream.ReadInt(), stream.ReadInt());
 
 		        Location = stream.ReadLocation();
-		        Inventory.Import(stream.Read(276));
+		        Inventory.Import(stream.Read(6 * Inventory.Slots.Length));
 	        }
 
 	        return true;

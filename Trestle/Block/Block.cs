@@ -1,10 +1,8 @@
-﻿using System;
-using Trestle.Enums;
-using Trestle.Utils;
-using Trestle.Entity;
+﻿using Trestle.Enums;
 using Trestle.Items;
+using Trestle.Utils;
 
-namespace Trestle.Blocks
+namespace Trestle.Block
 {
     /// <summary>
     /// An item that can be placed in the game world.

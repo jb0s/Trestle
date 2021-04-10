@@ -28,6 +28,7 @@
         EntityHeadLook = 0x36,
         BlockBreakAnimation = 0x08,
         PlayerListHeaderAndFooter = 0x4A,
-        EntityTeleport = 0x4C
+        EntityTeleport = 0x4C,
+        OpenWindow = 0x13
     }
 }

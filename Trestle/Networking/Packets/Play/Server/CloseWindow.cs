@@ -1,4 +1,5 @@
-﻿using Trestle.Attributes;
+﻿using System.Collections.Generic;
+using Trestle.Attributes;
 using Trestle.Enums.Packets.Server;
 
 namespace Trestle.Networking.Packets.Play.Server
@@ -11,7 +12,7 @@ namespace Trestle.Networking.Packets.Play.Server
 
         public override void HandlePacket()
         {
-            // kinda a dumb packet but whatever
+            World.Windows.Remove(WindowId, out _);
         }
     }
 }

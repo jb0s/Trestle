@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.Json;
 using fNbt;
 using Trestle.Attributes;
+using Trestle.Block;
 using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Items;
@@ -18,7 +19,6 @@ namespace Trestle.Networking
         public Client Client { get; set; }
         public Player Player => Client.Player;
         public World.World World => Player.World;
-        public InventoryManager Inventory => Player.Inventory;
         
         public Packet()
         {
@@ -32,10 +32,7 @@ namespace Trestle.Networking
         /// <summary>
         /// Virtual function for handling packets.
         /// </summary>
-        public virtual void HandlePacket()
-        {
-            Console.WriteLine("not special..");
-        }
+        public virtual void HandlePacket() { }
 
         /// <summary>
         /// Serializes a packet.

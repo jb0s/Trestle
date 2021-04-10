@@ -1,10 +1,10 @@
 ﻿using System;
-using Trestle.Enums;
-using Trestle.Entity;
 using System.Collections;
-using Trestle.Items;
+using Trestle.Entity;
+using Trestle.Enums;
+using Trestle.Utils;
 
-namespace Trestle.Utils
+namespace Trestle.Items
 {
     public class Item
     {

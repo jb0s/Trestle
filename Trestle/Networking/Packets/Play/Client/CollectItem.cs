@@ -2,6 +2,7 @@
 using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Client;
+using Trestle.Items;
 
 namespace Trestle.Networking.Packets.Play.Client
 {

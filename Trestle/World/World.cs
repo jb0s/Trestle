@@ -10,7 +10,7 @@ using Trestle.World.Generation;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.IO;
-using Trestle.Blocks;
+using Trestle.Block.Blocks;
 using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.World
@@ -26,6 +26,11 @@ namespace Trestle.World
 	    /// List of Entities in this world.
 	    /// </summary>
         public ConcurrentDictionary<int, Entity.Entity> Entities { get; } 
+	    
+	    /// <summary>
+	    /// List of Windows in this world.
+	    /// </summary>
+	    public ConcurrentDictionary<int, Inventory.Inventory> Windows { get; } 
 
 	    /// <summary>
 	    /// The type of this world.
@@ -78,6 +83,7 @@ namespace Trestle.World
             WorldGenerator = worldGenerator;
             Players = new ConcurrentDictionary<int, Player>();
             Entities = new ConcurrentDictionary<int, Entity.Entity>();
+            Windows = new ConcurrentDictionary<int, Inventory.Inventory>();
 
             Spawnpoint = worldGenerator.GetSpawnPoint();
         }
@@ -248,20 +254,25 @@ namespace Trestle.World
         #endregion
 
         #region Blocks
-        public Block GetBlock(Vector3 location)
+        public Block.Block GetBlock(Vector3 location)
         {
 	        var chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X >> 4, (int)location.Z >> 4));
 	        
 	        var material = chunk.GetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
 	        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
 
-	        var block = new Block(material)
+	        if (material == Material.Chest)
+		        return new Chest()
+		        {
+			        Metadata = data,
+			        Coordinates = location
+		        };
+	        
+	        return new Block.Block(material)
 	        {
 		        Metadata = data,
 		        Coordinates = location
-	        };
-
-	        return block;
+	        };;
         }
         
         public void SetBlock(Vector3 location, Material block)

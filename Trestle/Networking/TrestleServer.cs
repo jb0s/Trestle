@@ -228,7 +228,14 @@ namespace Trestle.Networking
         /// <param name="client"></param>
         public static void UnregisterPlayer(Client client)
         {
-            client.Player.Save();
+            try
+            {
+                client.Player.Save();
+            }
+            catch (Exception e)
+            {
+                Logger.Error($"Unable to save data for {client.Player.Username}\n{e}");
+            }
             
             // Send a global chat message announcing that the player has left :(
             var msg = Constants.SystemMessages.LeaveMessages[Globals.Random.Next(0, Constants.SystemMessages.LeaveMessages.Length)].Replace("{PLAYER}", $"{ChatColor.Aqua}{client.Username}{ChatColor.Gray}");
