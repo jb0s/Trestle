@@ -1,23 +1,27 @@
 ﻿using System;
-using System.Threading;
+using Trestle.Entity;
 using Trestle.Items;
 using Trestle.Networking.Packets.Play.Client;
 using Trestle.Utils;
 
-namespace Trestle.Entity
+namespace Trestle.Inventory
 {
-    public class InventoryManager
+    public class Inventory
     {
         /// <summary>
-        /// Owner of the inventory.
+        /// Player interacting with the Inventory.
         /// </summary>
         public Player Player { get; }
         
-
         /// <summary>
         /// Array of inventory slots.
         /// </summary>
-        public ItemStack[] Slots = new ItemStack[46];
+        public ItemStack[] Slots { get; set; }
+        
+        /// <summary>
+        /// Window Id of the inventory.
+        /// </summary>
+        public byte WindowId { get; set; }
 
         /// <summary>
         /// Item that was last clicked by the player (used for the ClickWindow packet)
@@ -45,9 +49,12 @@ namespace Trestle.Entity
             set => Slots[index] = value;
         }
         
-        public InventoryManager(Player player)
+        public Inventory(Player player, byte windowId, int slotLength)
         {
             Player = player;
+            WindowId = windowId;
+            
+            Slots = new ItemStack[slotLength];
             
             for(var i = 0; i < Slots.Length; i++)
                 Slots[i] = new ItemStack(-1, 0, 0);
@@ -86,86 +93,6 @@ namespace Trestle.Entity
         
         #endregion
 
-        #region Items
-        
-        public bool AddItem(short itemId, int itemCount = 1, byte metadata = 0)
-        {
-            // Try quickbars first
-            for(int i = 36; i < 44; i++)
-            {
-                if (Slots[i].ItemId == itemId && Slots[i].Metadata == metadata && Slots[i].ItemCount < 64)
-                {
-                    var oldslot = Slots[i];
-                    if (oldslot.ItemCount + itemCount <= 64)
-                    {
-                        SetSlot(i, itemId, oldslot.ItemCount + itemCount, metadata);
-                        return true;
-                    }
-                    
-                    SetSlot(i, itemId, 64, metadata);
-                    return AddItem(itemId, oldslot.ItemCount + itemCount - 64, metadata);
-                }
-            }
-            
-            for (var i = 9; i <= 45; i++)
-            {
-                if (Slots[i].ItemId == itemId && Slots[i].Metadata == metadata && Slots[i].ItemCount < 64)
-                {
-                    var oldslot = Slots[i];
-                    if (oldslot.ItemCount + itemCount <= 64)
-                    {
-                        SetSlot(i, itemId, oldslot.ItemCount + itemCount, metadata);
-                        return true;
-                    }
-                    SetSlot(i, itemId, itemCount, metadata);
-                    return AddItem(itemId, oldslot.ItemCount + itemCount - 64, metadata);
-                }
-            }
-
-            // Try quickbars first
-            for (var i = 36; i < 44; i++)
-            {
-                if (Slots[i].ItemId == -1)
-                {
-                    SetSlot(i, itemId, itemCount, metadata);
-                    return true;
-                }
-            }
-            
-            for (var i = 9; i <= 45; i++)
-            {
-                if (Slots[i].ItemId == -1)
-                {
-                    SetSlot(i, itemId, itemCount, metadata);
-                    return true;
-                }
-            }
-            
-            return false;
-        }
-
-        public bool RemoveItem(short itemId, short count, short metaData)
-        {
-            for (var i = 0; i <= 45; i++)
-            {
-                var itemStack = Slots[i];
-                if (itemStack.ItemId == itemId && itemStack.Metadata == metaData)
-                {
-                    if ((itemStack.ItemCount - count) > 0)
-                    {
-                        SetSlot(i, itemStack.ItemId, itemStack.ItemCount - count, itemStack.Metadata);
-                        return true;
-                    }
-                    
-                    SetSlot(i, -1, 0);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        #endregion
-        
         #region Clicked Item
         
         public void ClearClickedItem()
@@ -189,7 +116,7 @@ namespace Trestle.Entity
         {
             using (var stream = new MinecraftStream())
             {
-                for (short i = 0; i <= 45; i++)
+                for (var i = 0; i < Slots.Length; i++)
                 {
                     var value = Slots[i];
                     stream.WriteShort(value.ItemId);
@@ -206,13 +133,13 @@ namespace Trestle.Entity
         {
             using (var stream = new MinecraftStream(data))
             {
-                for (short i = 0; i <= 45; i++)
+                for (var i = 0; i < Slots.Length; i++)
                 {
-                    short itemId = stream.ReadShort();
-                    int itemCount = stream.ReadByte();
-                    short itemDamage = stream.ReadShort();
-                    int metadata = stream.ReadByte();
-
+                    var itemId = stream.ReadShort();
+                    var itemCount = stream.ReadByte();
+                    var itemDamage = stream.ReadShort();
+                    var metadata = stream.ReadByte();
+                    
                     Slots[i] = new ItemStack(itemId, (byte)itemCount, itemDamage, (byte)metadata);
                 }
             }

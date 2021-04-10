@@ -1,12 +1,10 @@
-﻿using System;
+﻿using Trestle.Entity;
 using Trestle.Enums;
-using Trestle.Items;
-using Trestle.Utils;
 using Trestle.Networking.Packets.Play.Client;
 
-namespace Trestle.Entity
+namespace Trestle.Items
 {
-    public class ItemEntity : Entity
+    public class ItemEntity : Entity.Entity
     {
         /// <summary>
         /// The item this entity defines as.

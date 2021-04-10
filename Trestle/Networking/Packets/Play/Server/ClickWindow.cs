@@ -29,10 +29,16 @@ namespace Trestle.Networking.Packets.Play.Server
         [Field]
         public ItemStack ClickedItem { get; set; }
 
+        public Inventory.Inventory Inventory { get; set; }
+        
         public override void HandlePacket()
         {
-            var item = Inventory.ClickedItem;
+            if (WindowId == 0)
+                Inventory = Player.Inventory;
+            else
+                Inventory = World.Windows[WindowId];
             
+            var item = Inventory.ClickedItem;
             switch (Mode)
             {
                 case InventoryOperation.MouseClick:
@@ -73,7 +79,7 @@ namespace Trestle.Networking.Packets.Play.Server
                             Inventory.ClickedItem = ClickedItem;
                         }
                     }
-                    break;
+                    break;  
                 case InventoryOperation.ShiftMouseClick:
                     break;
                 case InventoryOperation.NumberKeys:
@@ -95,6 +101,7 @@ namespace Trestle.Networking.Packets.Play.Server
                     // Left Mouse
                     if (Button == 1)
                     {
+                        Console.Write(Slot);
                         // TODO: handle this properly probably
                         Inventory.SetSlot(Slot, item);
                         Inventory.ClearClickedItem();

@@ -16,8 +16,8 @@ namespace Trestle.Networking.Packets.Play.Server
             if(Slot > 8 || Slot < 0)
                 Client.Player.KickAntiCheat("Illegal item slot");
             
-            Inventory.CurrentSlot = Slot;
-            World.BroadcastPacket(new EntityEquipment(Player.EntityId, EntityEquipmentSlot.MainHand, Inventory.CurrentItem), Player);
+            Player.Inventory.CurrentSlot = Slot;
+            World.BroadcastPacket(new EntityEquipment(Player.EntityId, EntityEquipmentSlot.MainHand, Player.Inventory.CurrentItem), Player);
         }
     }
 }

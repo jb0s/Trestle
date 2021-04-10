@@ -1,6 +1,5 @@
 ﻿using System;
 using Trestle.Attributes;
-using Trestle.Blocks;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Server;
 using Trestle.Utils;
