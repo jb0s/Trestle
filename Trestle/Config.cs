@@ -31,19 +31,19 @@ namespace Trestle
             if (!File.Exists(ConfigFile))
                 File.WriteAllLines(ConfigFile, Constants.Config.ConfigDefault);
 
-            var data = new Dictionary<string, string>();
+            var data = new Dictionary<int, string>();
             foreach (var row in File.ReadAllLines(ConfigFile))
                 if(!row.StartsWith("#") && !string.IsNullOrEmpty(row))
-                    data.Add(row.Split('=')[0], string.Join("=",row.Split('=').Skip(1).ToArray()));
+                    data.Add(row.Split('=')[0].GetHashCode(), string.Join("=",row.Split('=').Skip(1).ToArray()));
 
-            if (data.ContainsKey("motd")) Motd = data["motd"];
-            if (data.ContainsKey("seed")) Seed = data["seed"];
-            if (data.ContainsKey("max_players")) MaxPlayers = byte.Parse(data["max_players"]);
-            if (data.ContainsKey("online_mode")) OnlineMode = bool.Parse(data["online_mode"]);
-            if (data.ContainsKey("port")) Port = int.Parse(data["port"]);
-            if (data.ContainsKey("max_missed_keep_alives")) MaxMissedKeepAlives = int.Parse(data["max_missed_keep_alives"]);
-            if (data.ContainsKey("tab_list_header")) TabListHeader = data["tab_list_header"];
-            if (data.ContainsKey("tab_list_footer")) TabListFooter = data["tab_list_footer"];
+            if (data.ContainsKey("motd".GetHashCode())) Motd = data["motd".GetHashCode()];
+            if (data.ContainsKey("seed".GetHashCode())) Seed = data["seed".GetHashCode()];
+            if (data.ContainsKey("max_players".GetHashCode())) MaxPlayers = byte.Parse(data["max_players".GetHashCode()]);
+            if (data.ContainsKey("online_mode".GetHashCode())) OnlineMode = bool.Parse(data["online_mode".GetHashCode()]);
+            if (data.ContainsKey("port".GetHashCode())) Port = int.Parse(data["port".GetHashCode()]);
+            if (data.ContainsKey("max_missed_keep_alives".GetHashCode())) MaxMissedKeepAlives = int.Parse(data["max_missed_keep_alives".GetHashCode()]);
+            if (data.ContainsKey("tab_list_header".GetHashCode())) TabListHeader = data["tab_list_header".GetHashCode()];
+            if (data.ContainsKey("tab_list_footer".GetHashCode())) TabListFooter = data["tab_list_footer".GetHashCode()];
 
             Logger.Debug($"Using Configuration:\n" +
                          $"    Port: {Port}\n"+

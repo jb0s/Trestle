@@ -9,6 +9,7 @@ using Trestle.Attributes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Trestle.Networking.Packets.Login.Client;
 using Trestle.Networking.Packets.Play;
 using Trestle.Networking.Packets.Play.Server;
@@ -17,8 +18,10 @@ using Player = Trestle.Entity.Player;
 
 namespace Trestle.Networking
 {
-    public class Client
+    public class Client : IDisposable
     {
+        public bool Disposed { get; private set; }
+        
         private readonly Queue<byte[]> _commands = new();
         private readonly AutoResetEvent _resume = new(false);
         
@@ -160,6 +163,16 @@ namespace Trestle.Networking
 
             if (MissedKeepAlives > Config.MaxMissedKeepAlives)
                 Player.Kick(new MessageComponent("Timed out"));
+        }
+        
+        public void Dispose()
+        {
+            Disposed = true;
+            
+            _resume?.Dispose();
+            TcpClient?.Dispose();
+            Encrypter?.Dispose();
+            Decrypter?.Dispose();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -108,38 +109,44 @@ namespace Trestle.Networking
         /// <summary>
         /// Handles an incoming connection.
         /// </summary>
-        internal void HandleConnection(TcpClient tcpClient)
+        internal Task HandleConnection(TcpClient tcpClient)
         {
             var stream = tcpClient.GetStream();
-            var client = new Client(tcpClient);
-            Clients.Add(client);
             
-            while (tcpClient.Connected)
+            using (var client = new Client(tcpClient))
             {
-                try
+                Clients.Add(client);
+            
+                while (tcpClient.Connected)
                 {
-                    while (!stream.DataAvailable)
+                    try
                     {
+                        while (!stream.DataAvailable)
+                        {
+                            if (client.Kicked)
+                                break;
+                        
+                            Thread.Sleep(5);
+                        }
+                    
                         if (client.Kicked)
                             break;
-                        
-                        Thread.Sleep(5);
+
+                        // TODO: add support for compressed packets & some other logic
+                        HandleUncompressedPacket(client, stream);
                     }
-                    
-                    if (client.Kicked)
-                        break;
+                    catch (Exception ex)
+                    {
+                    }
+                }
 
-                    // TODO: add support for compressed packets & some other logic
-                    HandleUncompressedPacket(client, stream);
-                }
-                catch (Exception ex)
-                {
-                }
+                // Client lost connection, remove.
+                TrestleServer.UnregisterPlayer(client);
+                Clients.Remove(client);
             }
-
-            // Client lost connection, remove.
-            TrestleServer.UnregisterPlayer(client);
-            Clients.Remove(client);
+            
+            GC.Collect();
+            return Task.CompletedTask;
         }
 
         /// <summary>
