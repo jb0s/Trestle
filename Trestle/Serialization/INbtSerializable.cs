@@ -1,4 +1,4 @@
-﻿using fNbt;
+﻿using LibNbt;
 
 namespace Trestle.Serialization
 {

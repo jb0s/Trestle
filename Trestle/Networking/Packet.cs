@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using fNbt;
+using LibNbt;
 using Trestle.Attributes;
 using Trestle.Block;
 using Trestle.Entity;

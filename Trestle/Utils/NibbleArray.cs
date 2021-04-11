@@ -1,4 +1,4 @@
-﻿using fNbt;
+﻿using LibNbt;
 using Trestle.Serialization;
 
 namespace Trestle.Utils
@@ -55,9 +55,19 @@ namespace Trestle.Utils
             return new NbtByteArray(tagName, Data);
         }
 
+        void INbtSerializable.Deserialize(NbtTag value)
+        {
+            Deserialize(value);
+        }
+
         public void Deserialize(NbtTag value)
         {
             Data = value.ByteArrayValue;
+        }
+
+        NbtTag INbtSerializable.Serialize(string tagName)
+        {
+            return Serialize(tagName);
         }
     }
 }

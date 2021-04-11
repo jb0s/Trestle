@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using fNbt;
 using Trestle.Attributes;
 using Trestle.Entity;
 using Trestle.Enums;

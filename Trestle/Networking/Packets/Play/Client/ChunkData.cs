@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using fNbt;
 using Trestle.Attributes;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Client;
