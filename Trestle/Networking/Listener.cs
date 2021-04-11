@@ -200,7 +200,7 @@ namespace Trestle.Networking
 
             if (type == null)
             {
-                Logger.Warn($"Unknown packet '0x{packetId:X2}' for state '{client.State}'");
+                Logger.Warn($"Player packet '0x{packetId:X2}' for state '{client.State}'");
                 return;
             }
             

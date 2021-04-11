@@ -37,7 +37,6 @@ namespace Trestle.Networking.Packets.Play.Server
             
             Client.Player.World.BroadcastPacket(new EntityMetadata(Client.Player));
             
-            // TODO: Fix this shit it's broken
             player.SendChunksForLocation();
         }
     }

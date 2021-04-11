@@ -21,7 +21,7 @@ namespace Trestle.Items
         /// </summary>
         public int TimeToLive { get; set; }
 
-        public ItemEntity(World.World world, ItemStack item) : base(2, world)
+        public ItemEntity(World.World world, ItemStack item) : base(EntityType.ItemStack, world)
         {
             Item = item;
 

@@ -144,7 +144,7 @@ namespace Trestle.Entity
 		/// You need to call the <see cref="InitializePlayer"/> function to spawn it as an entity.
 		/// </summary>
 		/// <param name="world"></param>
-        public Player(World.World world) : base(-1, world)
+        public Player(World.World world) : base(EntityType.Player, world)
 		{
 			ChunksUsed = new Dictionary<Tuple<int, int>, byte[]>();
             Inventory = new PlayerInventory(this);
@@ -171,7 +171,6 @@ namespace Trestle.Entity
 	        HasSpawned = true;
 			
 	        Inventory.SendToPlayer();
-	        BroadcastInventory();
         }
 
         #region Updates
@@ -251,7 +250,7 @@ namespace Trestle.Entity
         /// Makes the player swing their hand.
         /// </summary>
         /// <param name="hand"></param>
-        public void PlayerHandSwing(byte hand)
+        public void PlayerHandSwing(int hand)
 			=> PlayerAnimation(AnimationType.SwingArm, hand);
 
 		/// <summary>
@@ -259,22 +258,14 @@ namespace Trestle.Entity
 		/// </summary>
 		/// <param name="animationType"></param>
 		/// <param name="hand"></param>
-		public void PlayerAnimation(AnimationType animationType, byte hand = 0)
+		public void PlayerAnimation(AnimationType animationType, int hand = 0)
 		{
-			// TODO: [MP] Add this
+			Client.Player.World.BroadcastPacket(new Animation(Client.Player, AnimationType.SwingArm), Client.Player);
 		}
 
         #endregion
 
         #region Inventory
-
-        /// <summary>
-        /// Sends the player's inventory to the client.
-        /// </summary>
-        public void BroadcastInventory()
-		{
-			// TODO: [MP] Add this
-		}
 
         #endregion
 

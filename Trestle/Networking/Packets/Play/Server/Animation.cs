@@ -14,7 +14,7 @@ namespace Trestle.Networking.Packets.Play.Server
 
         public override void HandlePacket()
         {
-            Client.Player.World.BroadcastPacket(new Client.Animation(Client.Player, AnimationType.SwingArm), Client.Player);
+            Client.Player.PlayerHandSwing(Hand);
         }
     }
 }

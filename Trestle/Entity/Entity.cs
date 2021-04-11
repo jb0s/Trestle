@@ -1,4 +1,5 @@
 ﻿using System;
+using Trestle.Enums;
 using Trestle.Utils;
 using Trestle.Networking.Packets.Play.Client;
 
@@ -16,9 +17,8 @@ namespace Trestle.Entity
 
         /// <summary>
         /// The type of entity this entity identifies as.
-        /// TODO: Maybe convert this to an enum?
         /// </summary>
-        public int EntityTypeId { get; internal set; } = -1;
+        public EntityType EntityType { get; internal set; } = EntityType.Player;
 
         /// <summary>
         /// The world that the entity is in.
@@ -40,12 +40,12 @@ namespace Trestle.Entity
         /// </summary>
         public Location Location;
         
-        public Entity(int entityTypeId, World.World world)
+        public Entity(EntityType entityType, World.World world)
         {
             World = world;
             Location = new Location(0, 0, 0);
             EntityId = Globals.GetEntityId();
-            EntityTypeId = entityTypeId;
+            EntityType = entityType;
 
             Metadata = new Metadata(this);
         }
@@ -83,11 +83,7 @@ namespace Trestle.Entity
         /// <summary>
         /// Spawns the entity for a select few players.
         /// </summary>
-        /// <param name="players"></param>
-        /// <exception cref="NotImplementedException"></exception>
         public virtual void SpawnForPlayers(Player[] players)
-        {
-            throw new NotImplementedException();
-        }
+            => throw new Exception("This method is not to be called. It needs to be overridden.");
     }
 }

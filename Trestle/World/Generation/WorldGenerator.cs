@@ -10,7 +10,7 @@ namespace Trestle.World.Generation
         public ConcurrentDictionary<Vector2, ChunkColumn> Chunks;
 
         public virtual ChunkColumn GenerateChunkColumn(Vector2 coordinates)
-            => throw new NotImplementedException();
+            => throw new Exception("This function is not to be called, it needs to be overridden.");
 
         public virtual ChunkColumn CreateAndCache(Vector2 chunkCoordinates)
             => Chunks.GetOrAdd(chunkCoordinates, GenerateChunkColumn);

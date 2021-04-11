@@ -29,7 +29,7 @@ namespace Trestle.Commands
 
             if (!Commands.TryGetValue(command, out var data))
             {
-                client.Player.SendChat($"{ChatColor.Red}Unknown command! Type '/help' for a list of commands.");
+                client.Player.SendChat($"{ChatColor.Red}Player command! Type '/help' for a list of commands.");
                 return;
             }
 
