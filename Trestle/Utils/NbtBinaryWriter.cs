@@ -2,7 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Text;
-using LibNbt;
+using fNbt;
 
 namespace Trestle.Utils
 {

@@ -420,9 +420,8 @@ public class MinecraftStream : IDisposable
 				}
 				_bffr.Clear();
 			}
-			catch (Exception ex)
+			catch
 			{
-				//Globals.ClientManager.PacketError(_client, ex);
 			}
 		}
 

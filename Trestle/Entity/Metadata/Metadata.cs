@@ -93,10 +93,8 @@ namespace Trestle.Entity
                         buffer.WriteBool(data);
                         break;
                     default:
-                        var message = $"Unable to serialize field '{property.Name}' of type '{property.PropertyType}'";
-                        //Client.Player?.Kick(new MessageComponent($"{ChatColor.Red}An error occured while serializing.\n\n{ChatColor.Reset}{message}"));
+                        string message = $"Unable to serialize field '{property.Name}' of type '{property.PropertyType}'";
                         throw new Exception(message);
-                        break;
                 }
             }
             buffer.WriteByte(0xff);

@@ -135,7 +135,7 @@ namespace Trestle.Networking
                         // TODO: add support for compressed packets & some other logic
                         HandleUncompressedPacket(client, stream);
                     }
-                    catch (Exception ex)
+                    catch
                     {
                     }
                 }
@@ -195,6 +195,7 @@ namespace Trestle.Networking
                 ClientState.Status => _statusPackets.GetValue(packetId),
                 ClientState.Login => _loginPackets.GetValue(packetId),
                 ClientState.Play => _playPackets.GetValue(packetId),
+                _ => throw new ArgumentOutOfRangeException(nameof(packetId)),
             };
 
             if (type == null)

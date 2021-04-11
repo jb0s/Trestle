@@ -69,7 +69,7 @@ namespace Trestle.Utils
 				if (i2 > 64)
 				{
 					i0++;
-					Backing[i0] = Backing[i0] & ~((1L << i2 - 64) - 1L) | value >> 64 - i1;
+					Backing[i0] = Backing[i0] & ~(long)((1L << i2 - 64) - 1L) | (long)value >> 64 - i1;
 				}
 			}
 		}

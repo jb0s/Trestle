@@ -9,7 +9,6 @@ using Trestle.Attributes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Trestle.Networking.Packets.Login.Client;
 using Trestle.Networking.Packets.Play;
 using Trestle.Networking.Packets.Play.Server;
@@ -44,7 +43,6 @@ namespace Trestle.Networking
         public bool SetCompressionSend = false;
         
         public int Ping = 0;
-        private long _lastPing = 0;
         public int MissedKeepAlives = 0;
 
         public Client(TcpClient client)
@@ -124,7 +122,7 @@ namespace Trestle.Networking
                     else
                         TcpClient.Client.Send(data);
                 }
-                catch(Exception ex)
+                catch
                 {
                     TcpClient.Client.Close();
                 }

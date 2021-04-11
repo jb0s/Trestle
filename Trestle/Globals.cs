@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Ionic.Zlib;
 using Trestle.Enums;
 using Trestle.Utils;
 using Trestle.World;

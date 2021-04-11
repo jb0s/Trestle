@@ -71,7 +71,6 @@ namespace Trestle.Networking
         {
             int keepAliveTicks = 0;
             
-            short iterationsPerSecond = 0;
             var stopwatch = Stopwatch.StartNew();
 
             while (_ready)

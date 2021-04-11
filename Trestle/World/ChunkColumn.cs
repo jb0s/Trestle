@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using LibNoise.Model;
 using Trestle.Enums;
 using Trestle.Utils;
 

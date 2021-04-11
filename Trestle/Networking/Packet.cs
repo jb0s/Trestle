@@ -4,7 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using LibNbt;
+using fNbt;
+using fNbt.Tags;
 using Trestle.Attributes;
 using Trestle.Block;
 using Trestle.Entity;
@@ -164,7 +165,6 @@ namespace Trestle.Networking
                         var message = $"Unable to parse field '{property.Name}' of type '{property.PropertyType}'";
                         Client.Player?.Kick(new MessageComponent($"{ChatColor.Red}An error occured while serializing.\n\n{ChatColor.Reset}{message}"));
                         throw new Exception(message);
-                        break;
                 }
             }
             
@@ -247,7 +247,7 @@ namespace Trestle.Networking
                         throw new Exception(message);
                     }
                 }
-                catch (Exception e)
+                catch
                 {
                     if (isOptional)
                         return;

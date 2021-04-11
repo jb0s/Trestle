@@ -21,7 +21,19 @@ namespace Trestle.Utils
         public static bool operator !=(Vector2 a, Vector2 b)
             => !(a.X == b.X && a.Z == b.Z);
 
-        public string ToString()
+        public override bool Equals(object other)
+        {
+            if (other.GetType() != typeof(Vector2))
+                return false;
+
+            var otherVector = (Vector2)other;
+            return this == otherVector;
+        }
+
+        public override int GetHashCode()
+            => X + Z * 256;
+
+        public override string ToString()
             => $"({X}, {Z})";
 
         public static Vector2 ToChunkLocation(Location location)
