@@ -39,7 +39,17 @@ namespace Trestle.Entity
         /// The location of the entity.
         /// </summary>
         public Location Location;
+
+        /// <summary>
+        /// The entity's healthmanager.
+        /// </summary>
+        public HealthManager HealthManager;
         
+        /// <summary>
+        /// The maximum amount of health this entity can have.
+        /// </summary>
+        public virtual int MaxHealth => 0;
+
         public Entity(EntityType entityType, World.World world)
         {
             World = world;
@@ -48,6 +58,7 @@ namespace Trestle.Entity
             EntityType = entityType;
 
             Metadata = new Metadata(this);
+            HealthManager = new HealthManager(this);
         }
         
         /// <summary>
