@@ -164,13 +164,17 @@ namespace Trestle.Entity
         /// </summary>
         internal void InitializePlayer()
         {
+	        // If there's no save data to be loaded / failed to load, default to the spawnpoint.
 	        if (!Load())
 		        Location = World.Spawnpoint;
 	        
+	        // Tell the client it can join the game.
 	        Client.SendPacket(new JoinGame(this));
 
+	        // Register the new player in the player database.
 	        TrestleServer.RegisterPlayer(Client);
 			
+	        // Spawn the player.
 			Client.SendPacket(new SpawnPosition(this));
 	        Client.SendPacket(new PlayerPositionAndLook(Location));
 	        
