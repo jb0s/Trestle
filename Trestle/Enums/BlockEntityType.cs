@@ -1,4 +1,6 @@
-﻿namespace Trestle.Enums
+﻿using Trestle.Attributes;
+
+namespace Trestle.Enums
 {
     public enum BlockEntityType
     {
@@ -7,7 +9,7 @@
         Bed,
         Cauldron,
         BrewingStand,
-        Chest,
+        [Description("minecraft:chest")] Chest,
         Comparator,
         CommandBlock,
         DaylightDetector,

@@ -9,15 +9,4 @@
       <PackageReference Include="CoreFNBT" Version="1.0.9" />
       <PackageReference Include="Iconic.Zlib.NetstandardUwp" Version="1.0.2" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="Enums\HandshakingPacket.cs" />
-      <Compile Remove="Enums\LoginPacket.cs" />
-      <Compile Remove="Utils\Slot.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="Enums\StatusPacket.cs" />
-    </ItemGroup>
-
 </Project>

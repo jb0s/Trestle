@@ -139,7 +139,7 @@ namespace Trestle.Networking
         /// </summary>
         private void GenerateWorlds()
         {
-            Globals.WorldManager.CreateWorld(WorldType.Normal);
+            Globals.WorldManager.CreateWorld(WorldType.Flat);
         }
         
         #endregion

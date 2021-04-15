@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using fNbt;
+using fNbt.Tags;
 using Trestle.Enums;
 using Trestle.Utils;
 
@@ -26,14 +29,18 @@ namespace Trestle.World
         public readonly byte[] Heightmap;
         public bool IsDirty;
         
-        private ChunkSection[] _sections;
-        private byte[] _cache;
-        private byte[] _biomes;
+        private readonly Dictionary<Vector3, BlockEntity> _blockEntities;
+        private readonly ChunkSection[] _sections;
+        private readonly byte[] _biomes;
         
+        private byte[] _cache;
+
         public ChunkColumn(Vector2 coordinates)
         {
             Coordinates = coordinates;
             Heightmap = new byte[WIDTH * DEPTH];
+
+            _blockEntities = new Dictionary<Vector3, BlockEntity>();
             _sections = new ChunkSection[16];
             _biomes = new byte[WIDTH * DEPTH];
 
@@ -49,29 +56,58 @@ namespace Trestle.World
 
         public ChunkColumn(byte[] data)
         {
-            using (var stream = new MinecraftStream(data))
+            try
             {
-                Coordinates = new Vector2(stream.ReadInt(), stream.ReadInt());
-                Heightmap = new byte[WIDTH * DEPTH];
-                _sections = new ChunkSection[16];
-                _biomes = new byte[WIDTH * DEPTH];
-                
-                bool isFullChunk = stream.ReadBool();
-                int sectionBitmask = stream.ReadVarInt();
-                int sectionDataLength = stream.ReadVarInt();
-                byte[] sectionData = stream.Read(sectionDataLength);
-
-                using (var sectionStream = new MinecraftStream(sectionData))
+                using (var stream = new MinecraftStream(data))
                 {
-                    for(int i = 0; i < sectionBitmask; i++)
-                        _sections[i] = new ChunkSection(sectionStream.Read(10756));
+                    Coordinates = new Vector2(stream.ReadInt(), stream.ReadInt());
+                    Heightmap = new byte[WIDTH * DEPTH];
+                    _sections = new ChunkSection[16];
+                    _biomes = new byte[WIDTH * DEPTH];
 
-                    for(int i = sectionBitmask; i < _sections.Length; i++)
-                        _sections[i] = new ChunkSection();
-                    
-                    for(int i = 0; i < _biomes.Length; i++)
-                        _biomes[i] = 1;
+                    var isFullChunk = stream.ReadBool();
+
+                    // Chunk Sections
+
+                    var sectionBitmask = stream.ReadVarInt();
+                    var sectionDataLength = stream.ReadVarInt();
+                    var sectionData = stream.Read(sectionDataLength);
+
+                    using (var sectionStream = new MinecraftStream(sectionData))
+                    {
+                        for (int i = 0; i < sectionBitmask; i++)
+                            _sections[i] = new ChunkSection(sectionStream.Read(10756));
+
+                        for (int i = sectionBitmask; i < _sections.Length; i++)
+                            _sections[i] = new ChunkSection();
+
+                        for (int i = 0; i < _biomes.Length; i++)
+                            _biomes[i] = 1;
+                    }
+
+                    _blockEntities = new Dictionary<Vector3, BlockEntity>();
+                    // Block Entities
+
+                    var blockEntitiesLength = stream.ReadVarInt();
+                    var blockEntityStream = new MemoryStream(stream.BufferedData);
+                    blockEntityStream.Position = stream.Position;
+
+                    _blockEntities = new Dictionary<Vector3, BlockEntity>(blockEntitiesLength);
+
+                    for (var i = 0; i < blockEntitiesLength; i++)
+                    {
+                        var reader = new NbtReader(blockEntityStream);
+                        var compound = (NbtCompound)reader.ReadAsTag();
+
+                        var blockEntity = new BlockEntity(compound);
+                        _blockEntities.Add(blockEntity.Position, blockEntity);
+                    }
+
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
 
@@ -132,8 +168,10 @@ namespace Trestle.World
                 
                 stream.Write(_biomes);
                 
-                stream.WriteVarInt(0); // No block entities yet
-
+                stream.WriteVarInt(_blockEntities.Count);
+                foreach(var (_, entity) in _blockEntities)
+                    stream.Write(entity.Export());
+                  
                 _cache = stream.Data;
                 return stream.Data;
             }
@@ -141,7 +179,7 @@ namespace Trestle.World
         
         #endregion
 
-        #region Block updating
+        #region Blocks
 
         public Material GetBlock(Vector3 coordinates)
             => GetSection((int)coordinates.Y).GetBlock(new Vector3(coordinates.X, coordinates.Y - 16 * ((int)coordinates.Y >> 4), coordinates.Z));
@@ -164,6 +202,16 @@ namespace Trestle.World
             IsDirty = true;
             _cache = null;
         }
+        #endregion
+
+        #region Block Entities
+
+        public BlockEntity GetBlockEntity(Vector3 coordinates)
+            => _blockEntities[coordinates];
+        
+        public BlockEntity SetBlockEntity(Vector3 coordinates, BlockEntity blockEntity)
+            => _blockEntities[coordinates] = blockEntity;
+
         #endregion
     }
 }
