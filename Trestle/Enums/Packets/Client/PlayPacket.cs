@@ -29,6 +29,7 @@
         BlockBreakAnimation = 0x08,
         PlayerListHeaderAndFooter = 0x4A,
         EntityTeleport = 0x4C,
-        OpenWindow = 0x13
+        OpenWindow = 0x13,
+        UpdateHealth = 0x41
     }
 }

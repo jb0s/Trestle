@@ -140,6 +140,12 @@ namespace Trestle.Entity
 		public EntityActionType LastEntityActionType { get; set; }
 
 		/// <summary>
+		/// The maximum amount of health the player can have.
+		/// Should always equal to 20.
+		/// </summary>
+		public override int MaxHealth => 20;
+
+		/// <summary>
 		/// Creates a player instance and registers it to the assigned world.
 		/// You need to call the <see cref="InitializePlayer"/> function to spawn it as an entity.
 		/// </summary>
@@ -158,13 +164,17 @@ namespace Trestle.Entity
         /// </summary>
         internal void InitializePlayer()
         {
+	        // If there's no save data to be loaded / failed to load, default to the spawnpoint.
 	        if (!Load())
 		        Location = World.Spawnpoint;
 	        
+	        // Tell the client it can join the game.
 	        Client.SendPacket(new JoinGame(this));
 
+	        // Register the new player in the player database.
 	        TrestleServer.RegisterPlayer(Client);
 			
+	        // Spawn the player.
 			Client.SendPacket(new SpawnPosition(this));
 	        Client.SendPacket(new PlayerPositionAndLook(Location));
 	        
@@ -259,9 +269,7 @@ namespace Trestle.Entity
 		/// <param name="animationType"></param>
 		/// <param name="hand"></param>
 		public void PlayerAnimation(AnimationType animationType, int hand = 0)
-		{
-			Client.Player.World.BroadcastPacket(new Animation(Client.Player, AnimationType.SwingArm), Client.Player);
-		}
+			=> World.BroadcastPacket(new Animation(this, animationType), this);
 
         #endregion
 
