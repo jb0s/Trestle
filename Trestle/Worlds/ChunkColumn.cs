@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using Trestle.Enums;
 using Trestle.Utils;
-using Trestle.World;
 
 namespace Trestle.Worlds
 {
