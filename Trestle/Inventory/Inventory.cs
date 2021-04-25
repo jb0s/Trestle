@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Transactions;
 using Trestle.Entity;
+using Trestle.Enums;
 using Trestle.Items;
 using Trestle.Networking.Packets.Play.Client;
 using Trestle.Utils;
+using Trestle.Worlds;
 
 namespace Trestle.Inventory
 {
@@ -11,38 +15,48 @@ namespace Trestle.Inventory
         /// <summary>
         /// Player interacting with the Inventory.
         /// </summary>
-        public Player Player { get; }
-        
+        public Player Player;
+
         /// <summary>
         /// Array of inventory slots.
         /// </summary>
-        public ItemStack[] Slots { get; set; }
-        
+        public ItemStack[] Slots;
+
         /// <summary>
         /// Window Id of the inventory.
         /// </summary>
-        public byte WindowId { get; set; }
+        public byte WindowId;
 
         /// <summary>
         /// Item that was last clicked by the player (used for the ClickWindow packet)
         /// </summary>
-        public ItemStack ClickedItem { get; set; }
+        public ItemStack ClickedItem;
 
         /// <summary>
         /// Is the player dragging in the inventory.
         /// </summary>
-        public bool IsDragging { get; set; }
+        public bool IsDragging;
         
         /// <summary>
         /// The current slot number.
         /// </summary>
-        public short CurrentSlot { get; set; } = 0;
+        public short HotbarSlot = 0;
+
+        /// <summary>
+        /// The current inventory slot that's equipped.
+        /// (HotbarSlot + 36)
+        /// </summary>
+        public short InventorySlot => (short)(HotbarSlot + 36);
         
         /// <summary>
         /// Item that is currently held by the player.
         /// </summary>
-        public ItemStack CurrentItem => Slots[CurrentSlot + 36];
+        public ItemStack CurrentItem => Slots[InventorySlot];
 
+        /// <summary>
+        /// Get an item out of the inventory by its slot index.
+        /// </summary>
+        /// <param name="index"></param>
         public ItemStack this[int index]
         {
             get => Slots[index];
@@ -62,12 +76,47 @@ namespace Trestle.Inventory
         
         #region Slots
         
+        /// <summary>
+        /// Sets a slot in the inventory.
+        /// </summary>
+        /// <param name="slot">The target slot.</param>
+        /// <param name="itemId">The ID of the item that should be in the slot.</param>
+        /// <param name="itemCount"></param>
+        /// <param name="metaData"></param>
         public void SetSlot(int slot, short itemId, byte itemCount = 1, byte metaData = 0)
         {
             Slots[slot] = new ItemStack(itemId, itemCount, metaData);
-            
+
             if (Player != null && Player.HasSpawned)
+            {
                 Player.Client.SendPacket(new SetSlot(0, (short)slot, Slots[slot]));
+                
+                if(slot == InventorySlot)
+                    Player.World.BroadcastPacket(new EntityEquipment(Player.EntityId, EntityEquipmentSlot.MainHand, Slots[slot]));
+                else
+                    switch (slot)
+                    {
+                        case 5:
+                            Player.World.BroadcastPacket(new EntityEquipment(Player.EntityId, EntityEquipmentSlot.Helmet, Slots[slot]));
+                            break;
+                        
+                        case 6:
+                            Player.World.BroadcastPacket(new EntityEquipment(Player.EntityId, EntityEquipmentSlot.Chestplate, Slots[slot]));
+                            break;
+                        
+                        case 7:
+                            Player.World.BroadcastPacket(new EntityEquipment(Player.EntityId, EntityEquipmentSlot.Leggings, Slots[slot]));
+                            break;
+                        
+                        case 8:
+                            Player.World.BroadcastPacket(new EntityEquipment(Player.EntityId, EntityEquipmentSlot.Boots, Slots[slot]));
+                            break;
+                        
+                        case 45:
+                            Player.World.BroadcastPacket(new EntityEquipment(Player.EntityId, EntityEquipmentSlot.OffHand, Slots[slot]));
+                            break;
+                    }
+            }
         }
 
         public void SetSlot(int slot, short itemId, int itemCount = 1, byte metaData = 0)
@@ -96,7 +145,7 @@ namespace Trestle.Inventory
         #region Clicked Item
         
         public void ClearClickedItem()
-            => ClickedItem = null;
+            => ClickedItem = ItemStack.Empty;
         
         public void SendToPlayer()
         {

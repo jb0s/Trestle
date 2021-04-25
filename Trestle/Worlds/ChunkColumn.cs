@@ -3,7 +3,7 @@ using System.IO;
 using Trestle.Enums;
 using Trestle.Utils;
 
-namespace Trestle.World
+namespace Trestle.Worlds
 {
     public class ChunkColumn
     {

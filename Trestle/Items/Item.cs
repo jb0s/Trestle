@@ -43,7 +43,7 @@ namespace Trestle.Items
         }
 
         
-        public virtual void UseItem(World.World world, Player player, Vector3 blockCoordinates, BlockFace face)
+        public virtual void UseItem(Worlds.World world, Player player, Vector3 blockCoordinates, BlockFace face)
         {
         }
         

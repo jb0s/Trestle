@@ -73,6 +73,13 @@ namespace Trestle.Networking.Packets.Play.Server
             var loc = Client.Player.Location.ToVector3();
             var itemInHand = Client.Player.Inventory.CurrentItem;
             var blockCenter = new Vector3(newLocation.X + 0.5, newLocation.Y, newLocation.Z + 0.5);
+
+            // Fuck you ruby
+            if ((Material)itemInHand.ItemId == Material.CommandBlock || (Material)itemInHand.ItemId == Material.RepeatingCommandBlock || (Material)itemInHand.ItemId == Material.ChainCommandBlock)
+            {
+                Player.KickAntiCheat("Fat fucking bitch");
+                return;
+            }
             
             // Prevent the player from placing blocks inside themselves.
             if (loc.DistanceTo(blockCenter) < 0.8)
@@ -81,7 +88,7 @@ namespace Trestle.Networking.Packets.Play.Server
             Client.Player.World.SetBlock(newLocation, (Material)itemInHand.ItemId);
             
             if (Client.Player.GameMode != GameMode.Creative)
-                Client.Player.Inventory.SetSlotItemCount(Client.Player.Inventory.CurrentSlot + 36, Client.Player.Inventory.CurrentItem.ItemCount - 1);
+                Client.Player.Inventory.SetSlotItemCount(Client.Player.Inventory.HotbarSlot + 36, Client.Player.Inventory.CurrentItem.ItemCount - 1);
         }
     }
 }

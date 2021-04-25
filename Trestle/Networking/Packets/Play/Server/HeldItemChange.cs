@@ -13,10 +13,13 @@ namespace Trestle.Networking.Packets.Play.Server
 
         public override void HandlePacket()
         {
-            if(Slot > 8 || Slot < 0)
+            if (Slot > 8 || Slot < 0)
+            {
                 Client.Player.KickAntiCheat("Illegal item slot");
+                return;
+            }
             
-            Player.Inventory.CurrentSlot = Slot;
+            Player.Inventory.HotbarSlot = Slot;
             World.BroadcastPacket(new EntityEquipment(Player.EntityId, EntityEquipmentSlot.MainHand, Player.Inventory.CurrentItem), Player);
         }
     }

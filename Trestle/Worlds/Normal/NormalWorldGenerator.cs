@@ -1,15 +1,12 @@
-using System.Collections.Concurrent;
 using Trestle.Enums;
 using Trestle.Utils;
 
-namespace Trestle.World.Generation
+namespace Trestle.Worlds.Normal
 {
-    public class FlatWorldGenerator : WorldGenerator
+    public class NormalWorldGenerator : WorldGenerator
     {
-        public FlatWorldGenerator()
-        {
-            Chunks = new ConcurrentDictionary<Vector2, ChunkColumn>();
-        }
+        public override Location GetSpawnPoint()
+            => new(0, 4, 0);
 
         public override ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates)
         {
@@ -19,10 +16,7 @@ namespace Trestle.World.Generation
             
             return CreateChunk(chunkCoordinates);
         }
-
-        public override Location GetSpawnPoint()
-            => new(0.5, 4f, 0.5f);
-
+        
         private static ChunkColumn CreateChunk(Vector2 chunkCoordinates)
         {
             ChunkColumn column = new ChunkColumn(chunkCoordinates);

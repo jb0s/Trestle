@@ -44,7 +44,7 @@ namespace Trestle.Networking.Packets.Play.Server
                 case InventoryOperation.MouseClick:
                     if (Inventory[Slot].ItemId == -1)
                     {
-                        if (item == null)
+                        if (item == ItemStack.Empty)
                             return;
 
                         if (Button == 0)
@@ -60,7 +60,7 @@ namespace Trestle.Networking.Packets.Play.Server
                     }
                     else
                     {
-                        if (Inventory.ClickedItem?.ItemId == Inventory[Slot].ItemId)
+                        if (Inventory.ClickedItem.ItemId == Inventory[Slot].ItemId)
                         {
                             if (Button == 0)
                             {
@@ -75,7 +75,7 @@ namespace Trestle.Networking.Packets.Play.Server
                         }
                         else
                         {
-                            Inventory.SetSlot(Slot, Inventory.ClickedItem?.ItemId ?? -1, Inventory.ClickedItem?.ItemCount ?? 0);
+                            Inventory.SetSlot(Slot, Inventory.ClickedItem.ItemId, Inventory.ClickedItem.ItemCount);
                             Inventory.ClickedItem = ClickedItem;
                         }
                     }

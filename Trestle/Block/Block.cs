@@ -56,7 +56,7 @@ namespace Trestle.Block
         /// Drops block loot.
         /// </summary>
         /// <param name="world"></param>
-        public void Drop(World.World world)
+        public void Drop(Worlds.World world)
         {
             if (Drops == null) 
                 return;
@@ -81,7 +81,7 @@ namespace Trestle.Block
         /// Called every tick when its chunk is loaded.
         /// </summary>
         /// <param name="world"></param>
-        public virtual void OnTick(World.World world)
+        public virtual void OnTick(Worlds.World world)
         {
         }
 
@@ -89,15 +89,15 @@ namespace Trestle.Block
         /// Starts a physics simulation.
         /// </summary>
         /// <param name="world"></param>
-        public virtual void DoPhysics(World.World world)
+        public virtual void DoPhysics(Worlds.World world)
         {
         }
 
         /// <summary>
-        /// Breaks the block. (Does NOT drop loot, see <see cref="Drop(World)."/>)
+        /// Breaks the block. (Does NOT drop loot, see <see cref="Drop(Worlds)."/>)
         /// </summary>
         /// <param name="world"></param>
-        public void BreakBlock(World.World world)
+        public void BreakBlock(Worlds.World world)
             => world.SetBlock(Coordinates, Material.Air);
     }
 }

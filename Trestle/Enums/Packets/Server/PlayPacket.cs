@@ -20,6 +20,8 @@
         HeldItemChange = 0x1A,
         ClickWindow = 0x07,
         CloseWindow = 0x08,
-        UseItem = 0x20
+        UseItem = 0x20,
+        ClientStatus = 0x03,
+        UseEntity = 0x0A
     }
 }

@@ -86,7 +86,7 @@ namespace Trestle.Entity
                         buffer.WriteShort(data.ItemId);
                         buffer.WriteByte(data.ItemCount);
                         buffer.WriteShort(data.ItemDamage);
-                        buffer.WriteByte(data.NBT);
+                        buffer.WriteByte(data.Nbt);
                         break;
                     case bool data:
                         buffer.WriteVarInt(6);

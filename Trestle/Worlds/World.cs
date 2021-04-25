@@ -6,14 +6,14 @@ using Trestle.Entity;
 using System.Threading;
 using Trestle.Networking;
 using System.Diagnostics;
-using Trestle.World.Generation;
+using Trestle.Worlds;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.IO;
 using Trestle.Block.Blocks;
 using Trestle.Networking.Packets.Play.Client;
 
-namespace Trestle.World
+namespace Trestle.Worlds
 {
     public class World : IDisposable
     {

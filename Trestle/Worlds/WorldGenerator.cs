@@ -3,11 +3,11 @@ using System.Collections.Concurrent;
 using System.IO;
 using Trestle.Utils;
 
-namespace Trestle.World.Generation
+namespace Trestle.Worlds
 {
     public class WorldGenerator
     {
-        public ConcurrentDictionary<Vector2, ChunkColumn> Chunks;
+        public ConcurrentDictionary<Vector2, ChunkColumn> Chunks = new();
 
         public virtual ChunkColumn GenerateChunkColumn(Vector2 coordinates)
             => throw new Exception("This function is not to be called, it needs to be overridden.");

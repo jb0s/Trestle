@@ -14,7 +14,7 @@ namespace Trestle.Block.Blocks
             IsUsable = true;
         }
 
-        public override void UseItem(World.World world, Player player, Vector3 blockCoordinates, BlockFace face)
+        public override void UseItem(Worlds.World world, Player player, Vector3 blockCoordinates, BlockFace face)
         {
             var windowId = (byte)(player.World.Windows.Count + 1);
             player.World.Windows[windowId] = new ChestInventory(player, windowId, false);

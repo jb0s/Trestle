@@ -2,7 +2,7 @@
 
 namespace Trestle.Utils
 {
-    public class Vector3
+    public struct Vector3
     {
         public double X;
 		public double Y;
@@ -238,5 +238,8 @@ namespace Trestle.Utils
 		{
 			return new Location(X, Y, Z);
 		}
+
+		public string ToString()
+			=> $"({X}, {Y}, {Z})";
     }
 }

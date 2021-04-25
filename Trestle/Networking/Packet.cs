@@ -19,7 +19,7 @@ namespace Trestle.Networking
     {
         public Client Client { get; set; }
         public Player Player => Client.Player;
-        public World.World World => Player.World;
+        public Worlds.World World => Player.World;
         
         public Packet()
         {
@@ -190,7 +190,6 @@ namespace Trestle.Networking
                 // Checks if the field is optional
                 var isOptional = property.GetCustomAttribute<OptionalAttribute>(false) != null;
 
-                
                 // Dictionary of functions based on a type
                 var @switch = new Dictionary<Type, Action> {
                     { typeof(byte), () => property.SetValue(this, (byte)buffer.ReadByte()) },

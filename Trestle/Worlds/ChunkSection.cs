@@ -2,7 +2,7 @@ using System;
 using Trestle.Enums;
 using Trestle.Utils;
 
-namespace Trestle.World
+namespace Trestle.Worlds
 {
     /// <summary>
     /// A 16x16x16 cube contained in a <see cref="ChunkColumn"/>.

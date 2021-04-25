@@ -1,13 +1,13 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using Trestle.Block;
 using Trestle.Utils;
 using Trestle.Enums;
-using Trestle.World;
+using Trestle.Worlds;
 using Trestle.Networking;
 using System.Collections.Generic;
-using System.IO;
 using Microsoft.Win32.SafeHandles;
-using Trestle.Block;
 using Trestle.Inventory.Inventories;
 using Trestle.Networking.Packets.Play.Client;
 
@@ -150,7 +150,7 @@ namespace Trestle.Entity
 		/// You need to call the <see cref="InitializePlayer"/> function to spawn it as an entity.
 		/// </summary>
 		/// <param name="world"></param>
-        public Player(World.World world) : base(EntityType.Player, world)
+        public Player(Worlds.World world) : base(EntityType.Player, world)
 		{
 			ChunksUsed = new Dictionary<Tuple<int, int>, byte[]>();
             Inventory = new PlayerInventory(this);
@@ -158,8 +158,8 @@ namespace Trestle.Entity
 
             Metadata = new PlayerMetadata(this);
 		}
-        
-        /// <summary>
+
+		/// <summary>
         /// Initializes the Player entity.
         /// </summary>
         internal void InitializePlayer()
@@ -189,7 +189,7 @@ namespace Trestle.Entity
         /// Sends the player to a world.
         /// </summary>
         /// <param name="world"></param>
-        public void SendToWorld(World.World world)
+        public void SendToWorld(Worlds.World world)
         {
 			// Remove the player from the old world.
 			World.RemoveEntity(this);
@@ -215,22 +215,11 @@ namespace Trestle.Entity
         /// <param name="yaw"></param>
         /// <param name="pitch"></param>
         /// <param name="onGround"></param>
-        public void PositionChanged(Vector3 location, float yaw = 0.0f, float pitch = 0.0f, bool onGround = false)
+        public override void PositionChanged(Vector3 location, float yaw = 0.0f, float pitch = 0.0f, bool onGround = false)
         {
 	        var originalchunkcoords = new Vector2(_currentChunkPosition.X, _currentChunkPosition.Z);
-            
-			if (yaw != 0.0f && pitch != 0.0f)
-	        {
-		        Location.Yaw = yaw;
-		        Location.Pitch = pitch;
-		        Location.HeadYaw = (byte)(yaw * 256 / 360);
-	        }
 
-			var prevLocation = Location;
-	        Location.X = location.X;
-	        Location.Y = location.Y;
-	        Location.Z = location.Z;
-	        Location.OnGround = onGround;
+	        base.PositionChanged(location, yaw, pitch, onGround);
 	        
 	        _currentChunkPosition.X = (int) location.X >> 4;
 	        _currentChunkPosition.Z = (int) location.Z >> 4;
@@ -238,8 +227,8 @@ namespace Trestle.Entity
 	        if (originalchunkcoords != _currentChunkPosition)
 		        SendChunksForLocation(_currentChunkPosition);
 
-	        if(prevLocation.DistanceTo(Location) < 8)
-				World.BroadcastPacket(new EntityLookAndRelativeMove(EntityId, prevLocation, Location), this);
+	        if(PreviousLocation.DistanceTo(Location.ToVector3()) < 8)
+				World.BroadcastPacket(new EntityLookAndRelativeMove(EntityId, PreviousLocation.ToLocation(), Location), this);
 			else
 				World.BroadcastPacket(new EntityTeleport(EntityId, Location));
 	        
@@ -251,6 +240,17 @@ namespace Trestle.Entity
         /// </summary>
         public void LookChanged()
 	        => World.BroadcastPacket(new EntityHeadLook(EntityId, Location.HeadYaw), this);
+
+        /// <summary>
+        /// Teleports the player to another location.
+        /// </summary>
+        /// <param name="location"></param>
+        public void Teleport(Vector3 location)
+        {
+	        PositionChanged(location, Location.Yaw, Location.Pitch, Location.OnGround);
+	        Client.SendPacket(new PlayerPositionAndLook(Location));
+	        ForceChunkReload = true;
+        }
         
         #endregion
 
@@ -261,15 +261,15 @@ namespace Trestle.Entity
         /// </summary>
         /// <param name="hand"></param>
         public void PlayerHandSwing(int hand)
-			=> PlayerAnimation(AnimationType.SwingArm, hand);
+			=> PlayerAnimation(AnimationType.SwingArm, hand, this);
 
 		/// <summary>
 		/// Performs an animationType on the client.
 		/// </summary>
 		/// <param name="animationType"></param>
 		/// <param name="hand"></param>
-		public void PlayerAnimation(AnimationType animationType, int hand = 0)
-			=> World.BroadcastPacket(new Animation(this, animationType), this);
+		public void PlayerAnimation(AnimationType animationType, int hand = 0, Player except = null)
+			=> World.BroadcastPacket(new Animation(this, animationType), except);
 
         #endregion
 
@@ -296,7 +296,7 @@ namespace Trestle.Entity
 			GameMode = target;
 
             Client.SendPacket(new ChangeGameState(GameStateReason.ChangeGameMode, (int)target));
-			
+
 			if (!silent)
 			{
 				Logger.Info($"Updated {Username}'s gamemode to '{target}'");
@@ -309,7 +309,9 @@ namespace Trestle.Entity
 		/// </summary>
 		public void Respawn()
 		{
-			// TODO: [Survival] Add this
+			HealthManager.Reset();
+			Client.SendPacket(new Respawn());
+			Teleport(World.Spawnpoint.ToVector3());
 		}
 
 		#endregion
@@ -367,7 +369,7 @@ namespace Trestle.Entity
 				var z = (int)player.Location.Z >> 4;
 				if (chunkX == x && chunkZ == z)
 				{
-					Client.SendPacket(new SpawnPlayer(player));
+					//Client.SendPacket(new SpawnPlayer(player));
 				}
 			}
 

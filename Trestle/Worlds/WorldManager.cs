@@ -4,9 +4,9 @@ using System.Linq;
 using Trestle.Entity;
 using Trestle.Enums;
 using Trestle.Utils;
-using Trestle.World.Generation;
+using Trestle.Worlds;
 
-namespace Trestle.World
+namespace Trestle.Worlds
 {
     public class WorldManager
     {
@@ -17,11 +17,11 @@ namespace Trestle.World
         /// </summary>
         /// <param name="type">The type of world to create.</param>
         /// <returns></returns>
-        public World CreateWorld(WorldType type)
+        public World CreateWorld<T>(WorldType type) where T : WorldGenerator, new()
         {
             if (!Worlds.ContainsKey(type))
             {
-                var world = new World(type, new FlatWorldGenerator());
+                var world = new World(type, new T());
                 world.Initialize();
 
                 Worlds.TryAdd(type, world);

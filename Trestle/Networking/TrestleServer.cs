@@ -1,16 +1,17 @@
 using System;
+using System.IO;
 using System.Linq;
 using Trestle.Enums;
 using Trestle.Utils;
-using Trestle.World;
+using Trestle.Worlds;
 using Trestle.Entity;
 using System.Threading;
 using Trestle.Commands;
+using Trestle.AntiCheat;
 using System.Diagnostics;
+using Trestle.Worlds.Normal;
 using System.Threading.Tasks;
-using Trestle.World.Generation;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.ExceptionServices;
 using Trestle.Networking.Packets.Play.Client;
 
@@ -77,6 +78,9 @@ namespace Trestle.Networking
             {
                 await Task.Delay(50);
 
+                // Tick the anti cheat.
+                Globals.AntiCheat.OnTick();
+                
                 keepAliveTicks++;
                 if (keepAliveTicks > 50)
                 {
@@ -128,6 +132,7 @@ namespace Trestle.Networking
         private void InitializeGlobals()  
         {
             Globals.Random = new Random();
+            Globals.AntiCheat = new TrestleAntiCheat();
             Globals.ServerListener = new Listener();
             Globals.WorldManager = new WorldManager();
             Globals.CommandManager = new CommandManager();
@@ -138,9 +143,7 @@ namespace Trestle.Networking
         /// This function is in charge of generating / loading worlds upon startup.
         /// </summary>
         private void GenerateWorlds()
-        {
-            Globals.WorldManager.CreateWorld(WorldType.Normal);
-        }
+            => Globals.WorldManager.CreateWorld<NormalWorldGenerator>(WorldType.Normal); // Create the overworld.
         
         #endregion
 

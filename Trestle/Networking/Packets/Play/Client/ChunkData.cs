@@ -4,7 +4,7 @@ using Trestle.Attributes;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Client;
 using Trestle.Utils;
-using Trestle.World;
+using Trestle.Worlds;
 
 namespace Trestle.Networking.Packets.Play.Client
 {

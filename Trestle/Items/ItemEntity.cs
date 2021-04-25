@@ -21,7 +21,7 @@ namespace Trestle.Items
         /// </summary>
         public int TimeToLive { get; set; }
 
-        public ItemEntity(World.World world, ItemStack item) : base(EntityType.ItemStack, world)
+        public ItemEntity(Worlds.World world, ItemStack item) : base(EntityType.ItemStack, world)
         {
             Item = item;
 
@@ -65,7 +65,7 @@ namespace Trestle.Items
                     
                     // Send the pickup animation packets.
                     // The DespawnEntity is actually overridden to send the "item floating to player" animation before despawning.
-                    player.Client.SendPacket(new NamedSoundEffect("entity.item.pickup", SoundCategory.Player, player.Location.ToVector3(), 1f, (byte)Globals.Random.Next(40, 100)));
+                    //player.Client.SendPacket(new NamedSoundEffect("entity.item.pickup", SoundCategory.Player, player.Location.ToVector3(), 1f, (byte)Globals.Random.Next(40, 100)));
                     DespawnEntity(player);
                     break;
                 }
