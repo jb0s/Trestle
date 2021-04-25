@@ -25,6 +25,7 @@ namespace Trestle.Networking.Packets.Play.Client
         [Field]
         public byte MaxPlayers { get; set; }
 
+        // TODO: make dynamic to world type
         [Field]
         public string LevelType { get; set; } = "flat";
         
@@ -35,9 +36,7 @@ namespace Trestle.Networking.Packets.Play.Client
         {
             EntityId = player.EntityId;
             GameMode = (byte)player.GameMode;
-
-            LevelType = player.World.Type.ToString().ToLower();
-
+            
             MaxPlayers = Config.MaxPlayers;
         }
     }

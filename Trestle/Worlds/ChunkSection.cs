@@ -158,10 +158,10 @@ namespace Trestle.Worlds
         /// <param name="material">The material the block should become.</param>
         public void SetBlock(Vector3 coordinates, Material material)
         {
-            var index = GetIndex(coordinates);
-            var data = Types[index];
-            var type = data >> 4;
-            var metadata = data & 15;
+            int index = GetIndex(coordinates);
+            int data = Types[index];
+            int type = data >> 4;
+            int metadata = data & 15;
 
             if (type == 0 && material != Material.Air)
                 _airBlocks--;
