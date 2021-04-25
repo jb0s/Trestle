@@ -266,6 +266,7 @@ namespace Trestle.Worlds
 	        var material = chunk.GetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
 	        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
 
+	        
 	        if (material == Material.Chest)
 		        return new Chest()
 		        {
@@ -286,15 +287,41 @@ namespace Trestle.Worlds
 	        
 	        chunk.SetBlock(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)), block);
 	        var data = chunk.GetBlockData(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
-		        
-	        var material = chunk.GetBlock(new Vector3(Mod(location.X), (int)location.Y, Mod(location.Z)));
-		        
+	        
 	        BroadcastPacket(new BlockChange(new Vector3(location.X, (int) location.Y, location.Z), block, data));
         }
 			
         private int Mod(double val)
 	        => (int)(((val%16) + 16)%16);
         
+        #endregion
+
+        #region Block Entities
+
+        public BlockEntity GetBlockEntity(Vector3 location, bool cacheChunk = false)
+        {
+	        ChunkColumn chunk;
+	        
+	        if(cacheChunk)
+		        chunk = WorldGenerator.CreateAndCache(new Vector2((int)location.X >> 4, (int)location.Z >> 4));
+	        else
+		        chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X >> 4, (int)location.Z >> 4));
+	        
+	        return chunk.GetBlockEntity(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)));
+        }
+        
+        public BlockEntity SetBlockEntity(Vector3 location, BlockEntity blockEntity, bool cacheChunk = false)
+        {
+	        ChunkColumn chunk;
+	        
+	        if(cacheChunk)
+		        chunk = WorldGenerator.CreateAndCache(new Vector2((int)location.X >> 4, (int)location.Z >> 4));
+	        else
+		        chunk = WorldGenerator.GenerateChunkColumn(new Vector2((int)location.X >> 4, (int)location.Z >> 4));
+	        
+	        return chunk.SetBlockEntity(new Vector3(Mod(location.X), (int) location.Y, Mod(location.Z)), blockEntity);
+        }
+
         #endregion
 
         #region Packets

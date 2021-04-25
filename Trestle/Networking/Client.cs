@@ -131,7 +131,7 @@ namespace Trestle.Networking
         
         public void CreatePlayer(string uuid, string username)
         {
-            Player = new Player(Globals.WorldManager.Worlds[WorldType.Normal])
+            Player = new Player(Globals.WorldManager.Worlds[WorldType.Flat])
             {
                 Uuid = uuid,
                 Username = username,

@@ -1,4 +1,5 @@
-﻿using Trestle.Attributes;
+﻿using System;
+using Trestle.Attributes;
 using Trestle.Enums;
 using Trestle.Enums.Packets.Client;
 using Trestle.Utils;

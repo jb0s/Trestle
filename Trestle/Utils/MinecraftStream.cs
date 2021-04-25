@@ -15,7 +15,7 @@ public class MinecraftStream : IDisposable
     {
         private readonly Client _client;
         public byte[] BufferedData = new byte[4096];
-        private int _lastByte;
+        public int Position;
         public int Size = 0;
         
         public MinecraftStream(Client client)
@@ -41,21 +41,21 @@ public class MinecraftStream : IDisposable
         public void Dispose()
         {
             BufferedData = null;
-            _lastByte = 0;
+            Position = 0;
         }
         
         public int ReadByte()
 		{
-			var returnData = BufferedData[_lastByte];
-			_lastByte++;
+			var returnData = BufferedData[Position];
+			Position++;
 			return returnData;
 		}
 
 		public byte[] Read(int length)
 		{
 			var buffered = new byte[length];
-			Array.Copy(BufferedData, _lastByte, buffered, 0, length);
-			_lastByte += length;
+			Array.Copy(BufferedData, Position, buffered, 0, length);
+			Position += length;
 			return buffered;
 		}
 
