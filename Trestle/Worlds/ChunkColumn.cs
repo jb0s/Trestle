@@ -5,6 +5,7 @@ using fNbt;
 using fNbt.Tags;
 using Trestle.Enums;
 using Trestle.Utils;
+using Trestle.World;
 
 namespace Trestle.Worlds
 {

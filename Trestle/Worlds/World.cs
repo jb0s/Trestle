@@ -12,6 +12,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using Trestle.Block.Blocks;
 using Trestle.Networking.Packets.Play.Client;
+using Trestle.World;
 
 namespace Trestle.Worlds
 {
