@@ -55,18 +55,6 @@ namespace Trestle.Entity
         /// The maximum amount of health this entity can have.
         /// </summary>
         public virtual int MaxHealth => 0;
-        
-        /// <summary>
-        /// The location the player was in last tick.
-        /// </summary>
-        protected Vector3 PreviousLocation;
-
-        /// <summary>
-        /// Is the entity grounded?
-        /// Calculated server-side to fight NoFall.
-        /// </summary>
-        public bool IsGrounded => 
-            World.GetBlock(Location.ToVector3() - new Vector3(0, 0.5, 0)).Material != Material.Air;
 
         public Entity(EntityType entityType, Worlds.World world)
         {
@@ -83,30 +71,8 @@ namespace Trestle.Entity
         /// Called every tick as long as the chunk the entity is in is loaded.
         /// </summary>
         public virtual void OnTick()
-        {
-            PreviousLocation = Location.ToVector3();
-            
-            HealthManager.OnTick();
-        }
+            => HealthManager.OnTick();
 
-        public virtual void PositionChanged(Vector3 location, float yaw = 0.0f, float pitch = 0.0f, bool onGround = false)
-        {
-            if (yaw != 0.0f && pitch != 0.0f)
-            {
-                Location.Yaw = yaw;
-                Location.Pitch = pitch;
-                Location.HeadYaw = (byte)(yaw * 256 / 360);
-            }
-            
-            Location.X = location.X;
-            Location.Y = location.Y; 
-            Location.Z = location.Z;
-            Location.OnGround = onGround;
-            
-            Velocity = new Vector3(location.X - PreviousLocation.X, location.Y - PreviousLocation.Y, location.Z - PreviousLocation.Z) * 20;
-        }
-            
-        
         /// <summary>
         /// Despawns the entity.
         /// </summary>
@@ -127,6 +93,32 @@ namespace Trestle.Entity
         {
             World.AddEntity(this);
             IsSpawned = true;
+        }
+
+        public void Knockback(Entity entityIn, float strength, double xRatio, double zRatio)
+        {
+            float f = (float)Math.Sqrt(xRatio * xRatio + zRatio * zRatio);
+            double velX = 0;
+            double velY = 0;
+            double velZ = 0;
+            
+            velX /= 2.0D;
+            velZ /= 2.0D;
+
+            velX -= xRatio / (double)f * (double)strength;
+            velZ -= zRatio / (double)f * (double)strength;
+
+            if (Location.OnGround)
+            {
+                velY /= 2.0D;
+                velY += (double)strength;
+                
+                // why so specific, notch?
+                if (velY > 0.4000000059604645D)
+                    velY = 0.4000000059604645D;
+            }
+            
+            World.BroadcastPacket(new EntityVelocity(EntityId, new Vector3(velX, velY, -velZ) * 8000));
         }
 
         /// <summary>

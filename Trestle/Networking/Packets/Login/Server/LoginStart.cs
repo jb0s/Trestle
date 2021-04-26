@@ -18,8 +18,17 @@ namespace Trestle.Networking.Packets.Login.Server
         public override void HandlePacket()
         {
             var username = new string(Name.Where(c => char.IsLetter(c) || char.IsPunctuation(c) || char.IsDigit(c)).ToArray());
+            var uuid = Mojang.GetProfileByUsername(username)?.Id;
 
             Client.Username = username;
+
+            if (uuid == null)
+                uuid = Guid.NewGuid().ToString("D");
+            else
+                uuid = Guid.Parse(uuid).ToString("D");
+
+            // If an already online player with the same uuid exists, kick them first.
+            TrestleServer.GetOnlinePlayers().ToList().Find(player => player.Uuid == uuid)?.Kick(new MessageComponent("You've logged in from another location"));
 
             // Checks if the server is online mode & isn't localhost, and then starts the encryption process.
             if (Config.OnlineMode && !Client.TcpClient.Client.RemoteEndPoint.ToString().Contains("127.0.0.1"))
@@ -27,12 +36,6 @@ namespace Trestle.Networking.Packets.Login.Server
                 Client.SendPacket(new EncryptionRequest(Globals.ServerKey, PacketCryptography.GetRandomToken()));
                 return;
             }
-
-            var uuid = Mojang.GetProfileByUsername(username)?.Id;
-            if (uuid == null)
-                uuid = Guid.NewGuid().ToString("D");
-            else
-                uuid = Guid.Parse(uuid).ToString("D");
             
             Client.SendPacket(new SetCompression(Config.UseCompression ? Config.CompressionThreshold : -1));
             Client.SendPacket(new LoginSuccess(uuid, username));

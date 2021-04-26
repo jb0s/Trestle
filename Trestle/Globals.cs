@@ -8,7 +8,6 @@ using Trestle.Commands;
 using Trestle.Networking;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using Trestle.AntiCheat;
 using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle
@@ -45,11 +44,6 @@ namespace Trestle
         /// </summary>
         internal static CommandManager CommandManager = null;
 
-        /// <summary>
-        /// In charge of eliminating hackers.
-        /// </summary>
-        internal static TrestleAntiCheat AntiCheat = null;
-        
         /// <summary>
         /// Server encryption key.
         /// </summary>

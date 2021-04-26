@@ -1,4 +1,5 @@
-﻿using Trestle.Utils;
+﻿using Trestle.Enums;
+using Trestle.Utils;
 
 namespace Trestle.Items
 {
@@ -21,6 +22,42 @@ namespace Trestle.Items
             Nbt = 0;
         }
 
+        public ItemStack(Material material)
+        {
+            ItemId = (short)material;
+            ItemCount = 0;
+            ItemDamage = 0;
+            Metadata = 0;
+            Nbt = 0;
+        }
+        
+        public ItemStack(Material material, byte itemCount)
+        {
+            ItemId = (short)material;
+            ItemCount = itemCount;
+            ItemDamage = 0;
+            Metadata = 0;
+            Nbt = 0;
+        }
+        
+        public ItemStack(Material material, byte itemCount, short itemDamage)
+        {
+            ItemId = (short)material;
+            ItemCount = itemCount;
+            ItemDamage = itemDamage;
+            Metadata = 0;
+            Nbt = 0;
+        }
+        
+        public ItemStack(Material material, byte itemCount, byte metadata)
+        {
+            ItemId = (short)material;
+            ItemCount = itemCount;
+            ItemDamage = 0;
+            Metadata = metadata;
+            Nbt = 0;
+        }
+        
         public ItemStack(Item item, byte itemCount)
         {
             ItemId = (short)item.Id;

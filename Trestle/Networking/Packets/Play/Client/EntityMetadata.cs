@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using Trestle.Attributes;
-using Trestle.Entity;
 using Trestle.Enums;
+using Trestle.Entity;
+using Trestle.Attributes;
+using System.Collections.Generic;
 using Trestle.Enums.Packets.Client;
 
 namespace Trestle.Networking.Packets.Play.Client

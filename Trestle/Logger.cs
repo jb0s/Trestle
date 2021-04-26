@@ -58,11 +58,6 @@ namespace Trestle
                 _writer.Flush();
             }
 
-            if (verbosity == LogVerbosity.Debug && Globals.ServerListener != null)
-            {
-                TrestleServer.BroadcastChat($"{ChatColor.DarkGray}[{DateTime.UtcNow} - {verbosity.ToString().ToUpper()}] {ChatColor.Gray}{message}");
-            }
-            
             Console.WriteLine(data);
             Console.ResetColor();
         }

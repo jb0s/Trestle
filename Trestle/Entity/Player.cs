@@ -4,12 +4,14 @@ using System.Linq;
 using Trestle.Block;
 using Trestle.Utils;
 using Trestle.Enums;
+using Trestle.Items;
 using Trestle.Worlds;
 using Trestle.Networking;
 using System.Collections.Generic;
 using Microsoft.Win32.SafeHandles;
 using Trestle.Inventory.Inventories;
 using Trestle.Networking.Packets.Play.Client;
+using EntityStatus = Trestle.Networking.Packets.Play.Client.EntityStatus;
 
 namespace Trestle.Entity
 {
@@ -70,13 +72,13 @@ namespace Trestle.Entity
 		/// </summary>
 		public bool IsCrouching
 		{
-			get => (Metadata.Status & EntityStatus.Crouched) != 0;
+			get => (Metadata.Status & Enums.EntityStatus.Crouched) != 0;
 			set
 			{
 				if (value)
-					Metadata.Status |= EntityStatus.Crouched;
+					Metadata.Status |= Enums.EntityStatus.Crouched;
 				else
-					Metadata.Status &= ~EntityStatus.Crouched;
+					Metadata.Status &= ~Enums.EntityStatus.Crouched;
 				
 				World.BroadcastPacket(new EntityMetadata(Client.Player), Client.Player);
 			}
@@ -87,13 +89,13 @@ namespace Trestle.Entity
 		/// </summary>
 		public bool IsSprinting
 		{
-			get => (Metadata.Status & EntityStatus.Sprinting) != 0;
+			get => (Metadata.Status & Enums.EntityStatus.Sprinting) != 0;
 			set
 			{
 				if (value)
-					Metadata.Status |= EntityStatus.Sprinting;
+					Metadata.Status |= Enums.EntityStatus.Sprinting;
 				else
-					Metadata.Status &= ~EntityStatus.Sprinting;
+					Metadata.Status &= ~Enums.EntityStatus.Sprinting;
 				
 				World.BroadcastPacket(new EntityMetadata(Client.Player), Client.Player);
 			}
@@ -215,11 +217,22 @@ namespace Trestle.Entity
         /// <param name="yaw"></param>
         /// <param name="pitch"></param>
         /// <param name="onGround"></param>
-        public override void PositionChanged(Vector3 location, float yaw = 0.0f, float pitch = 0.0f, bool onGround = false)
+        public void PositionChanged(Vector3 location, float yaw = 0.0f, float pitch = 0.0f, bool onGround = false)
         {
 	        var originalchunkcoords = new Vector2(_currentChunkPosition.X, _currentChunkPosition.Z);
 
-	        base.PositionChanged(location, yaw, pitch, onGround);
+	        if (yaw != 0.0f && pitch != 0.0f)
+	        {
+		        Location.Yaw = yaw;
+		        Location.Pitch = pitch;
+		        Location.HeadYaw = (byte)(yaw * 256 / 360);
+	        }
+
+	        var prevLocation = Location;
+	        Location.X = location.X;
+	        Location.Y = location.Y; 
+	        Location.Z = location.Z;
+	        Location.OnGround = onGround;
 	        
 	        _currentChunkPosition.X = (int) location.X >> 4;
 	        _currentChunkPosition.Z = (int) location.Z >> 4;
@@ -227,8 +240,8 @@ namespace Trestle.Entity
 	        if (originalchunkcoords != _currentChunkPosition)
 		        SendChunksForLocation(_currentChunkPosition);
 
-	        if(PreviousLocation.DistanceTo(Location.ToVector3()) < 8)
-				World.BroadcastPacket(new EntityLookAndRelativeMove(EntityId, PreviousLocation.ToLocation(), Location), this);
+	        if(prevLocation.DistanceTo(Location) < 8)
+				World.BroadcastPacket(new EntityLookAndRelativeMove(EntityId, prevLocation, Location), this);
 			else
 				World.BroadcastPacket(new EntityTeleport(EntityId, Location));
 	        
@@ -255,7 +268,7 @@ namespace Trestle.Entity
         #endregion
 
         #region Animations
-
+        
         /// <summary>
         /// Makes the player swing their hand.
         /// </summary>
@@ -275,6 +288,31 @@ namespace Trestle.Entity
 
         #region Inventory
 
+        /// <summary>
+        /// Attempts to use a totem.
+        /// </summary>
+        public bool AttemptTotem()
+        {
+	        Logger.Debug($"{Username}: Attempting to use a totem");
+	        
+	        if (Inventory.CurrentItem == new ItemStack(Material.TotemOfUndying, 1) || Inventory.Slots[44] == new ItemStack(Material.TotemOfUndying, 1))
+	        {
+		        Logger.Debug($"{Username}: Used a totem!");
+
+		        // Reset health.
+		        HealthManager.Reset();
+		        
+		        // Totem animation
+		        Client.SendPacket(new EntityStatus(EntityId, 35));
+		        World.BroadcastPacket(new Particle(47, (float)Location.X, (float)Location.Y, (float)Location.Z));
+		        Inventory.RemoveItem((short)Material.TotemOfUndying, 1, 0);
+		        return true;
+	        }
+	        
+	        Logger.Debug($"{Username}: No totems in my inventory.");
+	        return false;
+        }
+        
         #endregion
 
         #region Game modes

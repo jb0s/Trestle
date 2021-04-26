@@ -33,6 +33,9 @@
         UpdateHealth = 0x41,
         SoundEffect = 0x49,
         Respawn = 0x35,
-        PlayerPosition = 0x0D
+        PlayerPosition = 0x0D,
+        EntityState = 0x1B,
+        Particle = 0x22,
+        EntityVelocity = 0x3E
     }
 }

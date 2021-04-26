@@ -7,7 +7,6 @@ using Trestle.Worlds;
 using Trestle.Entity;
 using System.Threading;
 using Trestle.Commands;
-using Trestle.AntiCheat;
 using System.Diagnostics;
 using Trestle.Worlds.Normal;
 using System.Threading.Tasks;
@@ -78,9 +77,6 @@ namespace Trestle.Networking
             {
                 await Task.Delay(50);
 
-                // Tick the anti cheat.
-                Globals.AntiCheat.OnTick();
-                
                 keepAliveTicks++;
                 if (keepAliveTicks > 50)
                 {
@@ -132,7 +128,6 @@ namespace Trestle.Networking
         private void InitializeGlobals()  
         {
             Globals.Random = new Random();
-            Globals.AntiCheat = new TrestleAntiCheat();
             Globals.ServerListener = new Listener();
             Globals.WorldManager = new WorldManager();
             Globals.CommandManager = new CommandManager();

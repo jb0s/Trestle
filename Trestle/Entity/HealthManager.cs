@@ -1,9 +1,11 @@
 using System;
 using System.Diagnostics;
 using Trestle.Enums;
+using Trestle.Items;
 using Trestle.Networking;
 using Trestle.Networking.Packets.Play.Client;
 using Trestle.Utils;
+using EntityStatus = Trestle.Networking.Packets.Play.Client.EntityStatus;
 
 namespace Trestle.Entity
 {
@@ -38,7 +40,7 @@ namespace Trestle.Entity
                 _invulerabilityTimer -= 1;
 
             // Entity starts falling, keep track of its velocity.
-            if (!Entity.IsGrounded && Entity.Velocity.Y < -12)
+            if (!Entity.Location.OnGround && Entity.Velocity.Y < -12)
             {
                 // We do this because the Y velocity is set back to 0 before the player registers as being grounded.
                 _yVelocity = (float)Entity.Velocity.Y;
@@ -46,7 +48,7 @@ namespace Trestle.Entity
             }
 
             // Entity lands on ground, calculate & apply fall damage.
-            if (Entity.IsGrounded && _isFalling)
+            if (Entity.Location.OnGround && _isFalling)
             {
                 _isFalling = false;
 
@@ -76,11 +78,11 @@ namespace Trestle.Entity
             }
         }
         
-        public void Pain(int damage, bool bypassInvulnerable = false)
+        public bool Pain(int damage, bool bypassInvulnerable = false)
         {
             // Invulnerability needs to be bypassed for void damage.
             if (IsInvulnerable && !bypassInvulnerable)
-                return;
+                return false;
 
             // Make the player invulnerable for 10 ticks.
             _invulerabilityTimer = 10;
@@ -92,6 +94,9 @@ namespace Trestle.Entity
                 var player = (Player)Entity;
                 var metadata = (PlayerMetadata)player.Metadata;
 
+                if(Health <= 0)
+                    player.AttemptTotem();
+                
                 metadata.Health = Health;
                 player.World.BroadcastPacket(new EntityMetadata(player));
                 
@@ -100,6 +105,8 @@ namespace Trestle.Entity
                 
                 player.Client.SendPacket(new UpdateHealth(player));
             }
+            
+            return true;
         }
 
         public void Die()

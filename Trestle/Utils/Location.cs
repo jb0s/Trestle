@@ -11,8 +11,6 @@ namespace Trestle.Utils
         public byte HeadYaw { get; set; }
         public float Yaw { get; set; }
         public float Pitch { get; set; }
-        
-        [Obsolete("Using Location.OnGround is vulnerable to hacks, use Entity.IsGrounded instead.")]
         public bool OnGround { get; set; }
         
         public Location(double x, double y, double z)
