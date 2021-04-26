@@ -24,9 +24,9 @@ namespace Trestle.Networking.Packets.Play.Client
         {
             EntityId = entityId;
 
-            VelocityX = (short)velocity.X;
-            VelocityY = (short)velocity.Y;
-            VelocityZ = (short)velocity.Z;
+            VelocityX = (short)(velocity.X * 8000);
+            VelocityY = (short)(velocity.Y * 8000);
+            VelocityZ = (short)(velocity.Z * 8000);
         }
     }
 }

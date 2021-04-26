@@ -74,6 +74,41 @@ namespace Trestle.Inventory
                 Slots[i] = new ItemStack(-1, 0, 0);
         }
         
+        /// <summary>
+        /// Broadcasts the player entity equipment.
+        /// </summary>
+        public void Broadcast()
+        {
+            var world = Player.World;
+            var eid = Player.EntityId;
+            
+            world.BroadcastPacket(new EntityEquipment(eid, EntityEquipmentSlot.MainHand, CurrentItem));
+            world.BroadcastPacket(new EntityEquipment(eid, EntityEquipmentSlot.OffHand, Slots[45]));
+            world.BroadcastPacket(new EntityEquipment(eid, EntityEquipmentSlot.Helmet, Slots[5]));
+            world.BroadcastPacket(new EntityEquipment(eid, EntityEquipmentSlot.Chestplate, Slots[6]));
+            world.BroadcastPacket(new EntityEquipment(eid, EntityEquipmentSlot.Leggings, Slots[7]));
+            world.BroadcastPacket(new EntityEquipment(eid, EntityEquipmentSlot.Boots, Slots[8]));
+        }
+
+        public void DropAll()
+        {
+            for(int i = 0; i < Slots.Length; i++)
+            {
+                if (Slots[i].ItemId != -1)
+                {
+                    var entity = new ItemEntity(Player.World, Slots[i])
+                    {
+                        Location = Player.Location
+                    };
+                    entity.SpawnEntity();
+
+                    //entity.World.BroadcastPacket(new EntityVelocity(entity.EntityId, new Vector3(Globals.Random.NextDouble() - 0.5, 0.2, Globals.Random.NextDouble() - 0.5 * 0.2)));
+                
+                    ClearSlot(i);
+                }
+            }
+        }
+        
         #region Slots
         
         /// <summary>
@@ -192,6 +227,8 @@ namespace Trestle.Inventory
                     Slots[i] = new ItemStack(itemId, (byte)itemCount, itemDamage, (byte)metadata);
                 }
             }
+            
+            Broadcast();
         }
 
         #endregion

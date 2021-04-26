@@ -24,6 +24,7 @@ namespace Trestle.Networking.Packets.Play.Server
         {
             switch (Type)
             {
+                // TODO: Make this not bad
                 case InteractionType.Attack:
                     if (World.Players.ContainsKey(Target))
                     {
@@ -40,7 +41,7 @@ namespace Trestle.Networking.Packets.Play.Server
                             player.Knockback(Player, 0.4f, xRatio, zRatio);
                         }
                     }
-                    else
+                    else if(World.Entities.ContainsKey(Target))
                         Player.World.Entities[Target].HealthManager.Pain(1);
                     break;
             }

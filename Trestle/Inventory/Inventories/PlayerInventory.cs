@@ -1,5 +1,7 @@
 ﻿using Trestle.Entity;
+using Trestle.Enums;
 using Trestle.Items;
+using Trestle.Networking.Packets.Play.Client;
 
 namespace Trestle.Inventory.Inventories
 {
@@ -84,6 +86,5 @@ namespace Trestle.Inventory.Inventories
             }
             return false;
         }
-
     }
 }

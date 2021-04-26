@@ -202,13 +202,16 @@ namespace Trestle.Entity
 	        
 	        SpawnForPlayers(World.Players.Values.ToArray());
 	        foreach (var player in World.Players.Values)
-	        {
 		        player.SpawnForPlayers(new Player[1] { this });
-	        }
+
+	        Inventory.Broadcast();
         }
 
         public override void SpawnForPlayers(Player[] players)
-	        => World.BroadcastPacket(new SpawnPlayer(this), this);
+        {
+	        World.BroadcastPacket(new SpawnPlayer(this), this);
+	        Inventory.Broadcast();
+        }
 
         /// <summary>
         /// Handler for when the client moves around the world.
@@ -295,7 +298,7 @@ namespace Trestle.Entity
         {
 	        Logger.Debug($"{Username}: Attempting to use a totem");
 	        
-	        if (Inventory.CurrentItem == new ItemStack(Material.TotemOfUndying, 1) || Inventory.Slots[44] == new ItemStack(Material.TotemOfUndying, 1))
+	        if (Inventory.CurrentItem == new ItemStack(Material.TotemOfUndying, 1) || Inventory.Slots[45] == new ItemStack(Material.TotemOfUndying, 1))
 	        {
 		        Logger.Debug($"{Username}: Used a totem!");
 

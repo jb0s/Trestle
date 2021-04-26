@@ -118,7 +118,7 @@ namespace Trestle.Entity
                     velY = 0.4000000059604645D;
             }
             
-            World.BroadcastPacket(new EntityVelocity(EntityId, new Vector3(velX, velY, -velZ) * 8000));
+            World.BroadcastPacket(new EntityVelocity(EntityId, new Vector3(velX, velY, -velZ)));
         }
 
         /// <summary>

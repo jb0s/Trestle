@@ -35,17 +35,13 @@ namespace Trestle.Items
         {
             base.SpawnEntity();
 
-            foreach (var player in World.Players.Values)
-            {
-                player.Client.SendPacket(new SpawnObject(this, Location, 2, 1));
-                player.Client.SendPacket(new EntityMetadata(this));
-            }
+            World.BroadcastPacket(new SpawnObject(this, Location, 2, 1));
+            World.BroadcastPacket(new EntityMetadata(this));
         }
 
         private void DespawnEntity(Player collector)
         {
-            foreach (var player in World.Players.Values)
-                player.Client.SendPacket(new CollectItem(this, collector));
+            World.BroadcastPacket(new CollectItem(this, collector));
 
             // Actually kill the entity now
             DespawnEntity();
@@ -58,14 +54,13 @@ namespace Trestle.Items
             
             foreach (var player in World.Players.Values)
             {
-                if (player.Location.DistanceTo(Location) <= 1.8 && PickupDelay <= 0)
+                if (player.Location.DistanceTo(Location) <= 1.8 && PickupDelay <= 0 && !player.HealthManager.IsDead)
                 {
                     // Add the item to the player's inventory
                     player.Inventory.AddItem(Item.ItemId, Item.ItemCount, Item.Metadata);
                     
                     // Send the pickup animation packets.
                     // The DespawnEntity is actually overridden to send the "item floating to player" animation before despawning.
-                    //player.Client.SendPacket(new NamedSoundEffect("entity.item.pickup", SoundCategory.Player, player.Location.ToVector3(), 1f, (byte)Globals.Random.Next(40, 100)));
                     DespawnEntity(player);
                     break;
                 }

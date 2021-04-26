@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using Trestle.Enums;
 using Trestle.Items;
 using Trestle.Networking;
@@ -89,23 +90,7 @@ namespace Trestle.Entity
             
             Health -= damage;
 
-            if (Entity is Player)
-            {
-                var player = (Player)Entity;
-                var metadata = (PlayerMetadata)player.Metadata;
-
-                if(Health <= 0)
-                    player.AttemptTotem();
-                
-                metadata.Health = Health;
-                player.World.BroadcastPacket(new EntityMetadata(player));
-                
-                player.PlayerAnimation(AnimationType.TakeDamage);
-                player.World.BroadcastPacket(new NamedSoundEffect("entity.player.hurt", SoundCategory.Player, player.Location.ToVector3(), 1f, 1f));
-                
-                player.Client.SendPacket(new UpdateHealth(player));
-            }
-            
+            UpdateHealth();
             return true;
         }
 
@@ -113,15 +98,26 @@ namespace Trestle.Entity
         {
             Health = 0;
             
+            UpdateHealth();
+        }
+
+        public void UpdateHealth()
+        {
             if (Entity is Player)
             {
                 var player = (Player)Entity;
                 var metadata = (PlayerMetadata)player.Metadata;
 
-                metadata.Health = Health;
+                // If health is less than or equal to 0, and a totem could not be used, drop the inventory.
+                if (Health <= 0 && !player.AttemptTotem())
+                    player.Inventory.DropAll();
                 
-                player.World.BroadcastPacket(new NamedSoundEffect("entity.player.hurt", SoundCategory.Player, player.Location.ToVector3(), 1f, 1f));
+                metadata.Health = Health;
                 player.World.BroadcastPacket(new EntityMetadata(player));
+                
+                player.PlayerAnimation(AnimationType.TakeDamage);
+                player.World.BroadcastPacket(new NamedSoundEffect("entity.player.hurt", SoundCategory.Player, player.Location.ToVector3(), 1f, 1f));
+                
                 player.Client.SendPacket(new UpdateHealth(player));
             }
         }
@@ -141,7 +137,7 @@ namespace Trestle.Entity
                 
                 // Destroy previous entity and make new one.
                 player.World.BroadcastPacket(new DestroyEntities(new int[1] { player.EntityId }));
-                player.World.BroadcastPacket(new SpawnPlayer(player), player);
+                player.SpawnForPlayers(player.World.Players.Values.ToArray());
                 
                 player.Client.SendPacket(new EntityMetadata(player));
                 player.Client.SendPacket(new UpdateHealth(player));
