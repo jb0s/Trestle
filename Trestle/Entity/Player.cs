@@ -199,17 +199,7 @@ namespace Trestle.Entity
 			// Update the world, and add the player to it.
 	        World = world;
 	        World.AddPlayer(this);
-	        
-	        SpawnForPlayers(World.Players.Values.ToArray());
-	        foreach (var player in World.Players.Values)
-		        player.SpawnForPlayers(new Player[1] { this });
 
-	        Inventory.Broadcast();
-        }
-
-        public override void SpawnForPlayers(Player[] players)
-        {
-	        World.BroadcastPacket(new SpawnPlayer(this), this);
 	        Inventory.Broadcast();
         }
 
@@ -378,7 +368,6 @@ namespace Trestle.Entity
 					if (Client != null && Client.TcpClient.Connected)
 					{
 						Client.SendPacket(new ChunkData(chunk));
-						GetEntitysInChunk(_currentChunkPosition.X, _currentChunkPosition.Z);
 					}
 				}
 			});
@@ -420,7 +409,7 @@ namespace Trestle.Entity
 				var z = (int)entity.Location.Z >> 4;
 				if (chunkX == x && chunkZ == z)
 				{
-					// TODO: [MP] Add this (Spawn Entity)
+					// TODO: Figure out a better way to do this (https://trello.com/c/jJGkUO61/15-saving-entities-in-chunks)
 				}
 			}
 

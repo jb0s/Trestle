@@ -120,11 +120,5 @@ namespace Trestle.Entity
             
             World.BroadcastPacket(new EntityVelocity(EntityId, new Vector3(velX, velY, -velZ)));
         }
-
-        /// <summary>
-        /// Spawns the entity for a select few players.
-        /// </summary>
-        public virtual void SpawnForPlayers(Player[] players)
-            => throw new Exception("This method is not to be called. It needs to be overridden.");
     }
 }

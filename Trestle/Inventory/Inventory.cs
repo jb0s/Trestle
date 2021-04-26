@@ -96,14 +96,10 @@ namespace Trestle.Inventory
             {
                 if (Slots[i].ItemId != -1)
                 {
-                    var entity = new ItemEntity(Player.World, Slots[i])
+                    new ItemEntity(Player.World, Slots[i])
                     {
                         Location = Player.Location
-                    };
-                    entity.SpawnEntity();
-
-                    //entity.World.BroadcastPacket(new EntityVelocity(entity.EntityId, new Vector3(Globals.Random.NextDouble() - 0.5, 0.2, Globals.Random.NextDouble() - 0.5 * 0.2)));
-                
+                    }.SpawnEntity();
                     ClearSlot(i);
                 }
             }
@@ -173,6 +169,7 @@ namespace Trestle.Inventory
         public void ClearSlot(int slot)
         {
             Slots[slot] = new ItemStack(-1, 0, 0);
+            Player.Client.SendPacket(new SetSlot(0, (short)slot, Slots[slot]));
         }
         
         #endregion

@@ -136,8 +136,9 @@ namespace Trestle.Entity
                 metadata.Health = Health;
                 
                 // Destroy previous entity and make new one.
+                // TODO: Make this better?
                 player.World.BroadcastPacket(new DestroyEntities(new int[1] { player.EntityId }));
-                player.SpawnForPlayers(player.World.Players.Values.ToArray());
+                player.World.BroadcastPacket(new SpawnPlayer(player));
                 
                 player.Client.SendPacket(new EntityMetadata(player));
                 player.Client.SendPacket(new UpdateHealth(player));

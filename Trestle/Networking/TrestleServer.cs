@@ -238,12 +238,11 @@ namespace Trestle.Networking
             var msg = Constants.SystemMessages.LeaveMessages[Globals.Random.Next(0, Constants.SystemMessages.LeaveMessages.Length)].Replace("{PLAYER}", $"{ChatColor.Aqua}{client.Username}{ChatColor.Gray}");
             BroadcastChat($"{ChatColor.DarkGray}[{ChatColor.Red}-{ChatColor.DarkGray}] {ChatColor.Gray}{msg}");
             
-            // Remove the player from the world (despawns it from other clients)
+            // Remove the player from the world (despawns it for other clients)
             client.Player.World.RemovePlayer(client.Player);
             
-            // Remove the player from the tab list & despawn its entity
+            // Remove the player from the tab list.
             BroadcastPacket(new PlayerListItem(true, Mojang.GetProfileById(client.Player.Uuid)));
-            client.Player.World.BroadcastPacket(new DestroyEntities(new int[1] { client.Player.EntityId }));
         }
 
         #endregion

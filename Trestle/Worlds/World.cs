@@ -168,10 +168,15 @@ namespace Trestle.Worlds
         {
 	        if (Players.TryAdd(newPlayer.EntityId, newPlayer))
 	        {
-		        // TODO: Spawn entities, spawn player to other players, etc
-	        }
+		        BroadcastPacket(new SpawnPlayer(newPlayer), newPlayer);
 
-	        newPlayer.IsSpawned = true;
+		        foreach (var player in Players.Values)
+			        newPlayer.Client.SendPacket(new SpawnPlayer(player));
+		        
+		        // Mark the player as spawned and broadcast the inventory.
+		        newPlayer.Inventory.Broadcast();
+		        newPlayer.IsSpawned = true;
+	        }
         }
         
         /// <summary>
@@ -181,9 +186,7 @@ namespace Trestle.Worlds
         public virtual void RemovePlayer(Player player)
         {
 	        if (Players.TryRemove(player.EntityId, out _))
-	        {
-		        // TODO: despawn entities, despawn player to other players, etc
-	        }
+		        BroadcastPacket(new DestroyEntities(new int[1] { player.EntityId }));
 
 	        player.IsSpawned = false;
         }
