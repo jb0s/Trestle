@@ -23,30 +23,20 @@ namespace Trestle.Utils
 
         public NettyStream()
         {
-            CanRead = false;
+            CanRead = true;
             CanWrite = true;
             
             _buffer = new MemoryStream();
         }
         
-        public NettyStream(byte[] data)
-        {
-            CanRead = true;
-            CanWrite = false;
-            
-            _buffer = new MemoryStream(data);
-        }
-
         public NettyStream(NetworkStream stream)
         {
-            // TODO: clean up
             CanRead = true;
             CanWrite = false;
 
             _buffer = stream;
             
-            var length = ReadVarInt();
-            var data = new byte[length];
+            var data = new byte[ReadVarInt()];
             Read(data, 0, data.Length);
 
             _buffer = new MemoryStream(data);
@@ -90,7 +80,7 @@ namespace Trestle.Utils
         }
 
         public long ReadLong()
-            => IPAddress.NetworkToHostOrder(BitConverter.ToInt64(Read(4), 0));
+            => IPAddress.NetworkToHostOrder(BitConverter.ToInt64(Read(8), 0));
 
         public float ReadFloat()
             => NetworkToHostOrder(BitConverter.ToSingle(Read(4), 0));

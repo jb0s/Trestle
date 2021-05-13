@@ -1,4 +1,5 @@
-﻿using Trestle.Networking.Attributes;
+﻿using System;
+using Trestle.Networking.Attributes;
 using Trestle.Networking.Enums.Server;
 using Trestle.Networking.Packets.Status.Client;
 
@@ -11,6 +12,6 @@ namespace Trestle.Networking.Packets.Status.Server
         public long Payload { get; set; }
 
         public override void Handle()
-            => Client.SendPacket(new Pong());
+            => Client.SendPacket(new Pong(Payload));
     }
 }

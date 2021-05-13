@@ -55,13 +55,20 @@ namespace Trestle.Networking
             {
                 while (!stream.DataAvailable)
                     Thread.Sleep(5);
-                
-                var packet = false // TODO: replace hardcode with compression config
-                    ? _packetService.ParseCompressedPacket(stream) 
-                    : _packetService.ParseUncompressedPacket(this, stream);
 
-                // Tells the packet the Client and then handles it.
-                packet.Handle();
+                try
+                {
+                    var packet = false // TODO: replace hardcode with compression config
+                        ? _packetService.ParseCompressedPacket(stream) 
+                        : _packetService.ParseUncompressedPacket(this, stream);
+
+                    // Tells the packet the Client and then handles it.
+                    packet.Handle();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
             
             // If this is reached, then there is no longer a connection, so unregister it.

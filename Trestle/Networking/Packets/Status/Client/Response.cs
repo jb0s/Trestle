@@ -26,7 +26,7 @@ namespace Trestle.Networking.Packets.Status.Client
             public string Name { get; set; } = "Trestle 1.12.2";
 
             [JsonPropertyName("protocol")] 
-            public int Protocol { get; set; } = 320;
+            public int Protocol { get; set; } = 340;
         }
         
         public class ServerListPlayers

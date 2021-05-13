@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -12,14 +13,18 @@ namespace Trestle
             => CreateHostBuilder(args).Build().Run();
 
         public static IHostBuilder CreateHostBuilder(string[] args)
-            => Host.CreateDefaultBuilder().ConfigureServices((host, services) =>
-            {
-                // Services
-                services.AddSingleton<IPacketService, PacketService>();
-                services.AddSingleton<IClientService, ClientService>();
-                
-                // Hosted Services
-                services.AddHostedService<ListenerService>();
-            });
+            => Host.CreateDefaultBuilder()
+                .ConfigureAppConfiguration(config =>
+                {
+                })
+                .ConfigureServices((host, services) =>
+                {
+                    // Services
+                    services.AddSingleton<IPacketService, PacketService>();
+                    services.AddSingleton<IClientService, ClientService>();
+                    
+                    // Hosted Services
+                    services.AddHostedService<ListenerService>();
+                });
     }
 }
