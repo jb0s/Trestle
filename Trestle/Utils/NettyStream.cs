@@ -91,6 +91,9 @@ namespace Trestle.Utils
         public string ReadString()
             => Encoding.UTF8.GetString(Read(ReadVarInt()));
 
+        public Uuid ReadUuid()
+            => new(Read(16));
+        
         #endregion
 
         #region Writing
@@ -139,6 +142,9 @@ namespace Trestle.Utils
             WriteVarInt(bytes.Length);
             Write(bytes);
         }
+
+        public void WriteUuid(Uuid data)
+            => Write(data.ToByteArray());
         
         #endregion
         

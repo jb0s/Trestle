@@ -9,7 +9,7 @@ namespace Trestle
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] args) 
             => CreateHostBuilder(args).Build().Run();
 
         public static IHostBuilder CreateHostBuilder(string[] args)
@@ -20,6 +20,7 @@ namespace Trestle
                 .ConfigureServices((host, services) =>
                 {
                     // Services
+                    services.AddSingleton<IMojangService, MojangService>();
                     services.AddSingleton<IPacketService, PacketService>();
                     services.AddSingleton<IClientService, ClientService>();
                     

@@ -13,17 +13,22 @@ namespace Trestle.Networking
     public class Client : IDisposable
     {
         public State State = State.Handshaking;
+
+        public bool IsLocalhost
+            => _tcpClient.Client.RemoteEndPoint.ToString().Contains("127.0.0.1");
         
         /// <summary>
         /// <see cref="TcpClient"/> of the Client.
         /// </summary>
         private readonly TcpClient _tcpClient;
 
-        private readonly IClientService _clientService;
+        private readonly IMojangService _mojangService;
         private readonly IPacketService _packetService;
-        
-        public Client(IClientService clientService, IPacketService packetService, TcpClient tcpClient)
+        private readonly IClientService _clientService;
+
+        public Client(IMojangService mojangService,  IPacketService packetService, IClientService clientService, TcpClient tcpClient)
         {
+            _mojangService = mojangService;
             _clientService = clientService;
             _packetService = packetService;
             
@@ -59,11 +64,15 @@ namespace Trestle.Networking
                 try
                 {
                     var packet = false // TODO: replace hardcode with compression config
-                        ? _packetService.ParseCompressedPacket(stream) 
+                        ? _packetService.ParseCompressedPacket(this, stream) 
                         : _packetService.ParseUncompressedPacket(this, stream);
 
-                    // Tells the packet the Client and then handles it.
+                    // Initializes all variables inside of the packet, and then calls it.
+                    packet.Initialize(this, _clientService, _mojangService);
                     packet.Handle();
+                    
+                    // Disposes of the packet when it is done be handled.
+                    packet.Dispose();
                 }
                 catch (Exception e)
                 {

@@ -7,16 +7,28 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using Trestle.Networking.Attributes;
+using Trestle.Networking.Services;
 using Trestle.Utils;
 
 namespace Trestle.Networking
 {
-    public class Packet
+    public class Packet : IDisposable
     {
         public Client Client { get; internal set; }
+
+        public IClientService ClientService { get; internal set; }
+        
+        public IMojangService MojangService { get; internal set; }
         
         public virtual void Handle()
         {
+        }
+
+        internal void Initialize(Client client, IClientService clientService, IMojangService mojangService)
+        {
+            Client = client;
+            ClientService = clientService;
+            MojangService = mojangService;
         }
 
         internal byte[] Serialize()
@@ -98,6 +110,9 @@ namespace Trestle.Networking
                         foreach(var str in data)
                             buffer.WriteString(str);
                         break;
+                    case Uuid data:
+                        buffer.WriteUuid(data);
+                        break;
                     default:
                         var message = $"Unable to parse field '{property.Name}' of type '{property.PropertyType}'";
                         throw new Exception(message);
@@ -151,6 +166,13 @@ namespace Trestle.Networking
                 if (@switch.ContainsKey(field.OverrideType != null ? field.OverrideType : property.PropertyType))
                     @switch[field.OverrideType != null ? field.OverrideType : property.PropertyType]();
             }
+        }
+
+        public void Dispose()
+        {
+            Client = null;
+            ClientService = null;
+            MojangService = null;
         }
     }
 }

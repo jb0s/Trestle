@@ -14,7 +14,7 @@ namespace Trestle.Networking.Services
     {
         Packet ParseUncompressedPacket(Client client, NetworkStream stream);
         
-        Packet ParseCompressedPacket(NetworkStream stream);
+        Packet ParseCompressedPacket(Client client, NetworkStream stream);
     }
     
     public class PacketService : IPacketService
@@ -59,9 +59,9 @@ namespace Trestle.Networking.Services
         /// <summary>
         /// 
         /// </summary>
-        public Packet ParseCompressedPacket(NetworkStream stream)
+        public Packet ParseCompressedPacket(Client client, NetworkStream stream)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
         
         /// <summary>
@@ -75,14 +75,21 @@ namespace Trestle.Networking.Services
                 if (attribute == null) 
                     continue;
                 
-                if (attribute.State == State.Handshaking)
-                    _handshakingPackets.Add(attribute.Id, type);
-                else if (attribute.State == State.Status)
-                    _statusPackets.Add(attribute.Id, type);
-                else if (attribute.State == State.Login)
-                    _loginPackets.Add(attribute.Id, type);
-                else if (attribute.State == State.Play)
-                    _playPackets.Add(attribute.Id, type);
+                switch (attribute.State)
+                {
+                    case State.Handshaking:
+                        _handshakingPackets.Add(attribute.Id, type);
+                        break;
+                    case State.Status:
+                        _statusPackets.Add(attribute.Id, type);
+                        break;
+                    case State.Login:
+                        _loginPackets.Add(attribute.Id, type);
+                        break;
+                    case State.Play:
+                        _playPackets.Add(attribute.Id, type);
+                        break;
+                }
             }
         }
     }
