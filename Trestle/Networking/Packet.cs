@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
+using Trestle.Configuration.Service;
 using Trestle.Networking.Attributes;
 using Trestle.Networking.Services;
 using Trestle.Utils;
@@ -20,15 +22,18 @@ namespace Trestle.Networking
         
         public IMojangService MojangService { get; internal set; }
         
-        public virtual void Handle()
+        public IConfigService ConfigService { get; internal set; }
+
+        public virtual async Task Handle()
         {
         }
-
-        internal void Initialize(Client client, IClientService clientService, IMojangService mojangService)
+        
+        internal void Initialize(Client client, IClientService clientService, IMojangService mojangService, IConfigService configService)
         {
             Client = client;
             ClientService = clientService;
             MojangService = mojangService;
+            ConfigService = configService;
         }
 
         internal byte[] Serialize()
@@ -173,6 +178,7 @@ namespace Trestle.Networking
             Client = null;
             ClientService = null;
             MojangService = null;
+            ConfigService = null;
         }
     }
 }

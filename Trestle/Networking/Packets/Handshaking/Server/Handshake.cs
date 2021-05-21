@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Trestle.Networking.Attributes;
 using Trestle.Networking.Enums;
 using Trestle.Networking.Enums.Server;
@@ -22,7 +23,7 @@ namespace Trestle.Networking.Packets.Handshaking.Server
         [VarInt]
         public State NextState { get; set; }
         
-        public override void Handle()
+        public override async Task Handle()
         {
             Client.State = NextState;
         }

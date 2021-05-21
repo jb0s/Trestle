@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Trestle.Configuration.Service;
 using Trestle.Networking.Attributes;
 using Trestle.Networking.Enums;
 using Trestle.Networking.Services;
@@ -25,16 +26,18 @@ namespace Trestle.Networking
         private readonly IMojangService _mojangService;
         private readonly IPacketService _packetService;
         private readonly IClientService _clientService;
+        private readonly IConfigService _configService;
 
-        public Client(IMojangService mojangService,  IPacketService packetService, IClientService clientService, TcpClient tcpClient)
+        public Client(IMojangService mojangService,  IPacketService packetService, IClientService clientService, TcpClient tcpClient, IConfigService configService)
         {
             _mojangService = mojangService;
             _clientService = clientService;
             _packetService = packetService;
+            _configService = configService;
             
             _tcpClient = tcpClient;
 
-            new Task(HandlePackets).Start();
+            _ = HandlePackets();
         }
         
         #region Packets
@@ -51,7 +54,7 @@ namespace Trestle.Networking
         /// <summary>
         /// Continuously checks for new data, and then parses it.
         /// </summary>
-        private void HandlePackets()
+        private async Task HandlePackets()
         {
             var stream = _tcpClient.GetStream();
 
@@ -68,8 +71,8 @@ namespace Trestle.Networking
                         : _packetService.ParseUncompressedPacket(this, stream);
 
                     // Initializes all variables inside of the packet, and then calls it.
-                    packet.Initialize(this, _clientService, _mojangService);
-                    packet.Handle();
+                    packet.Initialize(this, _clientService, _mojangService, _configService);
+                    await packet.Handle();
                     
                     // Disposes of the packet when it is done be handled.
                     packet.Dispose();

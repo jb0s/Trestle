@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Trestle.Networking.Attributes;
 using Trestle.Networking.Enums.Server;
 using Trestle.Networking.Packets.Login.Client;
@@ -12,7 +13,7 @@ namespace Trestle.Networking.Packets.Login.Server
         [Field]
         public string Name { get; set; }
 
-        public override void Handle()
+        public override async Task Handle()
         {
             // TODO: add encryption and online mode.
             if (false && !Client.IsLocalhost)
