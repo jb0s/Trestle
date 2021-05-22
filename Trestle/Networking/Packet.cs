@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
+using Trestle.Nbt.Tags;
 using System.Threading.Tasks;
 using Trestle.Configuration.Service;
 using Trestle.Networking.Attributes;
@@ -118,6 +119,17 @@ namespace Trestle.Networking
                     case Uuid data:
                         buffer.WriteUuid(data);
                         break;
+                    case Location data:
+                        buffer.WriteDouble(data.X);
+                        buffer.WriteDouble(data.Y);
+                        buffer.WriteDouble(data.Z);
+                        
+                        buffer.WriteFloat(data.Yaw);
+                        buffer.WriteFloat(data.Pitch);
+                        break;
+                    case NbtCompound data:
+                        buffer.Write(data.ToArray());
+                        break;
                     default:
                         var message = $"Unable to parse field '{property.Name}' of type '{property.PropertyType}'";
                         throw new Exception(message);
@@ -151,9 +163,9 @@ namespace Trestle.Networking
                     { typeof(byte[]), () =>
                     {
                         var length = stream.ReadVarInt();
-                        byte[] bytes = new byte[length];
+                        var bytes = new byte[length];
 
-                        for(int i = 0; i < length; i++)
+                        for(var i = 0; i < length; i++)
                             bytes[i] = (byte)stream.ReadByte();
                     
                         property.SetValue(this, bytes);

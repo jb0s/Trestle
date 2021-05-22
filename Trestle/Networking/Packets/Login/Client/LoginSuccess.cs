@@ -9,14 +9,14 @@ namespace Trestle.Networking.Packets.Login.Client
     public class LoginSuccess : Packet
     {
         [Field]
-        public string Uuid { get; set; }
+        public Uuid Uuid { get; set; }
         
         [Field]
         public string Username { get; set; }
 
         public LoginSuccess(Uuid uuid, string username)
         {
-            Uuid = uuid.ToString();
+            Uuid = uuid;
             Username = username;
         }
     }

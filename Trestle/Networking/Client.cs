@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Trestle.Configuration.Service;
+using Trestle.Entities.Players;
 using Trestle.Networking.Attributes;
 using Trestle.Networking.Enums;
 using Trestle.Networking.Services;
@@ -13,7 +14,15 @@ namespace Trestle.Networking
 {
     public class Client : IDisposable
     {
-        public State State = State.Handshaking;
+        /// <summary>
+        /// Player that the Client is associated with.
+        /// </summary>
+        public Player Player { get; private set; }
+        
+        /// <summary>
+        /// State that packets are in.
+        /// </summary>
+        public State State { get; set; } = State.Handshaking;
 
         public bool IsLocalhost
             => _tcpClient.Client.RemoteEndPoint.ToString().Contains("127.0.0.1");
@@ -78,15 +87,35 @@ namespace Trestle.Networking
                     packet.Dispose();
                 }
                 catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
+                { }
             }
             
             // If this is reached, then there is no longer a connection, so unregister it.
             _clientService.UnregisterClient(this);
         }
         
+        #endregion
+
+        #region Player
+
+        /// <summary>
+        /// Creates a new Player and assigns it to the Client.
+        /// </summary>
+        public void CreatePlayer()
+        {
+            // Checks if a player has already been created.
+            if (Player != null)
+                throw new Exception("Player is already created.");
+
+            // Switches over the packet state to Play.
+            State = State.Play;
+            
+            // Assigns a new player
+            // TODO: add world
+            Player = new Player(this, null);
+            Player.Initialize();
+        }
+
         #endregion
         
         #region Disposing

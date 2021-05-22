@@ -9,4 +9,12 @@
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0-preview.3.21201.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Entities\Mobs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Trestle.Nbt\Trestle.Nbt.csproj" />
+    </ItemGroup>
+
 </Project>

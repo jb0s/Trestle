@@ -25,6 +25,8 @@ namespace Trestle.Networking.Packets.Login.Server
                 uuid = Uuid.NewUuid();
             
             Client.SendPacket(new LoginSuccess(uuid, Name));
+
+            Client.CreatePlayer();
         }
     }
 }

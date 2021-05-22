@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Trestle.Networking.Attributes;
 using Trestle.Networking.Enums;
 using Trestle.Utils;
@@ -12,8 +13,14 @@ namespace Trestle.Networking.Services
 {
     public interface IPacketService
     {
+        /// <summary>
+        /// Parses an uncompressed packet.
+        /// </summary>
         Packet ParseUncompressedPacket(Client client, NetworkStream stream);
         
+        /// <summary>
+        /// Parses a compressed packet.
+        /// </summary>
         Packet ParseCompressedPacket(Client client, NetworkStream stream);
     }
     
@@ -25,27 +32,37 @@ namespace Trestle.Networking.Services
         private readonly Dictionary<byte, Type> _loginPackets = new();
         private readonly Dictionary<byte, Type> _playPackets = new();
         
-        public PacketService()
+        private ILogger<PacketService> _logger { get; set; }
+        
+        public PacketService(ILogger<PacketService> logger)
         {
+            _logger = logger;
+            
             RegisterPackets();
         }
         
-        /// <summary>
-        /// 
-        /// </summary>
         public Packet ParseUncompressedPacket(Client client, NetworkStream stream)
         {
             using var netty = new NettyStream(stream);
             var packetId = (byte)netty.ReadVarInt();
+
+            _logger.LogDebug($"Attempting to handle packet '0x{packetId:X2}' in state '{client.State}'");
             
-            var type = client.State switch
+            Type type;
+            var doesPacketExist = client.State switch
             {
-                State.Handshaking => _handshakingPackets[packetId],
-                State.Status => _statusPackets[packetId],
-                State.Login => _loginPackets[packetId],
-                State.Play => _playPackets[packetId],
+                State.Handshaking => _handshakingPackets.TryGetValue(packetId, out type),
+                State.Status =>  _statusPackets.TryGetValue(packetId, out type),
+                State.Login =>  _loginPackets.TryGetValue(packetId, out type),
+                State.Play =>  _playPackets.TryGetValue(packetId, out type),
                 _ => throw new ArgumentOutOfRangeException(nameof(packetId)),
             };
+            
+            if (!doesPacketExist)
+            {
+                _logger.LogWarning($"Packet '0x{packetId:X2}' does not have a handler for state '{client.State}'");
+                return null;
+            }
             
             var packet = (Packet)Activator.CreateInstance(type);
             if (packet == null)
@@ -55,17 +72,14 @@ namespace Trestle.Networking.Services
             packet.Deserialize(netty);
             return packet;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
+        
         public Packet ParseCompressedPacket(Client client, NetworkStream stream)
         {
             throw new NotImplementedException();
         }
         
         /// <summary>
-        /// Gets all Packet handlers
+        /// Registers all Packet handlers
         /// </summary>
         private void RegisterPackets()
         {

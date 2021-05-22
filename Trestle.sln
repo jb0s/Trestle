@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trestle", "Trestle\Trestle.csproj", "{53A4D208-A745-4417-B299-1CFB7C9BAD82}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trestle.Nbt", "Trestle.Nbt\Trestle.Nbt.csproj", "{022AF7E3-1105-40FA-82F8-22496A9F2099}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{53A4D208-A745-4417-B299-1CFB7C9BAD82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53A4D208-A745-4417-B299-1CFB7C9BAD82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53A4D208-A745-4417-B299-1CFB7C9BAD82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{022AF7E3-1105-40FA-82F8-22496A9F2099}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{022AF7E3-1105-40FA-82F8-22496A9F2099}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{022AF7E3-1105-40FA-82F8-22496A9F2099}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{022AF7E3-1105-40FA-82F8-22496A9F2099}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
