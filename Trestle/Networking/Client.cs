@@ -8,6 +8,7 @@ using Trestle.Configuration.Service;
 using Trestle.Entities.Players;
 using Trestle.Networking.Attributes;
 using Trestle.Networking.Enums;
+using Trestle.Networking.Packets.Play.Client;
 using Trestle.Networking.Services;
 
 namespace Trestle.Networking
@@ -24,9 +25,40 @@ namespace Trestle.Networking
         /// </summary>
         public State State { get; set; } = State.Handshaking;
 
+        /// <summary>
+        /// The amount of KeepAlives the client has missed.
+        /// The client is disconnected if this number is equal to 5.
+        /// </summary>
+        public int MissedKeepAlives { get; set; }
+        
+        /// <summary>
+        /// The last time a KeepAlive was attempted in milliseconds.
+        /// </summary>
+        public int LastKeepAliveAttempt { get; set; }
+        
+        /// <summary>
+        /// The last time a KeepAlive was successful in milliseconds.
+        /// </summary>
+        public int LastKeepAliveSuccess { get; set; }
+
+        /// <summary>
+        /// Latency from server to client.
+        /// </summary>
+        public int Ping
+            => LastKeepAliveSuccess - LastKeepAliveAttempt;
+        
+        /// <summary>
+        /// Is this client connected from a local machine?
+        /// </summary>
         public bool IsLocalhost
             => _tcpClient.Client.RemoteEndPoint.ToString().Contains("127.0.0.1");
-        
+
+        /// <summary>
+        /// Is there a valid connection between Client and Server?
+        /// </summary>
+        public bool IsConnected
+            => _tcpClient.Client.Receive(new byte[1], SocketFlags.Peek) != 0;
+
         /// <summary>
         /// <see cref="TcpClient"/> of the Client.
         /// </summary>
@@ -48,7 +80,7 @@ namespace Trestle.Networking
 
             _ = HandlePackets();
         }
-        
+
         #region Packets
 
         public void SendPacket(Packet packet)
@@ -67,8 +99,7 @@ namespace Trestle.Networking
         {
             var stream = _tcpClient.GetStream();
 
-            var b = new byte[1];
-            while (_tcpClient.Client.Receive(b, SocketFlags.Peek) != 0) // Continues checking for new data, while still connected.
+            while (IsConnected) // Continues checking for new data, while still connected.
             {
                 while (!stream.DataAvailable)
                     Thread.Sleep(5);
@@ -94,6 +125,34 @@ namespace Trestle.Networking
             _clientService.UnregisterClient(this);
         }
         
+        /// <summary>
+        /// Sends a packet to the client to let it know that the server still has a connection to it.
+        /// </summary>
+        /// <param name="keepAliveId"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task KeepAlive()
+        {
+            while (State == State.Play)
+            {
+                await Task.Delay(2500);
+
+                LastKeepAliveAttempt = DateTime.Now.Millisecond;
+                
+                // Increase the MissedKeepAlives value and send a KeepAlive packet.
+                // Once a ServerBound KeepAlive packet is received, we reset MissedKeepAlives.
+                MissedKeepAlives++;
+                SendPacket(new KeepAlive(DateTime.Now.Millisecond));
+            
+                // TODO: (jake) Allow this to be configured in config.json?
+                if (MissedKeepAlives > 5)
+                {
+                    // TODO: Add player kicking
+                    _tcpClient.Close();
+                    _tcpClient.Dispose();
+                }
+            }
+        }
+        
         #endregion
 
         #region Player
@@ -114,6 +173,8 @@ namespace Trestle.Networking
             // TODO: add world
             Player = new Player(this, null);
             Player.Initialize();
+
+            _ = KeepAlive();
         }
 
         #endregion

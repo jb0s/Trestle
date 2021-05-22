@@ -27,5 +27,11 @@ namespace Trestle.Networking.Attributes
             Id = (byte) packet;
             State = State.Login;
         }
+        
+        public ServerBoundAttribute(PlayPacket packet)
+        {
+            Id = (byte) packet;
+            State = State.Play;
+        }
     }
 }
