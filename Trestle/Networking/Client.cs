@@ -128,7 +128,7 @@ namespace Trestle.Networking
         }
         
         /// <summary>
-        /// Sends a packet to the client to let it know that the server still has a connection to it.
+        /// Sends a packet to the client every 2500ms to validate the connection.
         /// </summary>
         /// <param name="keepAliveId"></param>
         /// <exception cref="NotImplementedException"></exception>
