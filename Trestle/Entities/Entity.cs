@@ -1,6 +1,6 @@
 ﻿using Trestle.Entities.Enums;
+using Trestle.Levels;
 using Trestle.Utils;
-using Trestle.Worlds;
 
 namespace Trestle.Entities
 {
@@ -17,15 +17,16 @@ namespace Trestle.Entities
         public EntityType Type { get; }
 
         /// <summary>
-        /// World that the Entity is in.
+        /// Level that the Entity is in.
         /// </summary>
-        public World World { get; private set; }
+        public Level Level { get; private set; }
 
-        public Location Location { get; set; }
+        public Location Location { get; set; } = new Location(0, 100, 0);
         
-        public Entity(EntityType type, World world)
+        public Entity(EntityType type, Level level)
         {
             Type = type;
+            Level = level;
         }
     }
 }

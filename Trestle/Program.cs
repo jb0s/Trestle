@@ -5,8 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Trestle.Configuration.Service;
+using Trestle.Levels.Services;
 using Trestle.Networking.Services;
-using Trestle.Worlds.Services;
 
 namespace Trestle
 {
@@ -21,7 +21,7 @@ namespace Trestle
                 .ConfigureServices((host, services) =>
                 {
                     // Services
-                    services.AddSingleton<IWorldService, WorldService>();
+                    services.AddSingleton<ILevelService, LevelService>();
                     services.AddSingleton<IConfigService, ConfigService>();
                     services.AddSingleton<IMojangService, MojangService>();
                     services.AddSingleton<IPacketService, PacketService>();

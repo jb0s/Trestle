@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trestle.Configuration.Service;
 using Trestle.Entities.Players;
+using Trestle.Levels;
+using Trestle.Levels.Enums;
 using Trestle.Networking.Attributes;
 using Trestle.Networking.Enums;
 using Trestle.Networking.Packets.Play.Client;
@@ -172,7 +174,14 @@ namespace Trestle.Networking
             // Assigns a new player
             // TODO: add world
             Player = new Player(this, null);
-            Player.Initialize();
+            try
+            {
+                Player.Initialize();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
             _ = KeepAlive();
         }

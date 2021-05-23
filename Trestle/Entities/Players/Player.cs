@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Trestle.Entities.Enums;
+using Trestle.Levels;
 using Trestle.Networking;
 using Trestle.Networking.Packets.Play.Client;
-using Trestle.Worlds;
+using Trestle.Utils;
 
 namespace Trestle.Entities.Players
 {
@@ -13,9 +15,15 @@ namespace Trestle.Entities.Players
         /// </summary>
         public Client Client { get; }
 
-        public Player(Client client, World world) : base(EntityType.Player, world)
+        /// <summary>
+        /// The chunks this entity has loaded.
+        /// </summary>
+        public Dictionary<Tuple<int, int>, byte[]> ChunksUsed = new Dictionary<Tuple<int, int>, byte[]>();
+        
+        public Player(Client client, Level level) : base(EntityType.Player, level)
         {
             Client = client;
+            Location = new Location(0, 4, 0);
         }
 
         public void Initialize()

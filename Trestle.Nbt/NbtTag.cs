@@ -64,6 +64,11 @@ namespace Trestle.Nbt
                 case string data:
                     buffer.WriteString(data);
                     break;
+                case List<long> data:
+                    buffer.WriteInt(data.Count);
+                    foreach (var num in data)
+                        buffer.WriteLong(num);
+                    break;
                 case List<NbtTag> data:
                     if (Type == NbtType.List)
                     {

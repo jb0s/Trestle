@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using Trestle.Entities.Players;
+using Trestle.Levels.Enums;
 using Trestle.Nbt.Tags;
 using Trestle.Networking.Attributes;
 using Trestle.Networking.Enums.Client;
 using Trestle.Networking;
-using Trestle.Worlds.Enums;
 
 namespace Trestle.Networking.Packets.Play.Client
 {
@@ -117,10 +117,10 @@ namespace Trestle.Networking.Packets.Play.Client
                                 new NbtString("category", "plains"),
                                 new NbtCompound("effects")
                                 {
-                                    new NbtInt("sky_color", 8364543),
-                                    new NbtInt("water_fog_color", 8364543),
-                                    new NbtInt("fog_color", 8364543),
-                                    new NbtInt("water_color", 8364543),
+                                    new NbtInt("sky_color", 12390624),
+                                    new NbtInt("water_fog_color", 12390624),
+                                    new NbtInt("fog_color", 12390624),
+                                    new NbtInt("water_color", 12390624),
                                     new NbtCompound("mood_sound")
                                     {
                                         new NbtInt("tick_delay", 6000),

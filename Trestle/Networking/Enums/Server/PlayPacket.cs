@@ -2,6 +2,7 @@
 {
     public enum PlayPacket : byte
     {
-        KeepAlive = 0x10
+        KeepAlive = 0x10,
+        PlayerPosition = 0x12
     }
 }
