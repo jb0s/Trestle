@@ -12,54 +12,72 @@ namespace Trestle.Networking.Packets.Status.Client
     [ClientBound(StatusPacket.Response)]
     public class Response : Packet
     {
-        private IConfigService _configService;
-        private static ServerConfig _config;
-        
         [Field]
         public string JsonResponse { get; set; }
 
         public Response(IConfigService configService)
-        {
-            // TODO: Refactor this (possible race condition)
-            _configService = configService;
-            _config = configService.GetConfig().Result;
-            JsonResponse = JsonSerializer.Serialize(new ServerListResponse());
-        }
+            => JsonResponse = JsonSerializer.Serialize(new ServerListResponse(configService));
         
         public class ServerListResponse
         {
             [JsonPropertyName("version")] 
-            public ServerListVersion Version { get; set; } = new();
+            public ServerListVersion Version { get; set; }
 
             [JsonPropertyName("players")] 
-            public ServerListPlayers Players { get; set; } = new(); 
+            public ServerListPlayers Players { get; set; }
             
             [JsonPropertyName("description")] 
-            public ServerListDescription Description { get; set; } = new(); 
+            public ServerListDescription Description { get; set; }
+
+            public ServerListResponse(IConfigService configService)
+            {
+                Version = new ServerListVersion();
+                Players = new ServerListPlayers(configService);
+                Description = new ServerListDescription(configService);
+            }
         }
 
         public class ServerListVersion
         {
             [JsonPropertyName("name")] 
-            public string Name { get; set; } = "Trestle 1.12.2";
+            public string Name { get; set; }
 
             [JsonPropertyName("protocol")] 
-            public int Protocol { get; set; } = 754;
+            public int Protocol { get; set; }
+
+            public ServerListVersion()
+            {
+                Name = "Trestle 1.16.5";
+                Protocol = 754;
+            }
         }
         
         public class ServerListPlayers
         {
             [JsonPropertyName("max")] 
-            public int Max { get; set; } = _config.Host.MaxPlayers;
+            public int Max { get; set; }
 
             [JsonPropertyName("online")] 
-            public int Online { get; set; } = 0;
+            public int Online { get; set; }
+
+            public ServerListPlayers(IConfigService configService)
+            {
+                Max = configService.GetConfig().Host.MaxPlayers;
+                
+                // TODO: Add this
+                Online = 0;
+            }
         }
 
         public class ServerListDescription
         {
             [JsonPropertyName("text")]
-            public string Text { get; set; } = _config.Host.Motd;
+            public string Text { get; set; }
+
+            public ServerListDescription(IConfigService configService)
+            {
+                Text = configService.GetConfig().Host.Motd;
+            }
         }
     }
 }

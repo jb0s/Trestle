@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -9,10 +10,10 @@ namespace Trestle.Configuration.Service
 {
     public interface IConfigService
     {
-        public Task<ServerConfig> GetConfig();
+        public ServerConfig GetConfig();
         
-        public Task Save();
-        public Task Load();
+        public void Save();
+        public void Load();
     }
     
     public class ConfigService : IConfigService
@@ -25,10 +26,15 @@ namespace Trestle.Configuration.Service
             _logService = logService;
         }
 
-        public async Task<ServerConfig> GetConfig()
+        /// <summary>
+        /// Returns the configuration.
+        /// This is put in a function so that you can get the config through the <see cref="IConfigService"/> interface.
+        /// </summary>
+        /// <returns></returns>
+        public ServerConfig GetConfig()
         {
-            if (_configuration == null)
-                await Load();
+            if(_configuration == null)
+                Load();
 
             return _configuration;
         }
@@ -37,28 +43,24 @@ namespace Trestle.Configuration.Service
         /// Saves the config to a file.
         /// </summary>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task Save()
+        public void Save()
         {
+            // If the config isn't loaded yet, load it first.
             if (_configuration == null)
-                throw new InvalidOperationException("Can't save server configuration if it's not loaded first.");
+                Load();
             
-            // Open the config file.
-            using(var file = File.OpenWrite("config.json"))
+            string serialized = JsonSerializer.Serialize(_configuration, new JsonSerializerOptions
             {
-                // Serialize the json to the config file.
-                await JsonSerializer.SerializeAsync(file, _configuration, new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                });
-                
-                file.Close();
-            }
+                WriteIndented = true
+            });
+            
+            File.WriteAllText("config.json", serialized);
         }
         
         /// <summary>
         /// Loads the server configuration from a file, or creates a new one if the file isn't present.
         /// </summary>
-        public async Task Load()
+        public void Load()
         {
             // If config file doesn't exist, create one.
             if (!File.Exists("config.json"))
@@ -66,27 +68,26 @@ namespace Trestle.Configuration.Service
                 _logService.LogInformation("No configuration file found, creating one now.");
 
                 _configuration = new ServerConfig();
-                await Save();
+                Save();
             }
 
             // Open the config file to a stream.
-            var content = File.OpenRead("config.json");
+            string content = File.ReadAllText("config.json");
             
             // Attempt to deserialize the config file to a class instance.
             try 
             {
-                _configuration = await JsonSerializer.DeserializeAsync<ServerConfig>(content);
+                _configuration = JsonSerializer.Deserialize<ServerConfig>(content);
             }
             catch (JsonException exception) // Deserialization failed, close the file stream, delete the file and create a new one.
             {
                 _logService.LogWarning("Config file is corrupt! Creating a new one.");
                 
                 // Close the file and delete it.
-                content?.Close();
                 File.Delete("config.json");
                 
                 // Restart the function, which in turn makes a new config.
-                _ = Load();
+                Load();
             }
         }
     }
