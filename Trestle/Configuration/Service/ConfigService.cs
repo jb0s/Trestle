@@ -11,7 +11,7 @@ namespace Trestle.Configuration.Service
     public interface IConfigService
     {
         public ServerConfig GetConfig();
-        
+
         public void Save();
         public void Load();
     }
@@ -33,8 +33,11 @@ namespace Trestle.Configuration.Service
         /// <returns></returns>
         public ServerConfig GetConfig()
         {
-            if(_configuration == null)
+            if (_configuration == null)
+            {
+                _logService.LogDebug("Configuration required, but not yet loaded");
                 Load();
+            }
 
             return _configuration;
         }
@@ -45,6 +48,8 @@ namespace Trestle.Configuration.Service
         /// <exception cref="InvalidOperationException"></exception>
         public void Save()
         {
+            _logService.LogDebug("Saving configuration");
+            
             // If the config isn't loaded yet, load it first.
             if (_configuration == null)
                 Load();
@@ -62,6 +67,8 @@ namespace Trestle.Configuration.Service
         /// </summary>
         public void Load()
         {
+            _logService.LogDebug("Attempting to load config.json");
+            
             // If config file doesn't exist, create one.
             if (!File.Exists("config.json"))
             {
@@ -75,17 +82,21 @@ namespace Trestle.Configuration.Service
             string content = File.ReadAllText("config.json");
             
             // Attempt to deserialize the config file to a class instance.
-            try 
+            try
             {
+                _logService.LogDebug("Attempting to parse config.json");
+                
                 _configuration = JsonSerializer.Deserialize<ServerConfig>(content);
+                
+                _logService.LogDebug("Configuration loaded successfully");
             }
             catch (JsonException exception) // Deserialization failed, close the file stream, delete the file and create a new one.
             {
                 _logService.LogWarning("Config file is corrupt! Creating a new one.");
-                
+
                 // Close the file and delete it.
                 File.Delete("config.json");
-                
+
                 // Restart the function, which in turn makes a new config.
                 Load();
             }

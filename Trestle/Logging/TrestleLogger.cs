@@ -37,11 +37,11 @@ namespace Trestle.Logging
                 Console.Write($"[{formattedName ?? _name}: {logLevel}] ");
                 
                 // Message
-                Console.ForegroundColor = logLevel == LogLevel.Critical ? _config.LogLevels[logLevel] : originalColor;
+                Console.ForegroundColor = (logLevel == LogLevel.Critical || logLevel == LogLevel.Debug) ? _config.LogLevels[logLevel] : originalColor;
                 Console.Write($"{formatter(state, exception)}\n");
                 
-                // If the message was critical, the console color will still be dark red by now, so reset it.
-                if (logLevel == LogLevel.Critical)
+                // If the message was critical or debug, the console color will still be dark red/gray by now, so reset it.
+                if (logLevel == LogLevel.Critical || logLevel == LogLevel.Debug)
                     Console.ForegroundColor = originalColor;
             }
         }

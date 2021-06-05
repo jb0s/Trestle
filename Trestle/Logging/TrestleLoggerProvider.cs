@@ -17,7 +17,7 @@ namespace Trestle.Logging
             _config = config.CurrentValue;
             _onChangeToken = config.OnChange(updatedConfig => _config = updatedConfig);
         }
-        
+
         /// <summary>
         /// Creates a new logger.
         /// </summary>
