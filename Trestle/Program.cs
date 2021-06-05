@@ -40,7 +40,8 @@ namespace Trestle
                             config.LogLevels.Add(LogLevel.Warning, ConsoleColor.Yellow);
                             config.LogLevels.Add(LogLevel.Error, ConsoleColor.Red);
                             config.LogLevels.Add(LogLevel.Critical, ConsoleColor.DarkRed);
-                        }))
+                        })
+                        .AddFilter("Trestle", LogLevel.Debug))
                 .ConfigureServices((host, services) =>
                 {
                     // Services
