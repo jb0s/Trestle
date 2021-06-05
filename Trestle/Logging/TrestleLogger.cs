@@ -31,13 +31,18 @@ namespace Trestle.Logging
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write($"[{DateTime.Now}] ");
                 
-                // Prefix and message
+                // Prefix
                 // If `formattedName` == null, we use `_name` instead.
                 Console.ForegroundColor = _config.LogLevels[logLevel];
                 Console.Write($"[{formattedName ?? _name}: {logLevel}] ");
+                
+                // Message
+                Console.ForegroundColor = logLevel == LogLevel.Critical ? _config.LogLevels[logLevel] : originalColor;
                 Console.Write($"{formatter(state, exception)}\n");
                 
-                Console.ForegroundColor = originalColor;
+                // If the message was critical, the console color will still be dark red by now, so reset it.
+                if (logLevel == LogLevel.Critical)
+                    Console.ForegroundColor = originalColor;
             }
         }
 
