@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -6,10 +7,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Trestle.Configuration;
 using Trestle.Configuration.Service;
 using Trestle.Levels.Services;
 using Trestle.Logging;
 using Trestle.Networking.Services;
+using Trestle.Utils;
 
 namespace Trestle
 {
@@ -19,12 +22,24 @@ namespace Trestle
         {
             using IHost host = CreateHostBuilder(args).Build();
             
-            ILogger<Program> logger = host.Services.GetRequiredService<ILogger<Program>>(); 
-            
+            ILogger<Program> logger = host.Services.GetRequiredService<ILogger<Program>>();
+
             logger.LogInformation("Welcome to Trestle!");
             logger.LogInformation($"Version: v{Assembly.GetExecutingAssembly().GetName().Version}");
-            logger.LogInformation($"Protocol: Minecraft 1.16.5");
+            logger.LogInformation($"Protocol: {Constants.PROTOCOL_NAME} ({Constants.PROTOCOL_VERSION})");
             
+            // Log every service
+            logger.LogDebug("Active services:");
+            foreach (var servicePair in host.Services.GetAllServiceDescriptors())
+            {
+                ServiceDescriptor service = servicePair.Value;
+                string serviceName = service.ServiceType.Name;
+                
+                if (service.ServiceType.FullName.Contains("Trestle") && !service.ServiceType.FullName.Contains("Microsoft"))
+                    logger.LogDebug($"- {serviceName.Substring(1, serviceName.Length - 1)}");
+            }
+            
+            // Start the host
             await host.RunAsync();
         }
 

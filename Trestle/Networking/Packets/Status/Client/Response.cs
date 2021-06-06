@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
+using Trestle.Configuration;
 using Trestle.Configuration.Models;
 using Trestle.Configuration.Service;
 using Trestle.Networking.Attributes;
@@ -47,8 +48,8 @@ namespace Trestle.Networking.Packets.Status.Client
 
             public ServerListVersion()
             {
-                Name = "Trestle 1.16.5";
-                Protocol = 754;
+                Name = Constants.PROTOCOL_NAME;
+                Protocol = Constants.PROTOCOL_VERSION;
             }
         }
         
