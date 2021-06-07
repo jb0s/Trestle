@@ -28,9 +28,9 @@ namespace Trestle
             logger.LogInformation($"Version: v{Assembly.GetExecutingAssembly().GetName().Version}");
             logger.LogInformation($"Protocol: {Constants.PROTOCOL_NAME} ({Constants.PROTOCOL_VERSION})");
             
-            // Log every service
+            // Log every registered service
             logger.LogDebug("Active services:");
-            foreach (var servicePair in host.Services.GetAllServiceDescriptors())
+            foreach (KeyValuePair<Type, ServiceDescriptor> servicePair in host.Services.GetAllServiceDescriptors())
             {
                 ServiceDescriptor service = servicePair.Value;
                 string serviceName = service.ServiceType.Name;
@@ -59,17 +59,17 @@ namespace Trestle
                         .AddFilter("Trestle", LogLevel.Debug))
                 .ConfigureServices((host, services) =>
                 {
-                    // Services
+                    // Register services
                     services.AddSingleton<ILevelService, LevelService>();
                     services.AddSingleton<IConfigService, ConfigService>();
                     services.AddSingleton<IMojangService, MojangService>();
                     services.AddSingleton<IPacketService, PacketService>();
                     services.AddSingleton<IClientService, ClientService>();
                     
-                    // Hosted Services
+                    // Register osted Services
                     services.AddHostedService<ListenerService>();
                     
-                    // Disable Lifetime messages
+                    // Disable Microsoft Lifetime console messages
                     services.Configure<ConsoleLifetimeOptions>(options =>
                     {
                         options.SuppressStatusMessages = true;
