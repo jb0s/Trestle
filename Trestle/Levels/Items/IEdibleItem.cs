@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Trestle.Levels.Enums;
+using System.Threading.Tasks;
 using Trestle.Entities.Players;
-using Trestle.Levels.Enums;
 
 namespace Trestle.Levels.Items
 {
@@ -19,7 +19,7 @@ namespace Trestle.Levels.Items
         /// </summary>
         public int SaturationPoints => 5;
         
-        public async Task<InteractionResult> Use(Player player, PlayerHand hand)
+        public new async Task<InteractionResult> Use(Player player, PlayerHand hand)
             => InteractionResult.Consume;
     }
 }

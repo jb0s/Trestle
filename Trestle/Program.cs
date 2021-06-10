@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Trestle.Configuration;
 using Trestle.Configuration.Service;
+using Trestle.Levels.Items.Services;
 using Trestle.Levels.Services;
 using Trestle.Logging;
 using Trestle.Networking.Services;
@@ -63,10 +64,11 @@ namespace Trestle
                     services.AddSingleton<ILevelService, LevelService>();
                     services.AddSingleton<IConfigService, ConfigService>();
                     services.AddSingleton<IMojangService, MojangService>();
+                    services.AddSingleton<IItemService, ItemService>();
                     services.AddSingleton<IPacketService, PacketService>();
                     services.AddSingleton<IClientService, ClientService>();
                     
-                    // Register osted Services
+                    // Register hosted Services
                     services.AddHostedService<ListenerService>();
                     
                     // Disable Microsoft Lifetime console messages

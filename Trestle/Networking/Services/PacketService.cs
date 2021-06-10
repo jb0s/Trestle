@@ -5,6 +5,9 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using Trestle.Enums;
+using Trestle.Levels.Items;
+using Trestle.Levels.Items.Services;
 using Trestle.Networking.Attributes;
 using Trestle.Networking.Enums;
 using Trestle.Utils;
@@ -33,11 +36,11 @@ namespace Trestle.Networking.Services
         private readonly Dictionary<byte, Type> _playPackets = new();
         
         private ILogger<PacketService> _logger { get; set; }
-        
-        public PacketService(ILogger<PacketService> logger)
+
+        public PacketService(ILogger<PacketService> logger, IItemService itemService)
         {
             _logger = logger;
-            
+
             RegisterPackets();
         }
         
