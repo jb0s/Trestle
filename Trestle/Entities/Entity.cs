@@ -9,8 +9,8 @@ namespace Trestle.Entities
         /// <summary>
         /// Unique identifier of the Entity.
         /// </summary>
-        public int Id { get; set; } = -1;
-        
+        public readonly int Id = -1;
+
         /// <summary>
         /// Type of the Entity.
         /// </summary>
@@ -19,9 +19,9 @@ namespace Trestle.Entities
         /// <summary>
         /// Level that the Entity is in.
         /// </summary>
-        public Level Level { get; private set; }
+        public Level Level { get; }
 
-        public Location Location { get; set; } = new Location(0, 100, 0);
+        public Location Location { get; set; } = new(0, 100, 0);
         
         public Entity(EntityType type, Level level)
         {

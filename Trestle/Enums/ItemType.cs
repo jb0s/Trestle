@@ -15,21 +15,21 @@
         /// <summary>
         /// Tools that act as pickaxes.
         /// </summary>
-        Pickaxe,
+        Mining,
         
         /// <summary>
         /// Tools that act as axes.
         /// </summary>
-        Axe,
+        Chopping,
         
         /// <summary>
         /// Tools that act as shovels.
         /// </summary>
-        Shovel,
+        Digging,
         
         /// <summary>
         /// Tools that act as hoes.
         /// </summary>
-        Hoe
+        Farming
     }
 }

@@ -18,7 +18,7 @@ namespace Trestle.Entities.Players
         /// <summary>
         /// The chunks this entity has loaded.
         /// </summary>
-        public Dictionary<Tuple<int, int>, byte[]> ChunksUsed = new Dictionary<Tuple<int, int>, byte[]>();
+        public Dictionary<Tuple<int, int>, byte[]> ChunksUsed = new();
         
         public Player(Client client, Level level) : base(EntityType.Player, level)
         {
