@@ -8,6 +8,7 @@
     <ItemGroup>
       <PackageReference Include="CoreFNBT" Version="1.0.9" />
       <PackageReference Include="Iconic.Zlib.NetstandardUwp" Version="1.0.2" />
+      <PackageReference Include="LibNoise" Version="0.2.0" />
     </ItemGroup>
 
     <ItemGroup>

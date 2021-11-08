@@ -117,7 +117,7 @@ namespace Trestle.Networking
             {
                 Clients.Add(client);
             
-                while (tcpClient.Connected)
+                while (tcpClient.Client.Receive(new byte[1], SocketFlags.Peek) != 0)
                 {
                     try
                     {

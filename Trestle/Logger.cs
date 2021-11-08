@@ -66,7 +66,7 @@ namespace Trestle
         {
             var path = Path.Join(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "logs", "Trestle.log");
             if (File.Exists(path))
-                File.Move(path, Path.Join(Path.GetDirectoryName(path), $"Trestle-{((DateTimeOffset)File.GetCreationTime(path)).ToUnixTimeSeconds()}.log"));
+                File.Move(path, Path.Join(Path.GetDirectoryName(path), $"Trestle-{((DateTimeOffset)File.GetCreationTime(path)).ToUnixTimeSeconds()}.log"), true);
 
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             _writer = new StreamWriter(path);
