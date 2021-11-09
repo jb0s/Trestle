@@ -77,24 +77,9 @@ namespace Trestle.Networking.Packets.Play.Client
                     {
                         new NbtCompound()
                         {
-                            new NbtString("name", "minecraft:overworld"),
-                            new NbtInt("id", 0),
-                            new NbtCompound("element")
-                            {
-                                new NbtByte("piglin_safe", 0),
-                                new NbtByte("natural", 1),
-                                new NbtFloat("ambient_light", 1),
-                                new NbtString("infiniburn", "minecraft:infiniburn_overworld"),
-                                new NbtByte("respawn_anchor_works", 1),
-                                new NbtByte("has_skylight", 1),
-                                new NbtByte("bed_works", 1),
-                                new NbtString("effects", "minecraft:overworld"),
-                                new NbtByte("has_raids", 1),
-                                new NbtInt("logical_height", 256),
-                                new NbtDouble("coordinate_scale", 1),
-                                new NbtByte("ultrawarm", 0),
-                                new NbtByte("has_ceiling", 0),
-                            }
+                            new NbtString("name", player.Level.Dimension.Name),
+                            new NbtInt("id", player.Level.Dimension.Id),
+                            player.Level.Dimension.GetNbt("element")
                         }
                     }
                 },
@@ -134,23 +119,8 @@ namespace Trestle.Networking.Packets.Play.Client
                     }
                 }
             };
-            
-            Dimension = new NbtCompound("")
-            {
-                new NbtByte("piglin_safe", 0),
-                new NbtByte("natural", 1),
-                new NbtFloat("ambient_light", 1),
-                new NbtString("infiniburn", "minecraft:infiniburn_overworld"),
-                new NbtByte("respawn_anchor_works", 1),
-                new NbtByte("has_skylight", 1),
-                new NbtByte("bed_works", 1),
-                new NbtString("effects", "minecraft:overworld"),
-                new NbtByte("has_raids", 1),
-                new NbtInt("logical_height", 256),
-                new NbtDouble("coordinate_scale", 1),
-                new NbtByte("ultrawarm", 0),
-                new NbtByte("has_ceiling", 0),
-            };
+
+            Dimension = player.Level.Dimension.GetNbt();
         }
     }
 }

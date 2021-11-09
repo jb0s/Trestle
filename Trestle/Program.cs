@@ -40,6 +40,9 @@ namespace Trestle
                     logger.LogDebug($"- {serviceName.Substring(1, serviceName.Length - 1)}");
             }
             
+            // Ping services
+            host.Services.GetRequiredService<ILevelService>().Ping();
+
             // Start the host
             await host.RunAsync();
         }

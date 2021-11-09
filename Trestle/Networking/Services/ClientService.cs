@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Sockets;
 using Trestle.Configuration.Service;
+using Trestle.Levels.Services;
 
 namespace Trestle.Networking.Services
 {
@@ -21,12 +22,14 @@ namespace Trestle.Networking.Services
         private IPacketService _packetService;
         private IMojangService _mojangService;        
         private IConfigService _configService;
+        private ILevelService _levelService;
         
-        public ClientService(IMojangService mojangService, IPacketService packetService, IConfigService configService)
+        public ClientService(IMojangService mojangService, IPacketService packetService, IConfigService configService, ILevelService levelService)
         {
             _mojangService = mojangService;
             _packetService = packetService;
             _configService = configService;
+            _levelService = levelService;
         }
         
         /// <summary>
@@ -35,7 +38,7 @@ namespace Trestle.Networking.Services
         /// <param name="tcpClient"></param>
         public void RegisterClient(TcpClient tcpClient)
         {
-            var client = new Client(_mojangService, _packetService, this, tcpClient, _configService);
+            var client = new Client(_mojangService, _packetService, this, tcpClient, _configService, _levelService);
             _clients.Add(client);
         }
 

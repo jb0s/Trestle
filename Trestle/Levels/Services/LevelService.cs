@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Trestle.Levels.Attributes;
 using Trestle.Levels.Biomes;
 using Trestle.Levels.Dimensions;
@@ -12,7 +14,9 @@ namespace Trestle.Levels.Services
 {
     public interface ILevelService
     {
+        public void Ping();
         Level CreateLevel(string name, DimensionType type = DimensionType.Overworld, LevelType levelType = LevelType.Flat);
+        Level GetDefaultLevel();
     }
     
     public class LevelService : ILevelService
@@ -21,12 +25,27 @@ namespace Trestle.Levels.Services
         
         private readonly Dictionary<DimensionType, Dimension> _dimensions = new();
         private readonly Dictionary<BiomeType, Biome> _biomes = new();
+
+        private readonly ILogger<LevelService> _logger;
         
-        public LevelService()
+        public LevelService(ILogger<LevelService> logger)
         {
+            _logger = logger;
+
             RegisterDimensionsAndBiomes();
+            PrepareLevels();
         }
 
+        public void Ping()
+        {
+        }
+
+        private void PrepareLevels()
+        {
+            _logger.LogInformation("Preparing levels...");
+            CreateLevel("world");
+        }
+        
         public Level CreateLevel(string name, DimensionType dimensionType = DimensionType.Overworld, LevelType levelType = LevelType.Flat)
         {
             if (Levels.ContainsKey(name))
@@ -38,10 +57,13 @@ namespace Trestle.Levels.Services
                 _ => throw new ArgumentOutOfRangeException()
             };
 
-            Levels[name] = new Level(name, generator);
+            Levels[name] = new Level(_dimensions[dimensionType], name, generator);
             return Levels[name];
         }
 
+        public Level GetDefaultLevel()
+            => Levels.FirstOrDefault().Value;
+        
         private void RegisterDimensionsAndBiomes()
         {
             foreach (var type in Assembly.GetExecutingAssembly().GetTypes())

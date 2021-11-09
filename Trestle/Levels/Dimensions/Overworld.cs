@@ -6,9 +6,11 @@ namespace Trestle.Levels.Dimensions
     [Dimension(DimensionType.Overworld)]
     public class Overworld : Dimension
     {
+        public override int Id => 0;
+        public override string Name => "minecraft:overworld";
         public override bool IsPiglinSafe => false;
         public override bool IsNatural => true;
-        public override float AmbientLight => 0;
+        public override float AmbientLight => 1;
         public override string Infiniburn => "minecraft:infiniburn_overworld";
         public override bool DoesRespawnAnchorWork => false;
         public override bool HasSkylight => true;

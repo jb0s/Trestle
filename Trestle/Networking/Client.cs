@@ -8,6 +8,7 @@ using Trestle.Configuration.Service;
 using Trestle.Entities.Players;
 using Trestle.Levels;
 using Trestle.Levels.Enums;
+using Trestle.Levels.Services;
 using Trestle.Networking.Attributes;
 using Trestle.Networking.Enums;
 using Trestle.Networking.Packets.Play.Client;
@@ -70,13 +71,15 @@ namespace Trestle.Networking
         private readonly IPacketService _packetService;
         private readonly IClientService _clientService;
         private readonly IConfigService _configService;
+        private readonly ILevelService _levelService;
 
-        public Client(IMojangService mojangService,  IPacketService packetService, IClientService clientService, TcpClient tcpClient, IConfigService configService)
+        public Client(IMojangService mojangService, IPacketService packetService, IClientService clientService, TcpClient tcpClient, IConfigService configService, ILevelService levelService)
         {
             _mojangService = mojangService;
             _clientService = clientService;
             _packetService = packetService;
             _configService = configService;
+            _levelService = levelService;
             
             _tcpClient = tcpClient;
 
@@ -172,8 +175,7 @@ namespace Trestle.Networking
             State = State.Play;
             
             // Assigns a new player
-            // TODO: add world
-            Player = new Player(this, null);
+            Player = new Player(this, _levelService.GetDefaultLevel());
             try
             {
                 Player.Initialize();

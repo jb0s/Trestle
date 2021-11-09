@@ -5,6 +5,8 @@ namespace Trestle.Levels.Dimensions
 {
     public class Dimension
     {
+        public virtual int Id { get; }
+        public virtual string Name { get; }
         public virtual bool IsPiglinSafe { get; } 
         public virtual bool IsNatural { get; } 
         public virtual float AmbientLight { get; } 
@@ -19,8 +21,8 @@ namespace Trestle.Levels.Dimensions
         public virtual bool IsUltrawarm { get; } 
         public virtual bool HasCeiling { get; }
 
-        public NbtCompound GetNbt()
-            => new ()
+        public NbtCompound GetNbt(string elementName = "")
+            => new (elementName)
             {
                 new NbtByte("piglin_safe", Convert.ToByte(IsPiglinSafe)),
                 new NbtByte("natural", Convert.ToByte(IsNatural)),
